@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\homeController;
+use App\Http\Controllers\loginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('template');
-});
+Route::get('/', [homeController::class, 'index'])->name('panel');
+Route::get('/login', [loginController::class, 'index'])->name('login');
+Route::post('/login', [loginController::class, 'login']);

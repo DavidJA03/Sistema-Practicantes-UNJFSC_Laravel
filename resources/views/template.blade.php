@@ -17,7 +17,7 @@
              
 
           
-        <h1>Aca va el codigo</h1>
+        @yield('content')
 
 
     @include('layouts.parte-inferior')

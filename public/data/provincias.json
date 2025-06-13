@@ -1,0 +1,13 @@
+{
+    "provincias": [
+        { "id": "1", "nombre": "Barranca" },
+        { "id": "2", "nombre": "Cajatambo" },
+        { "id": "3", "nombre": "Cañete" },
+        { "id": "4", "nombre": "Canta" },
+        { "id": "5", "nombre": "Huaral" },
+        { "id": "6", "nombre": "Huarochirí" },
+        { "id": "7", "nombre": "Huaura" },
+        { "id": "8", "nombre": "Oyón" },
+        { "id": "9", "nombre": "Yauyos" }
+    ]
+}

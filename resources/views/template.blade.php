@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Sistema de gestión de practicantes">
     <meta name="author" content="DavidJA">
-    <title>UNJFSC</title>
+    <title>UNJFSC - @yield('title')|</title>
 
 </head>
 

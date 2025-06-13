@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
+use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\UsuarioMasivoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,3 +20,37 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [homeController::class, 'index'])->name('panel');
 Route::get('/login', [loginController::class, 'index'])->name('login');
 Route::post('/login', [loginController::class, 'login']);
+
+Route::get('/segmento/perfil', function () {
+    return view('segmento.perfil');
+})->name('perfil');
+
+// Rutas para personas
+Route::post('/personas', [PersonaController::class, 'store'])->name('personas.store');
+Route::get('/personas/check-dni/{dni}', [PersonaController::class, 'checkDni'])->name('personas.check.dni');
+Route::get('/personas/check-email/{email}', [PersonaController::class, 'checkEmail'])->name('personas.check.email');
+
+// Ruta para cargar el modal de registro
+Route::get('/segmento/modal-registro', function () {
+    return view('segmento.cuadro_registro');
+})->name('modal.registro');
+
+Route::get('/segmento/modal-carga-masiva', function () {
+    return view('segmento.usuario_masivo');
+})->name('modal.carga_masiva');
+
+// Ruta para obtener roles
+Route::get('/roles', function () {
+    return \App\Models\TypeUser::all();
+})->name('roles.index');
+
+// Ruta para la carga masiva de usuarios
+Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos');
+
+Route::get('/segmento/registrar', function () {
+    //$roles = \App\Models\TypeUser::all();
+    return view('segmento.registrar');
+})->name('registrar');
+
+// Ruta para carga masiva de usuarios
+Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos.store');

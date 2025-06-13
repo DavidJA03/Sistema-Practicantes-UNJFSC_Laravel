@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\cerrarSesionController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\PersonaController;
@@ -15,9 +16,10 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+*/  
 
-Route::get('/', [homeController::class, 'index'])->name('panel');
+Route::get('/', [loginController::class, 'index']);
+Route::get('/panel', [homeController::class, 'index'])->middleware('auth')->name('panel');
 Route::get('/login', [loginController::class, 'index'])->name('login');
 Route::post('/login', [loginController::class, 'login']);
 
@@ -54,3 +56,5 @@ Route::get('/segmento/registrar', function () {
 
 // Ruta para carga masiva de usuarios
 Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos.store');
+
+Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion')

@@ -53,7 +53,7 @@
                                         @endforeach
                                     
                                     @endif
-                                    <form accept="/login" method="post">
+                                    <form action="/login" method="post">
                                       @csrf
                                         <div class="form-group">
                                             <input type="email" name="email" class="form-control form-control-user"

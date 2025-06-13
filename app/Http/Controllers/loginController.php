@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class loginController extends Controller
 {
     public function index(){
+        if(Auth::check()){
+            return redirect()->route('panel');
+        }
         return view('auth.login');
     } 
 
@@ -18,8 +21,10 @@ class loginController extends Controller
             return redirect()->to('login')->withErrors('Credenciales incorectas');
                
         }
+
         $user = Auth::getProvider()->retrieveByCredentials($request->only('email','password'));
         Auth::login($user);
+        
         return redirect()->route('panel');
     }
 }

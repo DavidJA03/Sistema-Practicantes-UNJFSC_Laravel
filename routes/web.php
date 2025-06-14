@@ -5,6 +5,9 @@ use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\UsuarioMasivoController;
+use App\Http\Controllers\facultadController;
+use App\Http\Controllers\EscuelaController;
+use App\Http\Requests\StoreFacultadRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,4 +60,14 @@ Route::get('/segmento/registrar', function () {
 // Ruta para carga masiva de usuarios
 Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos.store');
 
-Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion')
+Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion');
+
+//Bloque Academico
+Route::resource('facultad',facultadController::class);
+
+Route::get('/facultad/{facultad}/edit', [FacultadController::class, 'edit'])->name('facultad.edit');
+
+Route::resource('escuela',escuelaController::class);
+
+Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name('escuela.edit');
+

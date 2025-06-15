@@ -5,7 +5,12 @@ use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\UsuarioMasivoController;
-use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\facultadController;
+use App\Http\Controllers\escuelaController;
+use App\Http\Controllers\semestreController;
+use App\Http\Requests\StoreFacultadRequest;
+use App\Http\Requests\StoreEscuelaRequest;
+use App\Http\Requests\StoreSemestreRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,3 +66,17 @@ Route::get('/list_users/estudiante', [PersonaController::class, 'lista_estudiant
 Route::get('/list_users/supervisor', [PersonaController::class, 'lista_supervisores'])->middleware('auth')->name('supervisor');
 
 Route::delete('/personas/{id}', [PersonaController::class, 'destroy'])->middleware('auth')->name('personas.destroy');
+
+//Bloque Academico
+Route::resource('facultad',facultadController::class);
+
+Route::get('/facultad/{facultad}/edit', [FacultadController::class, 'edit'])->name('facultad.edit');
+
+Route::resource('escuela',escuelaController::class);
+
+Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name('escuela.edit');
+
+//Semestre
+Route::resource('semestre',semestreController::class);
+Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
+

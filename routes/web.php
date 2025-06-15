@@ -28,42 +28,44 @@ Route::get('/', [loginController::class, 'index']);
 Route::get('/panel', [homeController::class, 'index'])->middleware('auth')->name('panel');
 Route::get('/login', [loginController::class, 'index'])->name('login');
 Route::post('/login', [loginController::class, 'login']);
+Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion');
 
-Route::get('/segmento/perfil', function () {
-    return view('segmento.perfil');
-})->name('perfil');
+
+// ... otras rutas ...
+
+Route::get('/segmento/perfil', [PersonaController::class, 'users'])->middleware('auth')->name('perfil');
 
 // Rutas para personas
 Route::post('/personas', [PersonaController::class, 'store'])->name('personas.store');
-Route::get('/personas/check-dni/{dni}', [PersonaController::class, 'checkDni'])->name('personas.check.dni');
-Route::get('/personas/check-email/{email}', [PersonaController::class, 'checkEmail'])->name('personas.check.email');
+Route::get('/personas/check-dni/{dni}', [PersonaController::class, 'checkDni'])->middleware('auth')->name('personas.check.dni');
+Route::get('/personas/check-email/{email}', [PersonaController::class, 'checkEmail'])->middleware('auth')->name('personas.check.email');
 
 // Ruta para cargar el modal de registro
-Route::get('/segmento/modal-registro', function () {
-    return view('segmento.cuadro_registro');
-})->name('modal.registro');
+Route::get('/segmento/modal-registro', [PersonaController::class, 'registro'])->middleware('auth')->name('modal.registro');
 
-Route::get('/segmento/modal-carga-masiva', function () {
-    return view('segmento.usuario_masivo');
-})->name('modal.carga_masiva');
-
-// Ruta para obtener roles
-Route::get('/roles', function () {
-    return \App\Models\TypeUser::all();
-})->name('roles.index');
+Route::get('/segmento/modal-carga-masiva', [UsuarioMasivoController::class, 'index'])->middleware('auth')->name('modal.carga_masiva');
 
 // Ruta para la carga masiva de usuarios
-Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos');
-
-Route::get('/segmento/registrar', function () {
-    //$roles = \App\Models\TypeUser::all();
-    return view('segmento.registrar');
-})->name('registrar');
-
-// Ruta para carga masiva de usuarios
 Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos.store');
 
-Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion');
+Route::get('/segmento/registrar', function () {
+    return view('segmento.registrar');
+})->middleware('auth')->name('registrar');
+
+Route::get('/list_users/editar', function () {
+    return view('list_users.edit_persona');
+})->middleware('auth')->name('editar');
+
+// Ruta para obtener los datos de una persona
+Route::get('/personas/{id}', [PersonaController::class, 'show'])->middleware('auth');
+
+Route::get('/list_users/docente', [PersonaController::class, 'lista_docentes'])->middleware('auth')->name('docente');
+
+Route::get('/list_users/estudiante', [PersonaController::class, 'lista_estudiantes'])->middleware('auth')->name('estudiante');
+
+Route::get('/list_users/supervisor', [PersonaController::class, 'lista_supervisores'])->middleware('auth')->name('supervisor');
+
+Route::delete('/personas/{id}', [PersonaController::class, 'destroy'])->middleware('auth')->name('personas.destroy');
 
 //Bloque Academico
 Route::resource('facultad',facultadController::class);

@@ -46,4 +46,16 @@
 @push('js')
     <script src="{{ asset('js/cuadro_registro_user.js') }}"></script>
     <script src="{{ asset('js/masa_registro_user.js') }}"></script>
+    <script>
+        function completarCorreo() {
+            const codigo = document.getElementById('codigo').value.trim();
+            const correoInst = document.getElementById('correo_inst');
+            
+            if (codigo) {
+                correoInst.value = codigo + '@unjfsc.edu.pe';
+            } else {
+                correoInst.value = '';
+            }
+        }
+    </script>
 @endpush

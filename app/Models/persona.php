@@ -36,6 +36,6 @@ class Persona extends Model
 
     public function rol()
     {
-        return $this->belongsTo(TypeUser::class);
+        return $this->belongsTo(type_users::class);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\TypeUser;
+use App\Models\type_users;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -23,7 +23,7 @@ class TypeUserSeeder extends Seeder
         ];
 
         foreach ($types as $type) {
-            TypeUser::create([
+            type_users::create([
                 'name' => $type['name'],
                 'estado' => $type['estado'],
                 'date_create' => now(),

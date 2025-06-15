@@ -5,11 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Persona;
 use App\Models\User;
-use App\Models\TypeUser;
+use App\Models\type_users;
 use Illuminate\Support\Facades\Hash;
 
 class UsuarioMasivoController extends Controller
 {
+    /**
+     * Show the form for loading users in bulk
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $roles = type_users::where('estado', 1)
+            ->where('name', '!=', 'admin')
+            ->get();
+        return view('segmento.usuario_masivo', compact('roles'));
+    }
+
     /**
      * Store multiple users from CSV file
      *
@@ -89,8 +102,8 @@ class UsuarioMasivoController extends Controller
                         'apellidos' => $usuarioData['apellidos'],
                         'correo_inst' => $usuarioData['correo_inst'],
                         'departamento' => 'Lima Provincias',
-                        'usuario_id' => 1,
-                        'rol_id' => 1,
+                        'usuario_id' => $user->id,
+                        'rol_id' => $request->rol, // Usar el ID del rol seleccionado
                         'date_create' => now(),
                         'date_update' => now(),
                         'estado' => 1,

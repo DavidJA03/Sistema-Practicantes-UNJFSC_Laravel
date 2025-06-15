@@ -6,8 +6,11 @@ use App\Http\Controllers\loginController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\UsuarioMasivoController;
 use App\Http\Controllers\facultadController;
-use App\Http\Controllers\EscuelaController;
+use App\Http\Controllers\escuelaController;
+use App\Http\Controllers\semestreController;
 use App\Http\Requests\StoreFacultadRequest;
+use App\Http\Requests\StoreEscuelaRequest;
+use App\Http\Requests\StoreSemestreRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,4 +73,8 @@ Route::get('/facultad/{facultad}/edit', [FacultadController::class, 'edit'])->na
 Route::resource('escuela',escuelaController::class);
 
 Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name('escuela.edit');
+
+//Semestre
+Route::resource('semestre',semestreController::class);
+Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
 

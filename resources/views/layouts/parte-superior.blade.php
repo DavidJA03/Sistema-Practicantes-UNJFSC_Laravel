@@ -81,6 +81,12 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('semestre.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Semestre</span></a>
+            </li>
+
             <hr class="sidebar-divider">
 
             <div class="sidebar-heading">

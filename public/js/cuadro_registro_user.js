@@ -30,10 +30,10 @@ async function cargarProvincias() {
         
         // Habilitar el select de provincia
         provinciaSelect.disabled = false;
-    } catch (error) {
-        console.error('Error al cargar provincias:', error);
+        } catch (error) {
+            console.error('Error al cargar provincias:', error);
+        }
     }
-}
 
 // Función para cargar distritos según la provincia seleccionada
 async function cargarDistritos(provinciaId) {

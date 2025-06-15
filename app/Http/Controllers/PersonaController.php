@@ -4,13 +4,93 @@ namespace App\Http\Controllers;
 
 use App\Models\Persona;
 use App\Models\User;
-use App\Models\TypeUser;
+use App\Models\type_users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class PersonaController extends Controller
 {
+        /**
+     * Show the user profile
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function lista_docentes(){
+        $personas = Persona::where('rol_id', 2)->get();
+        return view('list_users.docente', compact('personas'));
+    }
+        /**
+     * Show the user profile
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function lista_supervisores(){
+        $personas = Persona::where('rol_id', 3)->get();
+        return view('list_users.supervisor', compact('personas'));
+    }
+    /**
+     * Show the user profile
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function lista_estudiantes(){
+        $personas = Persona::where('rol_id', 4)->get();
+        return view('list_users.estudiante', compact('personas'));
+    }
+    /**
+     * Obtener los datos de una persona
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $persona = Persona::findOrFail($id);
+        return response()->json($persona);
+    }
+
+    /**
+     * Show the user profile
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function users(){
+        // Obtener el usuario logeado
+        $user = auth()->user();
+        
+        // Obtener la persona asociada al usuario
+        $persona = $user->persona;
+        
+        return view('segmento.perfil', compact('persona'));
+    }
+    /**
+     * Show the registration modal
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function registro(){
+        $roles = type_users::where('estado', 1)
+            ->where('name', '!=', 'admin')
+            ->get();
+        
+        return view('segmento.cuadro_registro', compact('roles'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        $persona = Persona::findOrFail($id);
+        $persona->delete();
+        
+        return redirect()->back()->with('success', 'Persona eliminada correctamente.');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -28,6 +108,7 @@ class PersonaController extends Controller
             'sexo' => 'in:M,F',
             'provincia' => 'string|max:50',
             'distrito' => 'string|max:50',
+            'rol' => 'exists:type_users,id',
         ]);
 
         // Si no se proporciona correo, usar el DNI como correo temporal
@@ -60,8 +141,8 @@ class PersonaController extends Controller
                 'departamento' => 'Lima Provincias',
                 'provincia' => $request->provincia,
                 'distrito' => $request->distrito,
-                'usuario_id' => 1,
-                'rol_id' => 2, // Asignar rol de usuario regular (2)
+                'usuario_id' => $user->id,
+                'rol_id' => $request->rol,
                 'date_create' => now(),
                 'date_update' => now(),
                 'estado' => 1,
@@ -89,8 +170,7 @@ class PersonaController extends Controller
      * @param  string  $dni
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkDni($dni)
-    {
+    public function checkDni($dni){
         $persona = Persona::where('dni', $dni)->first();
         return response()->json([
             'exists' => !is_null($persona)
@@ -103,8 +183,7 @@ class PersonaController extends Controller
      * @param  string  $email
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkEmail($email)
-    {
+    public function checkEmail($email){
         $persona = Persona::where('correo_inst', $email)->first();
         return response()->json([
             'exists' => !is_null($persona)

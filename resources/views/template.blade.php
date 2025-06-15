@@ -7,11 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Sistema de gestión de practicantes">
     <meta name="author" content="DavidJA">
-    <title>UNJFSC - @yield('title')|</title>
-
+    <title>UNJFSC - @yield('title')</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 </head>
 
 <body>
+    
 
     @include('layouts.parte-superior')
              

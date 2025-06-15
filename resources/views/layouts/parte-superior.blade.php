@@ -5,14 +5,15 @@
 
     
     <link href="{{ asset('css/template.css') }}" rel="stylesheet">
-
-<div id="wrapper">
+    <link href="{{ asset('css/tables.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/scss/bootstrap.scss') }}" rel="stylesheet">
+    <div id="wrapper">
 
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                    <!--<i class="fas fa-laugh-wink"></i>-->
                 </div>
                 <div class="sidebar-brand-text mx-3">UNJFSC</sup></div>
             </a>
@@ -47,9 +48,9 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('registrar') }}">Añadir Usuario</a>
                         <h6 class="collapse-header">Tipos de Usuarios</h6>
-                        <a class="collapse-item" href="buttons.html">Docentes</a>
-                        <a class="collapse-item" href="buttons.html">Supervisores</a>
-                        <a class="collapse-item" href="cards.html">Estudiantes</a>
+                        <a class="collapse-item" href="{{ route('docente') }}">Docentes</a>
+                        <a class="collapse-item" href="{{ route('supervisor') }}">Supervisores</a>
+                        <a class="collapse-item" href="{{ route('estudiante') }}">Estudiantes</a>
                     </div>
                 </div>
             </li>
@@ -157,7 +158,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <!--<a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -169,7 +170,7 @@
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"></div>-->
                                 <a class="dropdown-item" href="{{ route('cerrarSecion') }}">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Cerrar Sesión

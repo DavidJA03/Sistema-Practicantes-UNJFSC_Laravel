@@ -39,6 +39,11 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Perfil</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('matricula_index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Matricula</span></a>
+            </li>
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
@@ -88,6 +93,7 @@
 
             <hr class="sidebar-divider">
 
+
             <div class="sidebar-heading">
                 Addons
             </div>
@@ -122,6 +128,7 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li>
+
 
             <hr class="sidebar-divider d-none d-md-block">
 

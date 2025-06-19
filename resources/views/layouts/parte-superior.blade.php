@@ -4,19 +4,18 @@
         rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yFwcxhZhrM8WxhYMeIvYoL8eQyfxMErYfWZ5w2ZlzzrbnZ8+N1NBBdcGdR6YvYcK3OjDkYXw6PzZKef0fE9FZQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 
     
     <link href="{{ asset('css/template.css') }}" rel="stylesheet">
-
-<div id="wrapper">
+    <link href="{{ asset('css/tables.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/scss/bootstrap.scss') }}" rel="stylesheet">
+    <div id="wrapper">
 
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                    <!--<i class="fas fa-laugh-wink"></i>-->
                 </div>
                 <div class="sidebar-brand-text mx-3">UNJFSC</sup></div>
             </a>
@@ -56,9 +55,9 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('registrar') }}">Añadir Usuario</a>
                         <h6 class="collapse-header">Tipos de Usuarios</h6>
-                        <a class="collapse-item" href="buttons.html">Docentes</a>
-                        <a class="collapse-item" href="buttons.html">Supervisores</a>
-                        <a class="collapse-item" href="cards.html">Estudiantes</a>
+                        <a class="collapse-item" href="{{ route('docente') }}">Docentes</a>
+                        <a class="collapse-item" href="{{ route('supervisor') }}">Supervisores</a>
+                        <a class="collapse-item" href="{{ route('estudiante') }}">Estudiantes</a>
                     </div>
                 </div>
             </li>
@@ -94,7 +93,42 @@
 
             <hr class="sidebar-divider">
 
-            
+
+            <div class="sidebar-heading">
+                Addons
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Practicas</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Proceso</h6>
+                        <a class="collapse-item" href="login.html">Desarrollo</a>
+                        <a class="collapse-item" href="register.html">Convalidacion</a>
+                    </div>
+                </div>
+            </li>
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">
+                Addons
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="charts.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Charts</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="tables.html">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Tables</span></a>
+            </li>
+
 
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -161,7 +195,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <!--<a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -173,7 +207,7 @@
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"></div>-->
                                 <a class="dropdown-item" href="{{ route('cerrarSecion') }}">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Cerrar Sesión

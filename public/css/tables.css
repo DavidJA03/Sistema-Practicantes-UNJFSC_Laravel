@@ -1,0 +1,51 @@
+/* Alinear el buscador y la paginación con los bordes de la tabla */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.dataTables_wrapper .dataTables_length {
+    float: left !important;
+    padding-left: 15px !important;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    float: right !important;
+    padding-right: 15px !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+    float: left !important;
+    padding-left: 15px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    float: right !important;
+    padding-right: 15px !important;
+}
+
+/* Alinear el selector de registros con el buscador */
+.dataTables_length select {
+    margin-left: 10px !important;
+}
+
+/* Ajustar el ancho del contenedor para que coincida con la tabla */
+.dataTables_wrapper {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Alinear el buscador y la paginación con la tabla */
+.dataTables_wrapper .dataTables_filter input {
+    width: auto !important;
+}
+
+/* Ajustar el padding de la tabla */
+.table-responsive {
+    padding: 0 !important;
+    margin: 0 !important;
+}

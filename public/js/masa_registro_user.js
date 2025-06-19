@@ -1,12 +1,18 @@
 // Función para cargar el modal usando AJAX
 async function cargarModalMasivo() {
     try {
+        console.log('Intentando cargar el modal...');
         const response = await fetch('/segmento/modal-carga-masiva');
+        if (!response.ok) {
+            console.error('Error en la respuesta del servidor:', response.status, response.statusText);
+            throw new Error('Error al cargar el modal');
+        }
         const modalHtml = await response.text();
+        console.log('Modal cargado exitosamente');
         return modalHtml;
     } catch (error) {
         console.error('Error al cargar el modal:', error);
-        return '';
+        throw error;
     }
 }
 
@@ -21,29 +27,10 @@ async function inicializarModalMasivo() {
         if (cardCargaMasiva) {
             cardCargaMasiva.addEventListener('click', function (e) {
                 e.preventDefault();
-                //console.log("Click en carga masiva"); // Para depurar
+                console.log("Click en carga masiva"); // Para depurar
                 $('#modalCargaMasiva').modal('show');
             });
         }
-
-        // Obtener los roles del servidor
-        fetch('/roles')
-            .then(response => response.json())
-            .then(roles => {
-                const select = document.getElementById('rol');
-                select.innerHTML = '<option value="">Seleccione un tipo de usuario</option>';
-                
-                roles.forEach(rol => {
-                    const option = document.createElement('option');
-                    option.value = rol.id;
-                    option.textContent = rol.name;
-                    select.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error al cargar los roles:', error);
-                alert('Error al cargar los tipos de usuario. Por favor, inténtelo de nuevo.');
-            });
 
         document.getElementById('btnCargar').addEventListener('click', async function() {
             const formData = new FormData(document.getElementById('formUsuarioMasivo'));
@@ -56,16 +43,15 @@ async function inicializarModalMasivo() {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
                     }
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Usuarios cargados exitosamente\n\n' + 
-                        'Total usuarios creados: ' + data.usuariosCreados + 
-                        (data.errores.length > 0 ? '\n\nErrores encontrados:\n' + data.errores.join('\n') : ''));
+                    alert('Personas registradas exitosamente');
                     $('#modalCargaMasiva').modal('hide');
                     document.getElementById('formUsuarioMasivo').reset();
                 } else {
@@ -76,25 +62,6 @@ async function inicializarModalMasivo() {
                 alert('Error al cargar los usuarios. Por favor, inténtelo de nuevo.');
             }
         });
-
-        //document.getElementById('archivo').addEventListener('change', function(e) {
-            //const archivo = e.target.files[0];
-            //if (archivo) {
-                //const extension = archivo.name.split('.').pop().toLowerCase();
-                //if (extension !== 'csv') {
-                    //alert('Solo se permiten archivos CSV');
-                    //e.target.value = '';
-                    //return;
-                //}
-                
-                // Verificar el tamaño del archivo (2MB máximo)
-                //if (archivo.size > 2 * 1024 * 1024) {
-                    //alert('El archivo es demasiado grande (máximo 2MB)');
-                    //e.target.value = '';
-                    //return;
-                //}
-            //}
-        //});
     }
 }
 

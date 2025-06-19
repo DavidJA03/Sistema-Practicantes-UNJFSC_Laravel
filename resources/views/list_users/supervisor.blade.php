@@ -6,14 +6,9 @@
 
 @section('content')
 <div class="container-fluid">
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary text-uppercase">Lista de Docentes</h6>
+            <h6 class="m-0 font-weight-bold text-primary text-uppercase">Lista de Supervisores</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -42,7 +37,7 @@
                     </tfoot>
                     <tbody>
                         @foreach ($personas as $index => $persona)
-                        <tr>
+                        <tr data-docente-id="{{ $persona->id }}">
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $persona->codigo }}</td>
                             <td>{{ strtoupper($persona->apellidos . ' ' . $persona->nombres) }}</td>
@@ -50,9 +45,9 @@
                             <td>{{ $persona->correo_inst }}</td>
                             <td>{{ $persona->celular }}</td>
                             <td>
-                                <a href="#" class="btn icon-mostrar btn-info btn-sm" data-persona-id="{{ $persona->id }}" data-toggle="modal" data-target="#modalEditar">
+                                <button type="button" class="btn btn-mostrar btn-info btn-sm">
                                     <i class="fas fa-eye"></i>
-                                </a>
+                                </button>
                                 <form action="{{ route('personas.destroy', $persona->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
@@ -77,6 +72,5 @@
 @endsection
 
 @push('js')
-    <script src="{{ asset('js/persona_edit.js') }}"></script>
-    <script src="{{ asset('js/modal_edit.js') }}"></script>
+<script src="{{ asset('js/persona_edit.js') }}"></script>
 @endpush

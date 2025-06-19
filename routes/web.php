@@ -52,12 +52,13 @@ Route::get('/segmento/registrar', function () {
     return view('segmento.registrar');
 })->middleware('auth')->name('registrar');
 
-Route::get('/list_users/editar', function () {
+Route::get('/list_users/modal-editar', function () {
     return view('list_users.edit_persona');
-})->middleware('auth')->name('editar');
+})->middleware('auth')->name('modal.editar');
 
-// Ruta para obtener los datos de una persona
-Route::get('/personas/{id}', [PersonaController::class, 'show'])->middleware('auth');
+Route::post('/list_users/modal-editar/{id}', [PersonaController::class, 'update'])->middleware('auth')->name('modal.editar');
+
+Route::post('/segmento/actualizar_perfil/{id}', [PersonaController::class, 'update'])->middleware('auth')->name('actualizar_perfil');
 
 Route::get('/list_users/docente', [PersonaController::class, 'lista_docentes'])->middleware('auth')->name('docente');
 
@@ -66,6 +67,12 @@ Route::get('/list_users/estudiante', [PersonaController::class, 'lista_estudiant
 Route::get('/list_users/supervisor', [PersonaController::class, 'lista_supervisores'])->middleware('auth')->name('supervisor');
 
 Route::delete('/personas/{id}', [PersonaController::class, 'destroy'])->middleware('auth')->name('personas.destroy');
+
+// Ruta para obtener los datos de un docente
+Route::get('/personas/{id}', [PersonaController::class, 'edit'])->middleware('auth')->name('personas.edit');
+
+// Ruta para actualizar una persona
+Route::put('/personas/{id}', [PersonaController::class, 'update'])->middleware('auth')->name('personas.update');
 
 //Bloque Academico
 Route::resource('facultad',facultadController::class);
@@ -79,4 +86,3 @@ Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name(
 //Semestre
 Route::resource('semestre',semestreController::class);
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
-

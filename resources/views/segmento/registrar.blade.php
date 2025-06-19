@@ -11,7 +11,7 @@
     <p></p>
         <div class="row">
             <div class="col-xl-6 col-lg-6">
-                <a href="{{ route('registrar') }}" class="card card-registro shadow mb-4">
+                <a class="card card-registro shadow mb-4">
                     <div class="py-3 text-center mt-3">
                         <div class="d-flex flex-column align-items-center justify-content-center">
                             <i class="fas fa-user" style="font-size: 300px; color: rgb(123, 145, 229);"></i>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="col-xl-6 col-lg-6">
-                <a href="{{ route('registrar') }}" class="card card-carga-masiva shadow mb-4">
+                <a class="card card-carga-masiva shadow mb-4">
                     <div class="py-3 text-center mt-3">
                         <div class="d-flex flex-column align-items-center justify-content-center">
                             <i class="fas fa-users" style="font-size: 300px; color: rgb(123, 145, 229);"></i>

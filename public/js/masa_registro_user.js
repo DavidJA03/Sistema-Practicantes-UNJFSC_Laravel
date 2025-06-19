@@ -51,6 +51,7 @@ async function inicializarModalMasivo() {
                 const data = await response.json();
 
                 if (data.success) {
+                    alert('Personas registradas exitosamente');
                     $('#modalCargaMasiva').modal('hide');
                     document.getElementById('formUsuarioMasivo').reset();
                 } else {

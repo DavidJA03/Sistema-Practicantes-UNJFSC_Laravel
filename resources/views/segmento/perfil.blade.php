@@ -29,71 +29,82 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <form id="formEditPerfil">
+                        <meta name="csrf-token" content="{{ csrf_token() }}">
+                        @csrf
+                        @method('POST')
+                        <input type="hidden" id="persona_id" name="persona_id" value="{{ $persona->id }}">
                         <!-- Fila 1 -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="codigo">Código</label>
-                                <input type="text" class="form-control" id="codigo" value="{{ $persona->codigo ?? '' }}" readonly>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="codigo">Código</label>
+                                    <input type="text" class="form-control" id="codigo" name="codigo" value="{{ $persona->codigo ?? '' }}" readonly>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dni">DNI</label>
-                                <input type="text" class="form-control" id="dni" value="{{ $persona->dni ?? '' }}" readonly>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dni">DNI</label>
+                                    <input type="text" class="form-control" id="dni" name="dni" value="{{ $persona->dni ?? '' }}" readonly>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="celular">Celular</label>
-                                <input type="text" class="form-control" id="celular" value="{{ $persona->celular ?? '' }}" readonly>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="celular">Celular</label>
+                                    <input type="text" class="form-control" id="celular" name="celular" value="{{ $persona->celular ?? '' }}" readonly>
+                                </div>
                             </div>
-                        </div>
-
+                        </div>  
                         <!-- Fila 2 -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="nombres">Nombres</label>
-                                <input type="text" class="form-control" id="nombres" value="{{ $persona->nombres ?? '' }}" readonly>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nombres">Nombres</label>
+                                    <input type="text" class="form-control" id="nombres" name="nombres" value="{{ $persona->nombres ?? '' }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="apellidos">Apellidos</label>
+                                    <input type="text" class="form-control" id="apellidos" name="apellidos" value="{{ $persona->apellidos ?? '' }}" readonly>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="apellidos">Apellidos</label>
-                                <input type="text" class="form-control" id="apellidos" value="{{ $persona->apellidos ?? '' }}" readonly>
-                            </div>
-                        </div>
-
                         <!-- Fila 3 -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="correo">Correo Institucional</label>
-                                <input type="email" class="form-control" id="correo" value="{{ $persona->correo_inst ?? '' }}" readonly>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="correo_inst">Correo Institucional</label>
+                                    <input type="email" class="form-control" id="correo_inst" name="correo_inst" value="{{ $persona->correo_inst ?? '' }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="departamento">Departamento</label>
+                                    <input type="text" class="form-control" id="departamento" name="departamento" value="{{ $persona->departamento ?? '' }}" readonly>
+                                </div>
                             </div>
                         </div>
-
                         <!-- Fila 4 -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="departamento">Departamento</label>
-                                <input type="text" class="form-control" id="departamento" value="{{ $persona->departamento ?? '' }}" readonly>
-                            </div>
-                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="provincia">Provincia</label>
-                                <input type="text" class="form-control" id="provincia" value="{{ $persona->provincia ?? '' }}" readonly>
+                                <select class="form-control" id="provincia" name="provincia" readonly>
+                                    <option value="">Seleccione una provincia</option>
+                                </select>
                             </div>
                         </div>
-
-                        <!-- Fila 5 -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="distrito">Distrito</label>
-                                <input type="text" class="form-control" id="distrito" value="{{ $persona->distrito ?? '' }}" readonly>
+                                <select class="form-control" id="distrito" name="distrito"  disabled readonly>
+                                    <option value="">Seleccione un distrito</option>
+                                </select>
                             </div>
                         </div>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -121,42 +132,5 @@
 @endsection
 
 @push('js')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const editBtn = document.getElementById('perfEdit');
-        const updateBtn = document.getElementById('perfUpdate');
-        const formInputs = document.querySelectorAll('#codigo, #dni, #celular, #nombres, #apellidos, #correo, #departamento, #provincia, #distrito');
-
-        // Guarda los valores originales
-        const originalValues = {};
-        formInputs.forEach(input => {
-            originalValues[input.id] = input.value;
-        });
-
-        let editing = false;
-
-        editBtn.addEventListener('click', function () {
-            editing = !editing; // alterna el estado
-
-            if (editing) {
-                // Activar campos
-                formInputs.forEach(input => input.removeAttribute('readonly'));
-                updateBtn.classList.remove('d-none');
-                editBtn.innerHTML = '<i class="fas fa-times"></i> Cancelar';
-                editBtn.classList.remove('btn-info');
-                editBtn.classList.add('btn-warning');
-            } else {
-                // Restaurar campos
-                formInputs.forEach(input => {
-                    input.setAttribute('readonly', true);
-                    input.value = originalValues[input.id];
-                });
-                updateBtn.classList.add('d-none');
-                editBtn.innerHTML = '<i class="fas fa-edit"></i> Editar';
-                editBtn.classList.remove('btn-warning');
-                editBtn.classList.add('btn-info');
-            }
-        });
-    });
-</script>
+<script src="{{ asset('js/perfil_edit.js') }}"></script>
 @endpush

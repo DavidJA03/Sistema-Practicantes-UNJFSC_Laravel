@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class PersonaController extends Controller
 {
-        /**
+    /**
      * Show the user profile
      *
      * @return \Illuminate\Http\JsonResponse
@@ -44,8 +44,7 @@ class PersonaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
-    {
+    public function edit($id){
         $persona = Persona::findOrFail($id);
         return response()->json($persona);
     }
@@ -83,8 +82,7 @@ class PersonaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
-    {
+    public function destroy($id){
         $persona = Persona::findOrFail($id);
         $persona->delete();
         
@@ -138,7 +136,7 @@ class PersonaController extends Controller
                 'celular' => $request->celular,
                 'sexo' => $request->sexo,
                 'correo_inst' => $request->correo_inst,
-                'departamento' => 'Lima Provincias',
+                'departamento' => null,
                 'provincia' => $request->provincia,
                 'distrito' => $request->distrito,
                 'usuario_id' => $user->id,
@@ -188,5 +186,55 @@ class PersonaController extends Controller
         return response()->json([
             'exists' => !is_null($persona)
         ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id){
+        $persona = Persona::findOrFail($id);
+
+        $validated = $request->validate([
+            'codigo' => 'nullable|string|size:10',
+            'nombres' => 'nullable|string|max:50',
+            'apellidos' => 'nullable|string|max:50',
+            'dni' => 'nullable|string|size:8|unique:personas,dni,' . $id,
+            'celular' => 'nullable|string|size:9',
+            'correo_inst' => 'nullable|email|max:150|unique:personas,correo_inst,' . $id,
+            'sexo' => 'in:M,F',
+            'provincia' => 'nullable|string|max:50',
+            'distrito' => 'nullable|string|max:50',
+        ]);
+
+        try {
+            $persona->update([
+                'codigo' => $request->codigo,
+                'nombres' => $request->nombres,
+                'apellidos' => $request->apellidos,
+                'dni' => $request->dni,
+                'celular' => $request->celular,
+                'sexo' => $request->sexo,
+                'correo_inst' => $request->correo_inst,
+                'provincia' => $request->provincia,
+                'distrito' => $request->distrito,
+                'date_update' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Persona actualizada exitosamente',
+                'data' => $persona
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar la persona: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

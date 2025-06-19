@@ -3,7 +3,9 @@
         <div class="modal-content w-75 mx-auto">
             <div class="modal-header">
                 <h5 class="modal-title">Carga Masiva de Usuarios</h5>
-                <button type="button" class="close" data-dismiss="modal">×</button>
+                <button type="button" class="close" onclick="$('#modalCargaMasiva').modal('hide')" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="formUsuarioMasivo" enctype="multipart/form-data">
@@ -40,8 +42,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnCargar">Cargar Usuarios</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="$('#modalCargaMasiva').modal('hide')">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnCargar">Cargar Usuarios</button>
             </div>
         </div>
     </div>

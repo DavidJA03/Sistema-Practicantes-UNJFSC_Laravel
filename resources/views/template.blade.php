@@ -14,8 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yFwcxhZhrM8WxhYMeIvYoL8eQyfxMErYfWZ5w2ZlzzrbnZ8+N1NBBdcGdR6YvYcK3OjDkYXw6PzZKef0fE9FZQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    
 
 </head>
 

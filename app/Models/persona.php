@@ -31,11 +31,16 @@ class Persona extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     public function rol()
     {
         return $this->belongsTo(TypeUser::class);
     }
+    public function matricula()
+    {
+        return $this->hasOne(Matricula::class);
+    }
+
 }

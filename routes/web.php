@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchivoController;
 use App\Http\Controllers\cerrarSesionController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\UsuarioMasivoController;
 use App\Http\Controllers\facultadController;
 use App\Http\Controllers\escuelaController;
+use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
@@ -78,3 +80,8 @@ Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name(
 Route::resource('semestre',semestreController::class);
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
 
+//Matricula 
+Route::get("/matricula", [matriculaController::class, "index" ])->name("matricula_index");
+
+Route::post('/subir/ficha', [ArchivoController::class, 'subirFicha'])->name('subir.ficha');
+Route::post('/subir/record', [ArchivoController::class, 'subirRecord'])->name('subir.record');

@@ -16,10 +16,23 @@ class escuelaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $escuelas = \App\Models\Escuela::with('facultad')->get(); // para que funcione $escuela->facultad->name
-    return view('escuela.index', compact('escuelas'));
+       $facultades = Facultade::all(); // Para llenar el select
+
+    $query = Escuela::with('facultad');
+
+    if ($request->has('facultad_id') && $request->facultad_id != '') {
+        $query->where('facultad_id', $request->facultad_id);
+    }
+
+    $escuelas = $query->orderBy('id', 'desc')->paginate(10);
+
+    if ($request->ajax()) {
+        return view('escuela.partials.table', compact('escuelas'))->render();
+    }
+
+    return view('escuela.index', compact('escuelas', 'facultades'));
     }
 
     /**

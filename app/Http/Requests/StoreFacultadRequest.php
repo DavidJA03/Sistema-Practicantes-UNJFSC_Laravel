@@ -28,7 +28,22 @@ class StoreFacultadRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255|unique:facultades,name'
         ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre de la facultad es obligatorio.',
+            'name.unique' => 'Esta facultad ya está registrada.',
+            'name.max' => 'El nombre no debe exceder los 255 caracteres.',
+        ];
+    }
+
+    // Este método fuerza a que se devuelva JSON si es AJAX
+    public function wantsJson()
+    {
+        return true;
     }
 }

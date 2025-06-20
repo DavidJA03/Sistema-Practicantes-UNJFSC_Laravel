@@ -1,11 +1,12 @@
 @extends('template')
 
-
 @section('content')
 
-@if(session('success'))
-    @push('scripts')
+{{-- Siempre cargar el JS --}}
+@push('scripts')
+    <script src="{{ asset('js/facultad.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(session('success'))
     <script>
         Swal.fire({
             toast: true,
@@ -17,88 +18,82 @@
             timerProgressBar: true,
         });
     </script>
-    @endpush
-@endif
+    @endif
+@endpush
 
+<div class="container mt-4">
+    <h1 class="text-center">LISTA DE FACULTADES</h1>
 
-
-<div class="container mt-4" align = center>
-    <h1>LISTA DE FACULTADES</h1>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <!-- BOTÓN NUEVA FACULTAD -->
-        <a href="{{ route('facultad.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Nueva Facultad
-        </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <input type="text" id="filtroFacultad" class="form-control w-25" placeholder="Buscar...">
+        <select class="form-select w-auto" id="perPageSelect">
+            <option value="5" selected>5 registros</option>
+            <option value="10">10 registros</option>
+            <option value="25">25 registros</option>
+            <option value="50">50 registros</option>
+        </select>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark text-center">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Nombre de la Facultad</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="text-center">
-                @foreach($facultades as $facultad)
-                <tr>
-                    <td class="text-center align-middle" style="width: 80px;">
-                        {{ $facultad->id }}
-                    </td>
-                    <td class="align-middle">
-                        {{ $facultad->name }}
-                    </td>
-                    <td class="text-center align-middle" style="width: 200px;">
-                        <div class="d-flex justify-content-center gap-2">
-                            {{-- Botón Editar --}}
-                            <form action="{{ route('facultad.edit', ['facultad' => $facultad->id]) }}" method="GET">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil-square"></i> Editar
-                                </button>
-                            </form>
+    <!-- BOTÓN NUEVA FACULTAD -->
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#nuevaFacultadModal">
+        <i class="bi bi-plus-circle"></i> Nueva Facultad
+    </button>
 
-                            {{-- Botón Eliminar --}}
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ $facultad->id }}">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                
-                @endforeach
-            </tbody>
-        </table>
-        @foreach($facultades as $facultad)
-<!-- Modal fuera del <table> -->
-<div class="modal fade" id="confirmModal-{{ $facultad->id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ $facultad->id }}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel-{{ $facultad->id }}">Mensaje de Confirmación</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                ¿Seguro que quieres eliminar esta Facultad?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <form action="{{ route('facultad.destroy', ['facultad' => $facultad->id]) }}" method="POST">
+    <!-- MODAL NUEVA FACULTAD -->
+    <div class="modal fade" id="nuevaFacultadModal" tabindex="-1" aria-labelledby="nuevaFacultadLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formNuevaFacultad">
                     @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nuevaFacultadLabel">Registrar Nueva Facultad</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nombre de la Facultad</label>
+                            <input type="text" name="name" class="form-control" id="name">
+                            <div class="text-danger" id="nameError"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
-@endforeach
 
+    <!-- Tabla -->
+    <div id="tablaFacultades">
+        @include('facultad.partials.table', ['facultades' => $facultades])
     </div>
-    
-</div>
-    
 
+    <!-- Modales de Confirmación -->
+    @foreach($facultades as $facultad)
+        <div class="modal fade" id="confirmModal-{{ $facultad->id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ $facultad->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel-{{ $facultad->id }}">Mensaje de Confirmación</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Seguro que quieres eliminar esta Facultad?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <form action="{{ route('facultad.destroy', ['facultad' => $facultad->id]) }}" method="POST" class="form-eliminar" data-id="{{ $facultad->id }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Confirmar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+</div>
 @endsection

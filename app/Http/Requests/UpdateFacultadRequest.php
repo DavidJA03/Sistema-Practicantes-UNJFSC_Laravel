@@ -27,4 +27,5 @@ class UpdateFacultadRequest extends FormRequest
             'name' => 'required|string|max:255|unique:facultades,name,' . $this->facultad->id,
         ];
     }
+    
 }

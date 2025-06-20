@@ -70,7 +70,6 @@ Route::delete('/personas/{id}', [PersonaController::class, 'destroy'])->middlewa
 //Bloque Academico
 Route::resource('facultad',facultadController::class);
 
-Route::get('/facultad/{facultad}/edit', [FacultadController::class, 'edit'])->name('facultad.edit');
 
 Route::resource('escuela',escuelaController::class);
 

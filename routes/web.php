@@ -79,7 +79,6 @@ Route::put('/personas/{id}', [PersonaController::class, 'update'])->middleware('
 //Bloque Academico
 Route::resource('facultad',facultadController::class);
 
-Route::get('/facultad/{facultad}/edit', [FacultadController::class, 'edit'])->name('facultad.edit');
 
 Route::resource('escuela',escuelaController::class);
 

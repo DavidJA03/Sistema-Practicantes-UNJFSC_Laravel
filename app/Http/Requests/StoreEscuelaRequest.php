@@ -31,4 +31,14 @@ class StoreEscuelaRequest extends FormRequest
             'facultad_id' => 'required|exists:facultades,id',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre de la escuela es obligatorio.',
+            'name.unique' => 'Ya existe una escuela con ese nombre.',
+            'facultad_id.required' => 'Debes seleccionar una facultad.',
+            'facultad_id.exists' => 'La facultad seleccionada no es válida.',
+        ];
+    }
 }

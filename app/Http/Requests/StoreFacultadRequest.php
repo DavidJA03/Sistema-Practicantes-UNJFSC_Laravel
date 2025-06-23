@@ -41,9 +41,4 @@ class StoreFacultadRequest extends FormRequest
         ];
     }
 
-    // Este método fuerza a que se devuelva JSON si es AJAX
-    public function wantsJson()
-    {
-        return true;
-    }
 }

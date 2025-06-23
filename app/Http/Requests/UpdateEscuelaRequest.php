@@ -28,4 +28,14 @@ class UpdateEscuelaRequest extends FormRequest
             'facultad_id' => 'required|exists:facultades,id',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre de la escuela es obligatorio.',
+            'name.unique' => 'Este nombre de escuela ya existe.',
+            'facultad_id.required' => 'Debe seleccionarse una facultad.',
+            'facultad_id.exists' => 'La facultad seleccionada no es válida.',
+        ];
+    }
 }

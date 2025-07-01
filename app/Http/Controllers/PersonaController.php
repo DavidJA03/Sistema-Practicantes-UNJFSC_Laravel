@@ -144,6 +144,7 @@ class PersonaController extends Controller
                 'date_create' => now(),
                 'date_update' => now(),
                 'estado' => 1,
+                'id_escuela' => null,
             ]);
 
             $persona->save();

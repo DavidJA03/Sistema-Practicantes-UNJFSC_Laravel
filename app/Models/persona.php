@@ -42,5 +42,24 @@ class Persona extends Model
     {
         return $this->hasOne(Matricula::class);
     }
+    public function gruposComoDocente()
+    {
+        return $this->hasMany(grupos_practica::class, 'id_docente');
+    }
+
+    public function gruposComoEstudiante()
+    {
+        return $this->hasMany(grupo_estudiante::class, 'id_estudiante');
+    }
+
+    public function gruposComoSupervisor()
+    {
+        return $this->hasMany(grupo_estudiante::class, 'id_supervisor');
+    }
+
+    public function escuela()
+    {
+        return $this->belongsTo(Escuela::class, 'id_escuela'); // o el campo que tengas como FK
+    }
 
 }

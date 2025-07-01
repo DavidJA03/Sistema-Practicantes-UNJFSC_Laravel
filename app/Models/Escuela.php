@@ -15,4 +15,11 @@ class Escuela extends Model
     
 
     protected $fillable = ['name', 'facultad_id', 'user_create', 'date_create'];
+    
+    public function escuela()
+    {
+        return $this->belongsTo(Escuela::class, 'id_escuela'); // o el nombre real de tu clave foránea
+    }
+
+
 }

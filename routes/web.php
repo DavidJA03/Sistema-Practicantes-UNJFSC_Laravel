@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchivoController;
+use App\Http\Controllers\asginacionController;
 use App\Http\Controllers\cerrarSesionController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
@@ -8,11 +9,13 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\UsuarioMasivoController;
 use App\Http\Controllers\facultadController;
 use App\Http\Controllers\escuelaController;
+use App\Http\Controllers\grupoEstudianteController;
 use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
 use App\Http\Requests\StoreSemestreRequest;
+use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticaController;
 use App\Http\Controllers\EmpresaController;
@@ -82,7 +85,6 @@ Route::put('/personas/{id}', [PersonaController::class, 'update'])->middleware('
 //Bloque Academico
 Route::resource('facultad',facultadController::class);
 
-Route::get('/facultad/{facultad}/edit', [FacultadController::class, 'edit'])->name('facultad.edit');
 
 Route::resource('escuela',escuelaController::class);
 
@@ -128,6 +130,17 @@ Route::get('/supervision', [PracticaController::class, 'lst_supervision'])->midd
 Route::get('/empresa', [EmpresaController::class, 'index'])->middleware('auth')->name('empresa');
 Route::get('/jefe_inmediato', [JefeInmediatoController::class, 'index'])->middleware('auth')->name('jefes');
 
-
 Route::post('/practicas/registroactividades', [PracticaController::class, 'storeRegistroActividades'])->middleware('auth')->name('store.registroactividades');
 Route::post('/practicas/controlmensualactividades', [PracticaController::class, 'storeControlMensualActividades'])->middleware('auth')->name('store.controlmensualactividades');
+
+Route::get("/asignacion", [asginacionController::class, "index" ])->name("asignacion_index");
+Route::post('/grupos-practica', [asginacionController::class, 'store'])->name('grupos.store');
+
+Route::POST('/grupos/{id}', [asginacionController::class, 'update'])->name('grupos.update');
+Route::POST('/grupos_delete/{id}', [asginacionController::class, 'eliminar'])->name('grupos.destroy');
+
+Route::get("/grupoEstudiante", [grupoEstudianteController::class, "index" ])->name("estudiante_index");
+
+Route::post('/asignarAlumnos', [grupoEstudianteController::class, 'asignarAlumnos'])->name('grupos.asignarAlumnos');
+
+Route::GET('/grupos/eliminar-asignado/{id}', [GrupoEstudianteController::class, 'destroy'])->name('grupos.eliminarAsignado');

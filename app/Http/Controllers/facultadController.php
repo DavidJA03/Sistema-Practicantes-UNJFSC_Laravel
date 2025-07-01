@@ -6,39 +6,27 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\UpdateFacultadRequest;
 use App\Models\Facultade;
-use App\Models\Escuela;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class facultadController extends Controller
+class FacultadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $facultades = Facultade::with('escuela')->get();
-        return view('facultad.index',['facultades' => $facultades]);
+        $query = Facultade::query();
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('facultad.create');
+    // Aseguramos que 'cantidad' sea numérico y válido
+    $perPage = in_array($request->cantidad, [5, 10, 25, 50]) ? $request->cantidad : 5;
+
+    $facultades = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    return view('facultad.index', compact('facultades'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreFacultadRequest $request)
     {
         try {
@@ -46,7 +34,7 @@ class facultadController extends Controller
 
             Facultade::create([
                 'name' => $request->name,
-                'user_create' => null, // o Auth::id() si tienes autenticación
+                'user_create' => null,
                 'date_create' => now(),
                 'estado' => true
             ]);
@@ -54,73 +42,42 @@ class facultadController extends Controller
             DB::commit();
 
             return redirect()->route('facultad.index')
-                ->with('success', 'Facultad registrada correctamente.');
+                             ->with('success', 'Facultad registrada correctamente.');
+
         } catch (Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Error al guardar la facultad.');
+            return back()->withErrors('Error al guardar la facultad: ' . $e->getMessage());
         }
-        
-
-        return redirect()->route('facultad.index')->with('success', 'Facultad registrada correctamente.');
-
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Facultade $facultad)
-    {
-        return view('facultad.edit',['facultad'=>$facultad]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(UpdateFacultadRequest $request, Facultade $facultad)
     {
         try {
-        $facultad->update([
-            'name' => $request->name,
-            'date_update' => now(),
-        ]);
+            $facultad->update([
+                'name' => $request->name,
+                'date_update' => now(),
+            ]);
 
-        return redirect()->route('facultad.index')
-                         ->with('success', 'Facultad actualizada correctamente.');
-    } catch (\Exception $e) {
-        return redirect()->back()
-                         ->with('error', 'Error al actualizar la facultad: ' . $e->getMessage());
-    }
+            return redirect()->route('facultad.index')
+                             ->with('success', 'Facultad actualizada correctamente.');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                             ->withErrors('Error al actualizar la facultad: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $facultad = Facultade::findOrFail($id);
-        $facultad->delete();
+        try {
+            $facultad = Facultade::findOrFail($id);
+            $facultad->delete();
 
-        return redirect()->route('facultad.index')->with('success', 'Facultad eliminada correctamente.');
+            return redirect()->route('facultad.index')
+                             ->with('success', 'Facultad eliminada correctamente.');
+
+        } catch (Exception $e) {
+            return back()->withErrors('Error al eliminar la facultad: ' . $e->getMessage());
+        }
     }
 }

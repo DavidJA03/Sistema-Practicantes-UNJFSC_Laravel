@@ -27,4 +27,14 @@ class UpdateFacultadRequest extends FormRequest
             'name' => 'required|string|max:255|unique:facultades,name,' . $this->facultad->id,
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre de la facultad es obligatorio.',
+            'name.unique' => 'Ya existe otra facultad con este nombre.',
+            'name.max' => 'El nombre no debe exceder los 255 caracteres.',
+        ];
+    }
+    
 }

@@ -8,125 +8,100 @@ use App\Http\Requests\UpdateEscuelaRequest;
 use App\Models\Facultade;
 use App\Models\Escuela;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
-class escuelaController extends Controller
+class EscuelaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $escuelas = \App\Models\Escuela::with('facultad')->get(); // para que funcione $escuela->facultad->name
-    return view('escuela.index', compact('escuelas'));
+        $facultades = Facultade::all();
+
+        $query = Escuela::with('facultad');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('facultad_id')) {
+            $query->where('facultad_id', $request->facultad_id);
+        }
+
+        $perPage = in_array($request->cantidad, [5, 10, 25, 50]) ? $request->cantidad : 5;
+
+        $escuelas = $query->orderBy('id', 'desc')->paginate($perPage);
+
+        if ($request->ajax()) {
+            return view('escuela.partials.table', compact('escuelas'))->render();
+        }
+
+        return view('escuela.index', compact('escuelas', 'facultades'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        $facultades = Facultade::all(); // Obtener todas las facultades
+        $facultades = Facultade::all();
         return view('escuela.create', compact('facultades'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreEscuelaRequest $request)
     {
         try {
-        DB::beginTransaction();
+            DB::beginTransaction();
 
-        Escuela::create([
-            'name' => $request->name,
-            'facultad_id' => $request->facultad_id,
-            'user_create' => null,
-            'date_create' => now(),
-            'estado' => true
-        ]);
+            Escuela::create([
+                'name' => $request->name,
+                'facultad_id' => $request->facultad_id,
+                'user_create' => null,
+                'date_create' => now(),
+                'estado' => true
+            ]);
 
-        DB::commit();
+            DB::commit();
 
-        return redirect()->route('escuela.index')->with('success', 'Escuela registrada correctamente.');
-    } catch (Exception $e) {
-        DB::rollBack();
-        return back()->withErrors('Error al registrar la escuela.');
-    }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+            return redirect()->route('escuela.index')->with('success', 'Escuela registrada correctamente.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors('Error al registrar la escuela.');
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        $escuela = Escuela::findOrFail($id); // Asegura que se obtiene o lanza error 404
-        $facultades = Facultade::all();      // Traer todas las facultades
+        $escuela = Escuela::findOrFail($id);
+        $facultades = Facultade::all();
 
         return view('escuela.edit', compact('escuela', 'facultades'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(UpdateEscuelaRequest $request, $id)
     {
-       try {
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        $escuela->update([
-            'name' => $request->name,
-            'facultad_id' => $request->facultad_id,
-            'date_update' => now()
-        ]);
+            $escuela = Escuela::findOrFail($id);
 
-        DB::commit();
+            $escuela->update([
+                'name' => $request->name,
+                'facultad_id' => $request->facultad_id,
+                'date_update' => now()
+            ]);
 
-        return redirect()->route('escuela.index')
-                         ->with('success', 'Escuela actualizada correctamente.');
-        } catch (\Exception $e) {
+            DB::commit();
+
+            return redirect()->route('escuela.index')
+                             ->with('success', 'Escuela actualizada correctamente.');
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()
-                            ->withErrors('Error al actualizar la escuela: ' . $e->getMessage());
+                             ->withErrors('Error al actualizar la escuela: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $escuela = Escuela::findOrFail($id);
         $escuela->delete();
 
         return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
-
     }
 }

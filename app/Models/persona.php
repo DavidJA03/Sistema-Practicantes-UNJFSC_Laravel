@@ -42,6 +42,11 @@ class Persona extends Model
     {
         return $this->hasOne(Matricula::class);
     }
+
+    public function practica()
+    {
+        return $this->hasOne(Practica::class, 'estudiante_id');
+
     public function gruposComoDocente()
     {
         return $this->hasMany(grupos_practica::class, 'id_docente');

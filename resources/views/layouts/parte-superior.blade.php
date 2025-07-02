@@ -91,6 +91,12 @@
                     <span>Semestre</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('evaluacion.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Evaluación</span></a>
+            </li>
+
             <hr class="sidebar-divider">
 
 

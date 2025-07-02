@@ -43,4 +43,10 @@ class Persona extends Model
         return $this->hasOne(Matricula::class);
     }
 
+    public function evaluacione()
+    {
+        return $this->hasOne(Evaluacione::class, 'alumno_id');
+    }
+
+
 }

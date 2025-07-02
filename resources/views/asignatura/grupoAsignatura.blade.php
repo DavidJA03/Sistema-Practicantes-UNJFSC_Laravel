@@ -1,0 +1,292 @@
+@extends('template')
+@section('title', 'Listado de Supervisores')
+
+@push('css')
+@endpush
+
+@section('content')
+<style>
+  .tabla-wrapper {
+    max-height: 260px;
+    overflow: auto;
+  }
+  .tabla-wrapper table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+  }
+  .tabla-wrapper thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary text-uppercase">Lista de Supervisores</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Docente</th>
+              <th>Semestre</th>
+              <th>Escuela</th>
+              <th>Nombre de grupo</th>
+              <th>Agregar alumno</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($grupos_practica as $index => $grupo)
+            <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $grupo->docente->nombres }} {{ $grupo->docente->apellidos }}</td>
+              <td>{{ $grupo->semestre->codigo }}</td>
+              <td>{{ $grupo->escuela->name }}</td>
+              <td>{{ $grupo->nombre_grupo }}</td>
+              <td>
+                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalEditar{{ $grupo->id }}">
+                  Asignar alumno
+                </button>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalVer{{ $grupo->id }}">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALES POR CADA GRUPO -->
+@foreach($grupos_practica as $grupo)
+<!-- Modal Asignar alumnos -->
+<div class="modal fade" id="modalEditar{{ $grupo->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content border-0 shadow-lg rounded-lg">
+      <form method="POST" action="{{ route('grupos.asignarAlumnos') }}">
+        @csrf
+        <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title"><i class="fas fa-user-plus mr-2"></i> Asignar Alumnos al Grupo: <strong>{{ $grupo->nombre_grupo }}</strong></h5>
+          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="form-group">
+            <label class="font-weight-bold">Docente Asignado</label>
+            <select class="form-control custom-select" name="id_supervisor">
+              @foreach($docentes as $docente)
+              <option value="{{ $docente->id }}" {{ $docente->id == $grupo->id_docente ? 'selected' : '' }}>
+                {{ $docente->nombres }} {{ $docente->apellidos }}
+              </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="card-header my-1">
+              <div class="row align-items-center">
+                <div class="col-md-6">
+                  <h6 class="m-0 font-weight-bold text-primary text-uppercase">Lista de Alumnos</h6>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control buscar-estudiante" data-grupo="{{ $grupo->id }}" placeholder="🔍 Buscar...">
+                </div>
+              </div>
+            </div>
+            <div class="tabla-wrapper border rounded">
+              <table class="table table-hover table-sm mb-0 tabla-estudiantes" data-grupo="{{ $grupo->id }}">
+                <thead class="thead-light">
+                  <tr>
+                    <th class="text-center"><input type="checkbox" class="check-all" data-grupo="{{ $grupo->id }}"></th>
+                    <th>Nombre</th>
+                    <th>Código</th>
+                    <th>Escuela</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @php
+                  $estudiantesAsignados = \App\Models\grupo_estudiante::where('id_grupo_practica', $grupo->id)->pluck('id_estudiante')->toArray();
+                  $estudiantesGrupo = \App\Models\Persona::with('escuela')
+                      ->where('rol_id', 4)
+                      ->where('id_escuela', $grupo->id_escuela)
+                      ->whereNotIn('id', $estudiantesAsignados)
+                      ->get();
+                  @endphp
+                  @foreach($estudiantesGrupo as $estudiante)
+                  <tr>
+                    <td class="text-center"><input type="checkbox" name="estudiantes[]" value="{{ $estudiante->id }}" class="check-estudiante" data-grupo="{{ $grupo->id }}"></td>
+                    <td>{{ $estudiante->nombres }} {{ $estudiante->apellidos }}</td>
+                    <td>{{ $estudiante->codigo }}</td>
+                    <td>{{ $estudiante->escuela->name ?? 'Sin escuela' }}</td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer py-1">
+          <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Asignar Alumnos</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ver grupo -->
+<div class="modal fade" id="modalVer{{ $grupo->id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content border-0 shadow rounded">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Detalles del Grupo</h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nombre del grupo:</strong> {{ $grupo->nombre_grupo }}</p>
+        <p><strong>Docente:</strong> {{ $grupo->docente->nombres }} {{ $grupo->docente->apellidos }}</p>
+        <p><strong>Semestre:</strong> {{ $grupo->semestre->codigo }}</p>
+        <p><strong>Escuela:</strong> {{ $grupo->escuela->name }}</p>
+        <div class="card-header my-1">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h6 class="m-0 font-weight-bold text-primary text-uppercase">Estudiantes asignados</h6>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control buscar-estudiante-asignado" data-grupo="{{ $grupo->id }}" placeholder="🔍 Buscar...">
+            </div>
+          </div>
+        </div>
+        @php
+        $estudiantesAsignados = \App\Models\grupo_estudiante::with('estudiante')->where('id_grupo_practica', $grupo->id)->get();
+        @endphp
+        @if($estudiantesAsignados->isEmpty())
+          <p class="text-muted">No hay estudiantes asignados a este grupo.</p>
+        @else
+          <div class="tabla-wrapper table-responsive">
+            <table class="table table-bordered table-sm tabla-estudiantes-asignados" id="tablaAsignados{{ $grupo->id }}">
+              <thead class="thead-light">
+                <tr>
+                  <th>N°</th>
+                  <th>Nombre</th>
+                  <th>Código</th>
+                  <th>Escuela</th>
+                  <th>Supervisor</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($estudiantesAsignados as $index => $registro)
+                <tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td>{{ $registro->estudiante->nombres }} {{ $registro->estudiante->apellidos }}</td>
+                  <td>{{ $registro->estudiante->codigo }}</td>
+                  <td>{{ $registro->estudiante->escuela->name ?? 'Sin escuela' }}</td>
+                  <td>{{ $registro->supervisor?->nombres ?? 'Sin supervisor' }}</td>
+                  <td>
+                    <button type="button" class="btn btn-danger btn-sm abrir-eliminar"
+                        data-nombre="{{ $registro->estudiante->nombres }} {{ $registro->estudiante->apellidos }}"
+                        data-grupo="{{ $grupo->nombre_grupo }}"
+                        data-url="{{ route('grupos.eliminarAsignado', $registro->id) }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+<!-- MODAL ELIMINAR GLOBAL -->
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 2000;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content border-0 shadow rounded">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="fas fa-exclamation-triangle"></i> Confirmar eliminación
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p id="textoModalEliminar"></p>
+      </div>
+      <div class="modal-footer">
+        <form id="formEliminarAsignado" method="GET">
+          @csrf
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Eliminar
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#modalConfirmarEliminar').modal('hide')">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+
+  document.querySelectorAll('.abrir-eliminar').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const nombre = btn.dataset.nombre;
+    const grupo = btn.dataset.grupo;
+    const url = btn.dataset.url;
+    abrirModalEliminar(nombre, grupo, url);
+    });
+  });
+
+function abrirModalEliminar(nombre, grupo, url){
+    $('.modal.show').modal('hide');
+    document.getElementById('textoModalEliminar').innerText = `¿Estás seguro de eliminar a ${nombre} del grupo ${grupo}?`;
+    document.getElementById('formEliminarAsignado').action = url;
+    setTimeout(() => $('#modalConfirmarEliminar').modal('show'), 300);
+}
+$('#modalConfirmarEliminar').on('hidden.bs.modal', () => $('.modal-backdrop').remove());
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.buscar-estudiante').forEach(input =>
+        input.addEventListener('keyup', function() {
+            const grupoId = this.dataset.grupo;
+            const filtro = this.value.toLowerCase();
+            document.querySelectorAll(`.tabla-estudiantes[data-grupo="${grupoId}"] tbody tr`)
+                .forEach(fila => fila.style.display = fila.innerText.toLowerCase().includes(filtro) ? "" : "none");
+        })
+    );
+    document.querySelectorAll('.buscar-estudiante-asignado').forEach(input =>
+        input.addEventListener('keyup', function() {
+            const tabla = document.querySelector(`#tablaAsignados${this.dataset.grupo}`);
+            if (!tabla) return;
+            tabla.querySelectorAll('tbody tr')
+                .forEach(fila => fila.style.display = fila.innerText.toLowerCase().includes(this.value.toLowerCase()) ? "" : "none");
+        })
+    );
+    document.querySelectorAll('.check-all').forEach(checkbox =>
+        checkbox.addEventListener('change', function() {
+            document.querySelectorAll(`.check-estudiante[data-grupo="${this.dataset.grupo}"]`)
+                .forEach(cb => cb.checked = this.checked);
+        })
+    );
+});
+</script>
+@endsection
+
+@push('js')
+@endpush

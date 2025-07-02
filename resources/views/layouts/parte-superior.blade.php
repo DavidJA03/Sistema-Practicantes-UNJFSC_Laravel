@@ -99,6 +99,7 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Semestre</span></a>
             </li>
+
             <hr class="sidebar-divider">
 
             <div class="sidebar-heading">

@@ -12,9 +12,11 @@ use App\Http\Controllers\escuelaController;
 use App\Http\Controllers\grupoEstudianteController;
 use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
+use App\Http\Controllers\evaluacionController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
 use App\Http\Requests\StoreSemestreRequest;
+
 use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticaController;
@@ -88,11 +90,15 @@ Route::resource('facultad',facultadController::class);
 
 Route::resource('escuela',escuelaController::class);
 
-Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name('escuela.edit');
 
 //Semestre
 Route::resource('semestre',semestreController::class);
+
+
+
+
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
+
 
 //Matricula 
 Route::get("/matricula", [matriculaController::class, "index" ])->middleware('auth')->name("matricula_index");

@@ -15,7 +15,6 @@
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <!--<i class="fas fa-laugh-wink"></i>-->
                 </div>
                 <div class="sidebar-brand-text mx-3">UNJFSC</sup></div>
             </a>
@@ -28,35 +27,15 @@
                     <span>Dashboard</span></a>
             </li>
 
-            <hr class="sidebar-divider">
 
-            <div class="sidebar-heading">
-                Interfaces
-            </div>
-
+        
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('perfil') }}">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Perfil</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('matricula_index') }}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Matricula</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Asignactura</span>
-                </a>
-                <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('asignacion_index') }}">Grupo Practica</a>
-                        <a class="collapse-item" href="{{ route('estudiante_index') }}">Grupo Estudiante</a>
-                    </div>
-                </div>
-            </li>
+
+        @if(auth()->user()->persona?->rol_id == 1)
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
@@ -74,15 +53,19 @@
                     </div>
                 </div>
             </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Novedad
-            </div>
-
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Asignactura</span>
+                </a>
+                <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('asignacion_index') }}">Grupo Practica</a>
+                        <a class="collapse-item" href="{{ route('estudiante_index') }}">Grupo Estudiante</a>
+                    </div>
+                </div>
+            </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#bloqueacademico"
                     aria-expanded="true" aria-controls="bloqueacademico">
@@ -97,15 +80,31 @@
                     </div>
                 </div>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('semestre.index') }}">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Semestre</span></a>
             </li>
+        @endif
 
+        @if(auth()->user()->persona?->rol_id == 3)
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('Validacion.Matricula') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Validacion de Matricula</span></a>
+            </li>
+        @endif
+
+        @if(auth()->user()->persona?->rol_id == 4)
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('matricula_index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Matricula</span></a>
+            </li>
+        @endif
+
+            <!-- Divider -->
             <hr class="sidebar-divider">
-
 
             <div class="sidebar-heading">
                 Addons
@@ -127,21 +126,7 @@
             </li>
             <hr class="sidebar-divider">
 
-            <div class="sidebar-heading">
-                Addons
-            </div>
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li>
-
+            
 
             <hr class="sidebar-divider d-none d-md-block">
 

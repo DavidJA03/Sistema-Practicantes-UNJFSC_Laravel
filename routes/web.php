@@ -12,6 +12,7 @@ use App\Http\Controllers\escuelaController;
 use App\Http\Controllers\grupoEstudianteController;
 use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
+use App\Http\Controllers\validacionMatriculaController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
 use App\Http\Requests\StoreSemestreRequest;
@@ -112,3 +113,7 @@ Route::post('/asignarAlumnos', [grupoEstudianteController::class, 'asignarAlumno
 
 Route::GET('/grupos/eliminar-asignado/{id}', [GrupoEstudianteController::class, 'destroy'])->name('grupos.eliminarAsignado');
 
+Route::get('/vMatricula', [validacionMatriculaController::class, 'Vmatricula'])->name('Validacion.Matricula');
+
+Route::post('/matricula/actualizar-ficha/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoFicha'])->name('actualizar.estado.ficha');
+Route::post('/matricula/actualizar-record/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoRecord'])->name('actualizar.estado.record');

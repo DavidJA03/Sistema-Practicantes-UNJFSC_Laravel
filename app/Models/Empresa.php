@@ -8,7 +8,7 @@ use App\Models\Practica;
 
 class Empresa extends Model
 {
-    protected $table = 'empresa';
+    protected $table = 'empresas';
 
     protected $fillable = [
         'practicas_id',
@@ -24,6 +24,6 @@ class Empresa extends Model
 
     public function practicas()
     {
-        return $this->belongsTo(Practica::class, 'practicas_id');
+        return $this->belongsTo(Practica::class, 'practicas_id','id');
     }
 }

@@ -34,11 +34,11 @@ class Practica extends Model
     }
     public function empresa()
     {
-        return $this->hasOne(Empresa::class, 'practicas_id');
+        return $this->hasOne(Empresa::class, 'practicas_id','id');
     }
     public function jefeInmediato()
     {
-        return $this->hasOne(JefeInmediato::class, 'practicas_id');
+        return $this->hasOne(JefeInmediato::class, 'practicas_id','id');
     }
 
 }

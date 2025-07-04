@@ -23,7 +23,7 @@
 
                     @if(isset($matricula) && $matricula->ruta_ficha)
                         <div class="mt-3 text-center">
-                            <p><strong>Estado:</strong>
+                            <p><strong>Estado:</strong> 
                                 <span class="badge bg-{{ $matricula->estado_ficha == 'completo' ? 'success' : 'info' }}">
                                     {{ ucfirst($matricula->estado_ficha) }}
                                 </span>

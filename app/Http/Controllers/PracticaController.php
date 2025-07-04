@@ -24,22 +24,66 @@ class PracticaController extends Controller
             return view('practicas.supervision', compact('personas'));
     }
 
-    public function proceso(Request $request){
+    public function proceso(Request $request) {
         $id = $request->id;
         $nuevoEstado = $request->estado; // "aprobado" o "rechazado"
         
         $practica = Practica::findOrFail($id);
-    
+        
+        // Verificar condiciones según el estado actual
+        $cumpleCondiciones = false;
+        
+        switch ($practica->estado) {
+            case 1:
+                $cumpleCondiciones = $practica->empresa()->exists() && $practica->jefeInmediato()->exists();
+                break;
+            case 2:
+                if ($practica->tipo == 'desarrollo') {
+                    $cumpleCondiciones = !is_null($practica->ruta_fut) && 
+                                        !is_null($practica->ruta_carta_presentacion);
+                } elseif ($practica->tipo == 'convalidacion') {
+                    $cumpleCondiciones = !is_null($practica->ruta_fut) && 
+                                         !is_null($practica->ruta_carta_aceptacion);
+                }
+                break;
+            case 3:
+                if ($practica->tipo == 'desarrollo') {
+                    $cumpleCondiciones = !is_null($practica->ruta_carta_aceptacion) && 
+                                         !is_null($practica->ruta_plan_actividades);
+                } elseif ($practica->tipo == 'convalidacion') {
+                    $cumpleCondiciones = !is_null($practica->ruta_registro_actividades) && 
+                                         !is_null($practica->ruta_control_actividades);
+                }
+                break;
+            case 4:
+                $cumpleCondiciones = !is_null($practica->ruta_constancia_cumplimiento) && !is_null($practica->ruta_informe_final);
+                break;
+            default:
+                $cumpleCondiciones = false;
+        }
+        
+        if (!$cumpleCondiciones && $nuevoEstado === 'aprobado') {
+            $mensajeError = 'No se puede aprobar: ';
+            if ($practica->estado == 1) {
+                $mensajeError .= 'debe registrar la empresa y jefe inmediato primero.';
+            } else {
+                $mensajeError .= 'faltan documentos requeridos para este estado.';
+            }
+            return back()->with('error', $mensajeError);
+        }
+        
+        
         if ($nuevoEstado === 'aprobado') {
             $practica->estado += 1;
         } elseif ($nuevoEstado === 'rechazado') {
-            $practica->estado = 0; // o cualquier otro valor que represente "rechazado"
+            //$practica->estado = 0; // o cualquier otro valor que represente "rechazado"
         }
-    
+        
         $practica->save();
-    
+        
         return back()->with('success', 'Estado actualizado correctamente.');
     }
+    
 
     public function storeDesarrollo(Request $request){
         $user = Auth::user();

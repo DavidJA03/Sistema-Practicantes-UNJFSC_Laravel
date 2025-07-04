@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateFacultadRequest extends FormRequest
+class UpdateEvaluacionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +24,8 @@ class UpdateFacultadRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:facultades,name,' . $this->facultad->id,
+            'anexo_7'    => 'nullable|file|mimes:pdf|max:2048',
+            'anexo_8'    => 'nullable|file|mimes:pdf|max:2048',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'name.required' => 'El nombre de la facultad es obligatorio.',
-            'name.unique' => 'Ya existe otra facultad con este nombre.',
-            'name.max' => 'El nombre no debe exceder los 255 caracteres.',
-        ];
-    }
-    
 }

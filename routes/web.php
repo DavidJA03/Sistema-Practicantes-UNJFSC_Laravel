@@ -13,11 +13,16 @@ use App\Http\Controllers\grupoEstudianteController;
 use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
 use App\Http\Controllers\validacionMatriculaController;
+use App\Http\Controllers\evaluacionController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
 use App\Http\Requests\StoreSemestreRequest;
+
 use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PracticaController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\JefeInmediatoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,20 +91,54 @@ Route::resource('facultad',facultadController::class);
 
 Route::resource('escuela',escuelaController::class);
 
-Route::get('/escuela/{escuela}/edit', [EscuelaController::class, 'edit'])->name('escuela.edit');
 
 //Semestre
 Route::resource('semestre',semestreController::class);
 
+
+
+
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
+
 
 //Matricula 
-Route::get("/matricula", [matriculaController::class, "index" ])->name("matricula_index");
+Route::get("/matricula", [matriculaController::class, "index" ])->middleware('auth')->name("matricula_index");
+Route::post('/subir/ficha', [ArchivoController::class, 'subirFicha'])->middleware('auth')->name('subir.ficha');
+Route::post('/subir/record', [ArchivoController::class, 'subirRecord'])->middleware('auth')->name('subir.record');
 
-Route::post('/subir/ficha', [ArchivoController::class, 'subirFicha'])->name('subir.ficha');
-Route::post('/subir/record', [ArchivoController::class, 'subirRecord'])->name('subir.record');
+Route::get('/practicas/desarrollo', [PracticaController::class, 'desarrollo'])->middleware('auth')->name('desarrollo');
+Route::post('/practicas/desarrollo', [PracticaController::class, 'storeDesarrollo'])->middleware('auth')->name('desarrollo');
 
-Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
+Route::get('/practicas/convalidacion', [PracticaController::class, 'convalidacion'])->middleware('auth')->name('convalidacion');
+
+// Rutas para empresas
+Route::post('/empresas/{practicas_id}', [EmpresaController::class, 'store'])->name('empresas.store');
+
+Route::post('/jefe_inmediato/{practicas_id}', [JefeInmediatoController::class, 'store'])->name('jefe_inmediato.store');
+
+Route::post('/practicas/fut', [PracticaController::class, 'storeFut'])->middleware('auth')->name('store.fut');
+
+Route::post('/practicas/cartapresentacion', [PracticaController::class, 'storeCartaPresentacion'])->middleware('auth')->name('store.cartapresentacion');
+
+Route::post('/practicas/cartaaceptacion', [PracticaController::class, 'storeCartaAceptacion'])->middleware('auth')->name('store.cartaaceptacion');
+
+Route::post('/practicas/planactividades', [PracticaController::class, 'storePlanActividadesPPP'])->middleware('auth')->name('store.planactividadesppp');
+
+Route::post('/practicas/constanciacumplimiento', [PracticaController::class, 'storeConstanciaCumplimiento'])->middleware('auth')->name('store.constanciacumplimiento');
+
+Route::post('/practicas/informefinalppp', [PracticaController::class, 'storeInformeFinalPPP'])->middleware('auth')->name('store.informefinalppp');
+
+Route::get('/practica', function () {
+    return view('practicas.practica');
+})->middleware('auth')->name('practica');
+
+Route::get('/supervision', [PracticaController::class, 'lst_supervision'])->middleware('auth')->name('supervision');
+
+Route::get('/empresa', [EmpresaController::class, 'index'])->middleware('auth')->name('empresa');
+Route::get('/jefe_inmediato', [JefeInmediatoController::class, 'index'])->middleware('auth')->name('jefes');
+
+Route::post('/practicas/registroactividades', [PracticaController::class, 'storeRegistroActividades'])->middleware('auth')->name('store.registroactividades');
+Route::post('/practicas/controlmensualactividades', [PracticaController::class, 'storeControlMensualActividades'])->middleware('auth')->name('store.controlmensualactividades');
 
 Route::get("/asignacion", [asginacionController::class, "index" ])->name("asignacion_index");
 Route::post('/grupos-practica', [asginacionController::class, 'store'])->name('grupos.store');
@@ -117,3 +156,5 @@ Route::get('/vMatricula', [validacionMatriculaController::class, 'Vmatricula'])-
 
 Route::post('/matricula/actualizar-ficha/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoFicha'])->name('actualizar.estado.ficha');
 Route::post('/matricula/actualizar-record/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoRecord'])->name('actualizar.estado.record');
+Route::post('/practicas/proceso', [PracticaController::class, 'proceso'])->middleware('auth')->name('proceso');
+

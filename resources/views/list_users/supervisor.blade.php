@@ -11,7 +11,7 @@
             <h6 class="m-0 font-weight-bold text-primary text-uppercase">Lista de Supervisores</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>

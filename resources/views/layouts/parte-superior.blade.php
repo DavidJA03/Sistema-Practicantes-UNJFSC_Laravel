@@ -15,8 +15,12 @@
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('panel') }}">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-university"></i>
+
                 </div>
-                <div class="sidebar-brand-text mx-3">UNJFSC</sup></div>
+                <div class="sidebar-brand-text">UNJFSC</div>
             </a>
 
             <hr class="sidebar-divider my-0">
@@ -34,8 +38,21 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Perfil</span></a>
             </li>
-
         @if(auth()->user()->persona?->rol_id == 1)
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Asignactura</span>
+                </a>
+                <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('asignacion_index') }}">Grupo Practica</a>
+                        <a class="collapse-item" href="{{ route('estudiante_index') }}">Grupo Estudiante</a>
+                    </div>
+                </div>
+            </li>
+
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
@@ -94,7 +111,6 @@
                     <span>Validacion de Matricula</span></a>
             </li>
         @endif
-
         @if(auth()->user()->persona?->rol_id == 4)
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('matricula_index') }}">
@@ -105,28 +121,62 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
+            <div class="sidebar-heading">
+                Addons
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('matricula_index') }}">
+                    <i class="fas fa-address-card"></i>
+                    <span>Matricula</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
 
             <div class="sidebar-heading">
                 Addons
             </div>
-
+            @if ($practica == 'desarrollo')
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
+                <a class="nav-link" href="{{ route('desarrollo') }}">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Practicas</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Proceso</h6>
-                        <a class="collapse-item" href="login.html">Desarrollo</a>
-                        <a class="collapse-item" href="register.html">Convalidacion</a>
-                    </div>
-                </div>
+                    <span>Desarrollo</span></a>
+            </li>
+            @elseif ($practica == 'convalidacion')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('convalidacion') }}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Convalidacion</span></a>
+            </li>
+            @else
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('practica') }}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Practicas</span></a>
+            </li>
+            @endif
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('supervision') }}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Supervision - Practicas</span></a>
             </li>
             <hr class="sidebar-divider">
-
             
+            <div class="sidebar-heading">
+                Addons
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('empresa') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Empresa</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('jefes') }}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Jefes</span></a>
+            </li>
+
+
 
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -186,11 +236,16 @@
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">David JA</span>
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                            </a>
+                        <a class="nav-link dropdown-toggle d-flex justify-content-between align-items-center" href="#" id="userDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            
+                            <div class="text-left">
+                                <div class="text-gray-600 small font-weight-bold">{{ $nombre }} {{ $apellido }}</div>
+                                <div class="text-gray-600 small">{{ $codigo }}</div>
+                            </div>
+                            <i class="fas fa-user fa-lg text-gray-600 ml-3"></i> 
+                        </a>
+
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <!--<a class="dropdown-item" href="#">

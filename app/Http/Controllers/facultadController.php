@@ -15,23 +15,16 @@ class FacultadController extends Controller
     {
         $query = Facultade::query();
 
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        $facultades = $query->orderBy('id', 'desc')
-                            ->paginate($request->get('cantidad', 5));
-
-        if ($request->ajax()) {
-            return view('facultad.partials.table', compact('facultades'))->render();
-        }
-
-        return view('facultad.index', compact('facultades'));
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
 
-    public function create()
-    {
-        return view('facultad.create');
+    // Aseguramos que 'cantidad' sea numérico y válido
+    $perPage = in_array($request->cantidad, [5, 10, 25, 50]) ? $request->cantidad : 5;
+
+    $facultades = $query->orderBy('id', 'desc')->paginate($perPage);
+
+    return view('facultad.index', compact('facultades'));
     }
 
     public function store(StoreFacultadRequest $request)
@@ -39,7 +32,7 @@ class FacultadController extends Controller
         try {
             DB::beginTransaction();
 
-            $facultad = Facultade::create([
+            Facultade::create([
                 'name' => $request->name,
                 'user_create' => null,
                 'date_create' => now(),
@@ -48,33 +41,13 @@ class FacultadController extends Controller
 
             DB::commit();
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'message' => 'Facultad registrada correctamente.',
-                    'facultad' => $facultad
-                ]);
-            }
-
             return redirect()->route('facultad.index')
                              ->with('success', 'Facultad registrada correctamente.');
 
         } catch (Exception $e) {
             DB::rollBack();
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'message' => 'Error al registrar facultad.',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-
-            return back()->withErrors('Error al guardar la facultad.');
+            return back()->withErrors('Error al guardar la facultad: ' . $e->getMessage());
         }
-    }
-
-    public function edit(Facultade $facultad)
-    {
-        return view('facultad.edit', compact('facultad'));
     }
 
     public function update(UpdateFacultadRequest $request, Facultade $facultad)
@@ -85,25 +58,12 @@ class FacultadController extends Controller
                 'date_update' => now(),
             ]);
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'message' => 'Facultad actualizada correctamente.'
-                ]);
-            }
-
             return redirect()->route('facultad.index')
                              ->with('success', 'Facultad actualizada correctamente.');
 
         } catch (Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'message' => 'Error al actualizar la facultad.',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-
             return redirect()->back()
-                             ->with('error', 'Error al actualizar la facultad: ' . $e->getMessage());
+                             ->withErrors('Error al actualizar la facultad: ' . $e->getMessage());
         }
     }
 
@@ -113,36 +73,11 @@ class FacultadController extends Controller
             $facultad = Facultade::findOrFail($id);
             $facultad->delete();
 
-            if (request()->ajax()) {
-                return response()->json([
-                    'message' => 'Facultad eliminada correctamente.'
-                ]);
-            }
-
             return redirect()->route('facultad.index')
                              ->with('success', 'Facultad eliminada correctamente.');
+
         } catch (Exception $e) {
-            if (request()->ajax()) {
-                return response()->json([
-                    'message' => 'Error al eliminar facultad.',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-
-            return back()->withErrors('Error al eliminar facultad.');
+            return back()->withErrors('Error al eliminar la facultad: ' . $e->getMessage());
         }
-    }
-
-    // Opcional si lo necesitas por separado
-    public function ajaxIndex(Request $request)
-    {
-        $search = $request->input('search');
-        $perPage = $request->input('perPage', 10);
-
-        $facultades = Facultade::when($search, function ($query, $search) {
-            return $query->where('name', 'like', '%' . $search . '%');
-        })->paginate($perPage);
-
-        return view('facultad.partials.table', compact('facultades'))->render();
     }
 }

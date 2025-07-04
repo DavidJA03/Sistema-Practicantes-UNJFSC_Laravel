@@ -48,7 +48,9 @@
                                     data-bs-toggle="modal" 
                                     data-bs-target="#modalProceso"
                                     data-id="{{ $persona->id }}"
-                                    data-estado="{{ $persona->practica->id }}"
+                                    data-id_practica="{{ $persona->practica->id }}"
+                                    data-tipo_practica="{{ $persona->practica->tipo_practica }}"
+                                    data-estado="{{ $persona->practica->estado }}"
                                     data-nombre="{{ $persona->practica->empresa->nombre ?? 'No registrado' }}"
                                     data-ruc="{{ $persona->practica->empresa->ruc ?? 'No registrado' }}"
                                     data-razon_social="{{ $persona->practica->empresa->razon_social ?? 'No registrado' }}"
@@ -69,6 +71,8 @@
                                     data-ruta_constancia_cumplimiento="{{ $persona->practica->ruta_constancia_cumplimiento ?? 'No registrado' }}"
                                     data-ruta_carta_aceptacion="{{ $persona->practica->ruta_carta_aceptacion ?? 'No registrado' }}"
                                     data-ruta_carta_presentacion="{{ $persona->practica->ruta_carta_presentacion ?? 'No registrado' }}"
+                                    data-ruta_registro_actividades="{{ $persona->practica->ruta_registro_actividades ?? 'No registrado' }}"
+                                    data-ruta_control_mensual_actividades="{{ $persona->practica->ruta_control_mensual_actividades ?? 'No registrado' }}"
                                 >
                                     Proceso
                                 </button>
@@ -102,30 +106,22 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <div class="btn btn-mostrar btn-info btn-sm w-100" id="btn1">
-                                Etapa 1
-                            </div>
+                            <button class="btn btn-etapa btn-info btn-sm w-100" id="btn1" data-estado="1">Etapa 1</button>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <div class="btn btn-mostrar btn-info btn-sm w-100" id="btn2">
-                                Etapa 2
-                            </div>
+                            <button class="btn btn-etapa btn-info btn-sm w-100" id="btn2" data-estado="2">Etapa 2</button>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <div class="btn btn-mostrar btn-info btn-sm w-100" id="btn3">
-                                Etapa 3
-                            </div>
+                            <button class="btn btn-etapa btn-info btn-sm w-100" id="btn3" data-estado="3">Etapa 3</button>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <div class="btn btn-mostrar btn-info btn-sm w-100" id="btn4">
-                                Etapa 4
-                            </div>
+                            <button class="btn btn-etapa btn-info btn-sm w-100" id="btn4" data-estado="4">Etapa 4</button>
                         </div>
                     </div>
                 </div>
@@ -151,27 +147,6 @@
                 <div id="cuartaetapa">
                     @include('practicas.supe_E4')
                 </div>
-                <form id="formProceso" action="{{ route('proceso') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="id" id="id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="estado" class="form-label">Estado</label>
-                                <select class="form-select" id="estado" name="estado" required>
-                                    <option value="" selected disabled>Seleccione un estado</option>
-                                    <option value="rechazado">Rechazado</option>
-                                    <option value="aprobado">Aprobado</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3 d-flex align-items-center h-100" style="height: 100%;">
-                                <button type="submit" form="formProceso" class="btn btn-primary btn-sm">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
@@ -183,150 +158,5 @@
 @endsection
 
 @push('js')
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const etapa1 = document.getElementById("etapa1");
-        const etapa2 = document.getElementById("etapa2");
-        const etapa3 = document.getElementById("etapa3");
-
-        const btnEtapa2 = document.getElementById("btnEtapa2");
-        const btnEtapa3 = document.getElementById("btnEtapa3");
-
-        // Mostrar Etapa 2
-        btnEtapa2?.addEventListener("click", function () {
-            etapa1.style.display = "none";
-            etapa2.style.display = "block";
-            etapa3.style.display = "none";
-        });
-
-        // Mostrar Etapa 3
-        btnEtapa3?.addEventListener("click", function () {
-            etapa1.style.display = "none";
-            etapa2.style.display = "none";
-            etapa3.style.display = "block";
-        });
-
-        // Regresar a Etapa 1
-        document.querySelectorAll(".btn-regresar-etapa1").forEach(btn => {
-            btn.addEventListener("click", function () {
-                etapa1.style.display = "block";
-                etapa2.style.display = "none";
-                etapa3.style.display = "none";
-            });
-        });
-
-        // Regresar a Etapa 2
-        document.querySelectorAll(".btn-regresar-etapa2").forEach(btn => {
-            btn.addEventListener("click", function () {
-                etapa1.style.display = "block";
-                etapa2.style.display = "none";
-                etapa3.style.display = "none";
-            });
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const modalProceso = document.getElementById('modalProceso');
-
-        modalProceso.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-
-            const estado = button.getAttribute('data-estado');
-
-            const nombre = button.getAttribute('data-nombre');
-            const ruc = button.getAttribute('data-ruc');
-            const razon_social = button.getAttribute('data-razon_social');
-            const direccion = button.getAttribute('data-direccion');
-            const telefono = button.getAttribute('data-telefono');
-            const email = button.getAttribute('data-email');
-            const sitio_web = button.getAttribute('data-sitio_web');
-
-            const jefe_inmediato = button.getAttribute('data-jefe_inmediato');
-            const area_jefe = button.getAttribute('data-area-jefe');
-            const cargo_jefe = button.getAttribute('data-cargo-jefe');
-            const dni_jefe = button.getAttribute('data-dni-jefe');
-            const web_jefe = button.getAttribute('data-web-jefe');
-            const telefono_jefe = button.getAttribute('data-telefono-jefe');
-            const email_jefe = button.getAttribute('data-email-jefe');
-
-            const ruta_fut = button.getAttribute('data-ruta_fut');
-            const ruta_plan_actividades = button.getAttribute('data-ruta_plan_actividades');
-            const ruta_informe_final = button.getAttribute('data-ruta_informe_final');
-            const ruta_constancia_cumplimiento = button.getAttribute('data-ruta_constancia_cumplimiento');
-            const ruta_carta_aceptacion = button.getAttribute('data-ruta_carta_aceptacion');
-            const ruta_carta_presentacion = button.getAttribute('data-ruta_carta_presentacion');
-
-            document.getElementById('id').value = estado;
-
-            document.getElementById('modal-nombre-empresa').textContent = nombre;
-            document.getElementById('modal-ruc-empresa').textContent = ruc;
-            document.getElementById('modal-razon_social-empresa').textContent = razon_social;
-            document.getElementById('modal-direccion-empresa').textContent = direccion;
-            document.getElementById('modal-telefono-empresa').textContent = telefono;
-            document.getElementById('modal-email-empresa').textContent = email;
-            document.getElementById('modal-sitio_web-empresa').textContent = sitio_web;
-
-            document.getElementById('modal-name-jefe').textContent = jefe_inmediato;
-            document.getElementById('modal-area-jefe').textContent = area_jefe;
-            document.getElementById('modal-cargo-jefe').textContent = cargo_jefe;
-            document.getElementById('modal-dni-jefe').textContent = dni_jefe;
-            document.getElementById('modal-sitio_web-jefe').textContent = web_jefe;
-            document.getElementById('modal-telefono-jefe').textContent = telefono_jefe;
-            document.getElementById('modal-email-jefe').textContent = email_jefe;
-
-            document.getElementById('btn-ruta-fut').href = ruta_fut;
-            document.getElementById('btn-ruta-plan-actividades').href = ruta_plan_actividades;
-            document.getElementById('btn-ruta-informe-final').href = ruta_informe_final;
-            document.getElementById('btn-ruta-constancia-cumplimiento').href = ruta_constancia_cumplimiento;
-            document.getElementById('btn-ruta-carta-aceptacion').href = ruta_carta_aceptacion;
-            document.getElementById('btn-ruta-carta-presentacion').href = ruta_carta_presentacion;
-        });
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const btn1 = document.getElementById("btn1");
-        const btn2 = document.getElementById("btn2");
-        const btn3 = document.getElementById("btn3");
-        const btn4 = document.getElementById("btn4");
-
-        const primeraEtapa = document.getElementById("primeraetapa");
-        const segundaEtapa = document.getElementById("segundaetapa");
-        const terceraEtapa = document.getElementById("terceraetapa");
-        const cuartaEtapa = document.getElementById("cuartaetapa");
-
-        function ocultarTodo() {
-            primeraEtapa.style.display = "none";
-            segundaEtapa.style.display = "none";
-            terceraEtapa.style.display = "none";
-            cuartaEtapa.style.display = "none";
-        }
-
-        function mostrarEtapa(etapa) {
-            ocultarTodo();
-            etapa.style.display = "block";
-        }
-
-        btn1.addEventListener("click", function () {
-            mostrarEtapa(primeraEtapa);
-        });
-
-        btn2.addEventListener("click", function () {
-            mostrarEtapa(segundaEtapa);
-        });
-
-        btn3.addEventListener("click", function () {
-            mostrarEtapa(terceraEtapa);
-        });
-
-        btn4.addEventListener("click", function () {
-            mostrarEtapa(cuartaEtapa);
-        });
-
-        // Al abrir el modal, mostrar la primera etapa por defecto
-        const modalProceso = document.getElementById("modalProceso");
-        modalProceso.addEventListener("show.bs.modal", function () {
-            mostrarEtapa(primeraEtapa);
-        });
-    })
-</script>
+<script src="{{ asset('js/supervision_practica.js') }}"></script>
 @endpush

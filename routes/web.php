@@ -158,3 +158,4 @@ Route::post('/matricula/actualizar-ficha/{id}', [ValidacionMatriculaController::
 Route::post('/matricula/actualizar-record/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoRecord'])->name('actualizar.estado.record');
 Route::post('/practicas/proceso', [PracticaController::class, 'proceso'])->middleware('auth')->name('proceso');
 
+Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store.foto');

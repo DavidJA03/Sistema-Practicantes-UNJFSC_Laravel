@@ -117,18 +117,42 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center">
-                        <i class="fas fa-user" style="font-size: 255px; color: rgb(123, 145, 229);"></i>
+                        @if ($persona->ruta_foto)
+                            <img src="{{ asset($persona->ruta_foto) }}" alt="Foto" class="img-fluid rounded-circle" style="width: 255px; height: 255px; object-fit: cover;">
+                        @else
+                            <i class="fas fa-user" style="font-size: 255px; color: rgb(123, 145, 229);"></i>
+                        @endif
                         <hr>
-                        <form action="#" method="POST" enctype="multipart/form-data" class="mt-3">
-                            @csrf
-                            <button type="submit" class="btn btn-primary mt-3">Subir Foto</button>
-                        </form>
+                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalFoto">Subir Foto</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal Subir Foto -->
+<div class="modal fade" id="modalFoto" tabindex="-1" aria-labelledby="modalFotoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalFotoLabel">Subir Foto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('store.foto') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="persona_id" value="{{ $persona->id }}">
+                <div class="modal-body">
+                    <input type="file" name="foto" accept="image/*" required class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Subir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('js')

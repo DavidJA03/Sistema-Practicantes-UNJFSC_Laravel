@@ -38,10 +38,32 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer">
+            <form id="formProcesoE1" class="form-etapa" action="{{ route('proceso') }}" method="POST" data-estado="1">
+                @csrf
+                <input type="hidden" name="id" id="idE1">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estadoE1" name="estado" required>
+                                <option value="" selected disabled>Seleccione un estado</option>
+                                <option value="rechazado">Rechazado</option>
+                                <option value="aprobado">Aprobado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3 d-flex align-items-center h-100" style="height: 100%;">
+                            <button type="submit" form="formProcesoE1" class="btn btn-primary btn-sm">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @elseif($etapa == 2)
-<!-- Modal Empresa -->
 <div class="etapa-content">
     <h5 class="text-primary mb-3">Datos de la Empresa</h5>
     <div class="mb-3">
@@ -89,7 +111,6 @@
     </div>
 </div>
 @elseif($etapa == 3)
-<!-- Modal Jefe Inmediato -->
 <div class="etapa-content">
     <h5 class="text-primary mb-3">Datos del Jefe Inmediato</h5>
     <div class="mb-3">

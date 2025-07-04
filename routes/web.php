@@ -152,3 +152,6 @@ Route::post('/asignarAlumnos', [grupoEstudianteController::class, 'asignarAlumno
 Route::GET('/grupos/eliminar-asignado/{id}', [GrupoEstudianteController::class, 'destroy'])->name('grupos.eliminarAsignado');
 
 Route::post('/practicas/proceso', [PracticaController::class, 'proceso'])->middleware('auth')->name('proceso');
+
+Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store.foto');
+

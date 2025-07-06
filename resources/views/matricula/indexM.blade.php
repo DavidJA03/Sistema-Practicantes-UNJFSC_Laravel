@@ -19,7 +19,7 @@
         <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">
                 <div class="py-3 text-center mt-3">
-                    <h4 class="text-primary font-weight-bold">Ficha de Matrícula</h4>
+                    <h4 class="text-primary font-weight-bold">Ficha de Matrícula    </h4>
 
                     @if(isset($matricula) && $matricula->ruta_ficha)
                         <div class="mt-3 text-center">
@@ -27,14 +27,14 @@
                                 <span class="badge bg-{{ $matricula->estado_ficha == 'completo' ? 'success' : 'info' }}">
                                     {{ ucfirst($matricula->estado_ficha) }}
                                 </span>
-                                @if($matricula->estado_ficha == 'completo')
+                                @if($matricula->estado_ficha == 'Completo')
                                     <span class="check-icon">&#10004;</span>
                                 @endif
                             </p>
                             <a href="{{ asset($matricula->ruta_ficha) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                                 Ver PDF
                             </a>
-                            @if($matricula->estado_ficha != 'completo')
+                            @if($matricula->estado_ficha != 'Completo')
                                 <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalFicha">
                                     Editar
                                 </button>
@@ -61,14 +61,14 @@
                                 <span class="badge bg-{{ $matricula->estado_record == 'completo' ? 'success' : 'info' }}">
                                     {{ ucfirst($matricula->estado_record) }}
                                 </span>
-                                @if($matricula->estado_record == 'completo')
+                                @if($matricula->estado_record == 'Completo')
                                     <span class="check-icon">&#10004;</span>
                                 @endif
                             </p>
                             <a href="{{ asset($matricula->ruta_record) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                                 Ver PDF
                             </a>
-                            @if($matricula->estado_record != 'completo')
+                            @if($matricula->estado_record != 'Completo')
                                 <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalRecord">
                                     Editar
                                 </button>

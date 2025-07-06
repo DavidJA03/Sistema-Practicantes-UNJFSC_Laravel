@@ -21,10 +21,15 @@
         background-color: transparent !important;
         text-decoration: none;
     }
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da,rgb(247, 215, 218));
+        border: 2px solid #f5c6cb;
+    }
 </style>
 
+@if($matriculas->contains('estado_ficha', 'Completo') && $matriculas->contains('estado_record', 'Completo') )
 <div class="container-fluid centrar-vertical">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
     @csrf
     @method('POST')
     <div class="row w-100">
@@ -52,6 +57,21 @@
         </div>
     </div>
 </div>
+
+@else
+<div class="d-flex justify-content-center align-items-center my-5">
+    <div class="alert alert-danger shadow-lg p-5 rounded-lg text-center" style="max-width: 600px; width: 100%;">
+        <div class="mb-4">
+            <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
+        </div>
+        <h2 class="font-weight-bold mb-3">¡Atención!</h2>
+        <p class="mb-0" style="font-size: 20px;">
+            Primero debes completar tu matrícula para acceder a estas opciones.
+        </p>
+    </div>
+</div>
+@endif
+
 
 @endsection
 

@@ -105,7 +105,7 @@
               </div>
             </div>
             <div class="tabla-wrapper border rounded">
-              <table class="table table-hover table-sm mb-0 tabla-estudiantes" data-grupo="{{ $grupo->id }}">
+              <table class="table table-hover table-sm mb-0 tabla-estudiantes" id="dataTable" data-grupo="{{ $grupo->id }}">
                 <thead class="thead-light">
                   <tr>
                     <th class="text-center"><input type="checkbox" class="check-all" data-grupo="{{ $grupo->id }}"></th>
@@ -241,18 +241,87 @@
   </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("JS cargado directamente sin stack");
 
+    // FILTRO estudiantes NO asignados
+    document.querySelectorAll('.buscar-estudiante').forEach(function(input){
+        input.addEventListener('keyup', function(){
+            let valor = this.value.toLowerCase();
+            let grupoId = this.dataset.grupo;
+
+            document.querySelectorAll(`.tabla-estudiantes[data-grupo="${grupoId}"] tbody tr`).forEach(function(tr){
+                let textoFila = tr.textContent.toLowerCase();
+                tr.style.display = textoFila.includes(valor) ? '' : 'none';
+            });
+        });
+    });
+
+    // FILTRO estudiantes YA asignados
+    document.querySelectorAll('.buscar-estudiante-asignado').forEach(function(input){
+        input.addEventListener('keyup', function(){
+            let valor = this.value.toLowerCase();
+            let grupoId = this.dataset.grupo;
+
+            document.querySelectorAll(`#tablaAsignados${grupoId} tbody tr`).forEach(function(tr){
+                let textoFila = tr.textContent.toLowerCase();
+                tr.style.display = textoFila.includes(valor) ? '' : 'none';
+            });
+        });
+    });
+});
+</script>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("JS cargado sin duplicados");
 
-  document.querySelectorAll('.abrir-eliminar').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const nombre = btn.dataset.nombre;
-    const grupo = btn.dataset.grupo;
-    const url = btn.dataset.url;
-    abrirModalEliminar(nombre, grupo, url);
+    // FILTRO estudiantes NO asignados
+    document.querySelectorAll('.buscar-estudiante').forEach(function(input){
+        input.addEventListener('keyup', function(){
+            let grupoId = this.dataset.grupo;
+            let valor = this.value.toLowerCase();
+            document.querySelectorAll(`.tabla-estudiantes[data-grupo="${grupoId}"] tbody tr`).forEach(function(tr){
+                tr.style.display = tr.textContent.toLowerCase().includes(valor) ? '' : 'none';
+            });
+        });
     });
-  });
+
+    // FILTRO estudiantes YA asignados
+    document.querySelectorAll('.buscar-estudiante-asignado').forEach(function(input){
+        input.addEventListener('keyup', function(){
+            let grupoId = this.dataset.grupo;
+            let valor = this.value.toLowerCase();
+            let tabla = document.getElementById(`tablaAsignados${grupoId}`);
+            if (tabla) {
+                tabla.querySelectorAll('tbody tr').forEach(function(tr){
+                    tr.style.display = tr.textContent.toLowerCase().includes(valor) ? '' : 'none';
+                });
+            }
+        });
+    });
+
+    // CHECK ALL
+    document.querySelectorAll('.check-all').forEach(function(checkbox){
+        checkbox.addEventListener('change', function(){
+            let grupoId = this.dataset.grupo;
+            document.querySelectorAll(`.check-estudiante[data-grupo="${grupoId}"]`).forEach(function(cb){
+                cb.checked = checkbox.checked;
+            });
+        });
+    });
+
+    // MODAL ELIMINAR
+    document.querySelectorAll('.abrir-eliminar').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            let nombre = this.dataset.nombre;
+            let grupo = this.dataset.grupo;
+            let url = this.dataset.url;
+            abrirModalEliminar(nombre, grupo, url);
+        });
+    });
+});
 
 function abrirModalEliminar(nombre, grupo, url){
     $('.modal.show').modal('hide');
@@ -261,31 +330,8 @@ function abrirModalEliminar(nombre, grupo, url){
     setTimeout(() => $('#modalConfirmarEliminar').modal('show'), 300);
 }
 $('#modalConfirmarEliminar').on('hidden.bs.modal', () => $('.modal-backdrop').remove());
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.buscar-estudiante').forEach(input =>
-        input.addEventListener('keyup', function() {
-            const grupoId = this.dataset.grupo;
-            const filtro = this.value.toLowerCase();
-            document.querySelectorAll(`.tabla-estudiantes[data-grupo="${grupoId}"] tbody tr`)
-                .forEach(fila => fila.style.display = fila.innerText.toLowerCase().includes(filtro) ? "" : "none");
-        })
-    );
-    document.querySelectorAll('.buscar-estudiante-asignado').forEach(input =>
-        input.addEventListener('keyup', function() {
-            const tabla = document.querySelector(`#tablaAsignados${this.dataset.grupo}`);
-            if (!tabla) return;
-            tabla.querySelectorAll('tbody tr')
-                .forEach(fila => fila.style.display = fila.innerText.toLowerCase().includes(this.value.toLowerCase()) ? "" : "none");
-        })
-    );
-    document.querySelectorAll('.check-all').forEach(checkbox =>
-        checkbox.addEventListener('change', function() {
-            document.querySelectorAll(`.check-estudiante[data-grupo="${this.dataset.grupo}"]`)
-                .forEach(cb => cb.checked = this.checked);
-        })
-    );
-});
 </script>
+
 @endsection
 
 @push('js')

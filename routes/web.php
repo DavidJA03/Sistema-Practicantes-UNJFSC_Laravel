@@ -93,7 +93,7 @@ Route::resource('facultad',facultadController::class);
 Route::resource('escuela',escuelaController::class);
 
 
-//Semestre
+
 Route::resource('semestre',semestreController::class);
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
 
@@ -108,7 +108,7 @@ Route::resource('pregunta', preguntaController::class);
 //Respuestas
 Route::post('/respuestas', [respuestaController::class, 'store'])->name('respuestas.store');
 
-//Matricula 
+
 Route::get("/matricula", [matriculaController::class, "index" ])->middleware('auth')->name("matricula_index");
 Route::post('/subir/ficha', [ArchivoController::class, 'subirFicha'])->middleware('auth')->name('subir.ficha');
 Route::post('/subir/record', [ArchivoController::class, 'subirRecord'])->middleware('auth')->name('subir.record');
@@ -118,7 +118,7 @@ Route::post('/practicas/desarrollo', [PracticaController::class, 'storeDesarroll
 
 Route::get('/practicas/convalidacion', [PracticaController::class, 'convalidacion'])->middleware('auth')->name('convalidacion');
 
-// Rutas para empresas
+
 Route::post('/empresas/{practicas_id}', [EmpresaController::class, 'store'])->name('empresas.store');
 
 Route::post('/jefe_inmediato/{practicas_id}', [JefeInmediatoController::class, 'store'])->name('jefe_inmediato.store');
@@ -135,8 +135,12 @@ Route::post('/practicas/constanciacumplimiento', [PracticaController::class, 'st
 
 Route::post('/practicas/informefinalppp', [PracticaController::class, 'storeInformeFinalPPP'])->middleware('auth')->name('store.informefinalppp');
 
+    
 Route::get('/practica', function () {
-    return view('practicas.practica');
+    $persona = auth()->user()->persona; 
+    $matriculas = $persona ? $persona->matriculas : collect();
+
+    return view('practicas.practica', compact('persona', 'matriculas'));
 })->middleware('auth')->name('practica');
 
 Route::get('/supervision', [PracticaController::class, 'lst_supervision'])->middleware('auth')->name('supervision');
@@ -163,6 +167,7 @@ Route::get('/vMatricula', [validacionMatriculaController::class, 'Vmatricula'])-
 
 Route::post('/matricula/actualizar-ficha/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoFicha'])->name('actualizar.estado.ficha');
 Route::post('/matricula/actualizar-record/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoRecord'])->name('actualizar.estado.record');
+
 Route::post('/practicas/proceso', [PracticaController::class, 'proceso'])->middleware('auth')->name('proceso');
 
 Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store.foto');

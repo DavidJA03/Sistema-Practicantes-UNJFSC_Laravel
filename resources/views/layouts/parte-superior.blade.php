@@ -88,15 +88,24 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>
-            @endif
+                
+            @endif  
 
             @if ($rol == 1 || $rol == 3)
                 <li class="nav-item"><a class="nav-link" href="{{ route('estudiante') }}"><i class="fas fa-fw fa-users"></i><span>Lista de Estudiantes</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-pencil-square"></i><span>Evaluación</span></a></li>
+                <li class="nav-item">
+                <a class="nav-link" href="{{ route('evaluacion.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Evaluación</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('pregunta.index') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Pregunta</span></a>
+                </li>
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Datos extra</div>
+                
                 <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>
             @endif

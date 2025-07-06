@@ -16,11 +16,17 @@ class grupoEstudianteController extends Controller
 {
     public function index()
     {
+        $id = auth()->id();
+        if($id == 1){
+            $grupos_practica = grupos_practica::all();
+        }else{
+            $grupos_practica = grupos_practica::where('id_docente',$id )->get();
+        }
         $docentes = Persona::where('rol_id', 3)->get(); // Ajusta rol_id si es necesario
         $semestres = Semestre::all();
         $escuelas = Escuela::all();
         $facultades = Facultade::all();
-        $grupos_practica = grupos_practica::all();
+        
         $estudiantes = Persona::with('escuela')->get(); // Suponiendo que rol_id 3 es para estudiantes
 
         return view('asignatura.grupoAsignatura', compact(

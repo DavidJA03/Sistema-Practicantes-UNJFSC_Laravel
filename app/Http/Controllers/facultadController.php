@@ -15,16 +15,14 @@ class FacultadController extends Controller
     {
         $query = Facultade::query();
 
-    if ($request->filled('search')) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-    // Aseguramos que 'cantidad' sea numérico y válido
-    $perPage = in_array($request->cantidad, [5, 10, 25, 50]) ? $request->cantidad : 5;
+        // Obtenemos TODOS
+        $facultades = $query->orderBy('id', 'desc')->get();
 
-    $facultades = $query->orderBy('id', 'desc')->paginate($perPage);
-
-    return view('facultad.index', compact('facultades'));
+        return view('facultad.index', compact('facultades'));
     }
 
     public function store(StoreFacultadRequest $request)
@@ -43,7 +41,6 @@ class FacultadController extends Controller
 
             return redirect()->route('facultad.index')
                              ->with('success', 'Facultad registrada correctamente.');
-
         } catch (Exception $e) {
             DB::rollBack();
             return back()->withErrors('Error al guardar la facultad: ' . $e->getMessage());
@@ -60,10 +57,8 @@ class FacultadController extends Controller
 
             return redirect()->route('facultad.index')
                              ->with('success', 'Facultad actualizada correctamente.');
-
         } catch (Exception $e) {
-            return redirect()->back()
-                             ->withErrors('Error al actualizar la facultad: ' . $e->getMessage());
+            return back()->withErrors('Error al actualizar la facultad: ' . $e->getMessage());
         }
     }
 
@@ -75,7 +70,6 @@ class FacultadController extends Controller
 
             return redirect()->route('facultad.index')
                              ->with('success', 'Facultad eliminada correctamente.');
-
         } catch (Exception $e) {
             return back()->withErrors('Error al eliminar la facultad: ' . $e->getMessage());
         }

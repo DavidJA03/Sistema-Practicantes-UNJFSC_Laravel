@@ -39,7 +39,7 @@
                                 <td>{{ strtoupper($empresa->nombre) }}</td>
                                 <td>{{ $empresa->telefono }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-mostrar btn-info btn-sm">
+                                    <button type="button" class="btn btn-mostrar btn-info btn-sm" data-toggle="modal" data-target="#modalVer{{ $empresa->id }}">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -57,6 +57,31 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Ver -->
+@foreach ($empresas as $empresa)
+<div class="modal fade" id="modalVer{{ $empresa->id }}" tabindex="-1" role="dialog" aria-labelledby="modalVerLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalVerLabel">Información de la Empresa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>RUC:</strong> {{ $empresa->ruc }}</p>
+                <p><strong>Nombre:</strong> {{ $empresa->nombre }}</p>
+                <p><strong>Telefono:</strong> {{ $empresa->telefono }}</p>
+                <p><strong>Direccion:</strong> {{ $empresa->direccion }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 @endsection
 
 @push('js')

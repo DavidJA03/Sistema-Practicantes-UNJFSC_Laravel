@@ -12,36 +12,25 @@ use Exception;
 
 class EscuelaController extends Controller
 {
+<<<<<<< HEAD
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
+=======
+    public function index()
+>>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     {
         $facultades = Facultade::all();
-
-        $query = Escuela::with('facultad');
-
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('facultad_id')) {
-            $query->where('facultad_id', $request->facultad_id);
-        }
-
-        $perPage = in_array($request->cantidad, [5, 10, 25, 50]) ? $request->cantidad : 5;
-
-        $escuelas = $query->orderBy('id', 'desc')->paginate($perPage);
-
-        if ($request->ajax()) {
-            return view('escuela.partials.table', compact('escuelas'))->render();
-        }
+        // Trae todas las escuelas con la relación facultad
+        $escuelas = Escuela::with('facultad')->orderBy('id', 'desc')->get();
 
         return view('escuela.index', compact('escuelas', 'facultades'));
     }
 
+<<<<<<< HEAD
     /**
      * Show the form for creating a new resource.
      *
@@ -59,6 +48,8 @@ class EscuelaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+=======
+>>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     public function store(StoreEscuelaRequest $request)
     {
         try {
@@ -77,10 +68,11 @@ class EscuelaController extends Controller
             return redirect()->route('escuela.index')->with('success', 'Escuela registrada correctamente.');
         } catch (Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Error al registrar la escuela.');
+            return back()->withErrors('Error al registrar la escuela: ' . $e->getMessage());
         }
     }
 
+<<<<<<< HEAD
     /**
      * Display the specified resource.
      *
@@ -113,6 +105,8 @@ class EscuelaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+=======
+>>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     public function update(UpdateEscuelaRequest $request, $id)
     {
         try {
@@ -145,10 +139,18 @@ class EscuelaController extends Controller
      */
     public function destroy($id)
     {
-        $escuela = Escuela::findOrFail($id);
-        $escuela->delete();
+        try {
+            $escuela = Escuela::findOrFail($id);
+            $escuela->delete();
 
+<<<<<<< HEAD
         return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
 
+=======
+            return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
+        } catch (Exception $e) {
+            return back()->withErrors('Error al eliminar la escuela: ' . $e->getMessage());
+        }
+>>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     }
 }

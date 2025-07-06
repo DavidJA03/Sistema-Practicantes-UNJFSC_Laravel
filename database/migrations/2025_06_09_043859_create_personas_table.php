@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('apellidos', 50)->nullable();
             $table->string('celular', 9)->nullable();
             $table->string('sexo', 1)->nullable();
+            $table->string('ruta_foto')->nullable();
             $table->string('correo_inst', 150)->nullable();
             $table->string('departamento', 50)->nullable();
             $table->string('provincia', 50)->nullable();

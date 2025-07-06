@@ -12,35 +12,13 @@ use Exception;
 
 class EscuelaController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $facultades = Facultade::all();
-
-        $query = Escuela::with('facultad');
-
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('facultad_id')) {
-            $query->where('facultad_id', $request->facultad_id);
-        }
-
-        $perPage = in_array($request->cantidad, [5, 10, 25, 50]) ? $request->cantidad : 5;
-
-        $escuelas = $query->orderBy('id', 'desc')->paginate($perPage);
-
-        if ($request->ajax()) {
-            return view('escuela.partials.table', compact('escuelas'))->render();
-        }
+        // Trae todas las escuelas con la relación facultad
+        $escuelas = Escuela::with('facultad')->orderBy('id', 'desc')->get();
 
         return view('escuela.index', compact('escuelas', 'facultades'));
-    }
-
-    public function create()
-    {
-        $facultades = Facultade::all();
-        return view('escuela.create', compact('facultades'));
     }
 
     public function store(StoreEscuelaRequest $request)
@@ -61,16 +39,8 @@ class EscuelaController extends Controller
             return redirect()->route('escuela.index')->with('success', 'Escuela registrada correctamente.');
         } catch (Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Error al registrar la escuela.');
+            return back()->withErrors('Error al registrar la escuela: ' . $e->getMessage());
         }
-    }
-
-    public function edit($id)
-    {
-        $escuela = Escuela::findOrFail($id);
-        $facultades = Facultade::all();
-
-        return view('escuela.edit', compact('escuela', 'facultades'));
     }
 
     public function update(UpdateEscuelaRequest $request, $id)
@@ -99,9 +69,13 @@ class EscuelaController extends Controller
 
     public function destroy($id)
     {
-        $escuela = Escuela::findOrFail($id);
-        $escuela->delete();
+        try {
+            $escuela = Escuela::findOrFail($id);
+            $escuela->delete();
 
-        return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
+            return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
+        } catch (Exception $e) {
+            return back()->withErrors('Error al eliminar la escuela: ' . $e->getMessage());
+        }
     }
 }

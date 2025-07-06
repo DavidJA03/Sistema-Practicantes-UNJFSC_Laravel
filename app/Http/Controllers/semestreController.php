@@ -18,8 +18,8 @@ class semestreController extends Controller
      */
     public function index()
     {
-        $semestres = Semestre::all();
-        return view('semestre.index',['semestres' => $semestres]);
+        $semestres = Semestre::orderBy('id', 'desc')->get();
+        return view('semestre.index', compact('semestres'));
     }
 
     /**

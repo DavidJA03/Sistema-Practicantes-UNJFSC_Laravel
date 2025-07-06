@@ -100,6 +100,18 @@
                     <span>Semestre</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('evaluacion.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Evaluación</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('pregunta.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Pregunta</span></a>
+            </li>
+
             <hr class="sidebar-divider">
 
             <div class="sidebar-heading">

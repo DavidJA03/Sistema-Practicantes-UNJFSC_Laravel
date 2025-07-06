@@ -15,19 +15,14 @@ return new class extends Migration
     {
         Schema::create('evaluaciones', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('alumno_id'); // Relacionado a persona o alumno
+            $table->unsignedBigInteger('alumno_id')->unique();
             $table->string('anexo_7')->nullable();
             $table->string('anexo_8')->nullable();
-            $table->text('pregunta_1')->nullable();
-            $table->text('pregunta_2')->nullable();
-            $table->text('pregunta_3')->nullable();
-            $table->text('pregunta_4')->nullable();
-            $table->text('pregunta_5')->nullable();
             $table->string('user_create')->nullable();
             $table->string('user_update')->nullable();
             $table->timestamp('date_create')->nullable();
             $table->timestamp('date_update')->nullable();
-            $table->boolean('estado')->default(true);
+            $table->boolean('estado')->default(1);
 
             $table->foreign('alumno_id')->references('id')->on('personas')->onDelete('cascade');
         });

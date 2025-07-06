@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreEvaluacionRequest;
-use App\Http\Requests\UpdateEvaluacionRequest;
 use App\Models\Evaluacione;
 use App\Models\Persona;
 use Illuminate\Support\Facades\Storage;
@@ -13,58 +11,47 @@ use Exception;
 
 class EvaluacionController extends Controller
 {
-    public function index(Request $request)
-{
-    $query = Persona::where('rol_id', 4)->with('evaluacione');
+public function index(Request $request)
+    {
+        $query = Persona::where('rol_id', 4)
+            ->with(['evaluacione', 'respuestas.pregunta']);
 
-    // Filtro por nombre o apellido
-    if ($request->filled('buscar')) {
-        $query->where(function($q) use ($request) {
-            $q->where('nombres', 'like', '%'.$request->buscar.'%')
-              ->orWhere('apellidos', 'like', '%'.$request->buscar.'%');
-        });
+        if ($request->filled('buscar')) {
+            $query->where(function($q) use ($request) {
+                $q->where('nombres', 'like', '%'.$request->buscar.'%')
+                  ->orWhere('apellidos', 'like', '%'.$request->buscar.'%');
+            });
+        }
+
+        // No usamos paginate()
+        $alumnos = $query->orderBy('apellidos')->get();
+
+        $preguntas = \App\Models\Pregunta::where('estado', true)->orderBy('id')->get();
+
+        return view('evaluacion.index', compact('alumnos', 'preguntas'));
     }
 
-    // Número de registros por página (default 10)
-    $perPage = $request->get('perPage', 5);
-
-    $alumnos = $query->orderBy('apellidos')->paginate($perPage)->appends($request->all());
-
-    $preguntas = [
-        '¿Cuál fue su principal aprendizaje durante sus prácticas?',
-        '¿Cómo aplicó los conocimientos adquiridos en la universidad?',
-        '¿Qué habilidades blandas desarrolló más?',
-        '¿Enfrentó algún reto importante? ¿Cómo lo resolvió?',
-        '¿Recomendaría esta empresa para futuros practicantes? ¿Por qué?',
-    ];
-
-    return view('evaluacion.index', compact('alumnos', 'preguntas'));
-}
-
-   public function store(Request $request)
-{
-    $anexo7 = $request->file('anexo_7') ? $request->file('anexo_7')->store('anexos') : null;
-    $anexo8 = $request->file('anexo_8') ? $request->file('anexo_8')->store('anexos') : null;
-
-    Evaluacione::create([
-        'alumno_id'   => $request->alumno_id,
-        'anexo_7'     => $anexo7,
-        'anexo_8'     => $anexo8,
-        'pregunta_1'  => $request->pregunta_1,
-        'pregunta_2'  => $request->pregunta_2,
-        'pregunta_3'  => $request->pregunta_3,
-        'pregunta_4'  => $request->pregunta_4,
-        'pregunta_5'  => $request->pregunta_5,
-        'user_create' => 'admin', // O el usuario actual si gustas
-        'date_create' => now(),
-        'estado'      => true,
-    ]);
-
-    return redirect()->route('evaluacion.index')->with('success', 'Evaluación registrada correctamente.');
-}
 
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'alumno_id' => 'required|exists:personas,id',
+            'anexo_7'   => 'nullable|file|mimes:pdf',
+            'anexo_8'   => 'nullable|file|mimes:pdf',
+        ]);
 
+        Evaluacione::create([
+            'alumno_id'   => $request->alumno_id,
+            'anexo_7'     => $request->file('anexo_7') ? $request->file('anexo_7')->store('anexos', 'public') : null,
+            'anexo_8'     => $request->file('anexo_8') ? $request->file('anexo_8')->store('anexos', 'public') : null,
+            'user_create' => auth()->user()->name ?? 'admin',
+            'date_create' => now(),
+            'estado'      => true,
+        ]);
+
+        return redirect()->route('evaluacion.index')->with('success', 'Anexos guardados correctamente.');
+    }
 
     public function edit(Evaluacione $evaluacion)
     {
@@ -72,27 +59,21 @@ class EvaluacionController extends Controller
         return view('evaluacion.edit', compact('evaluacion', 'alumno'));
     }
 
-    public function update(UpdateEvaluacionRequest $request, Evaluacione $evaluacion)
+    public function update(Request $request, Evaluacione $evaluacion)
     {
         try {
             DB::beginTransaction();
 
-            // Si hay nuevos archivos, reemplazar
             if ($request->hasFile('anexo_7')) {
-                if ($evaluacion->anexo_7) Storage::delete($evaluacion->anexo_7);
-                $evaluacion->anexo_7 = $request->file('anexo_7')->store('anexos');
+                if ($evaluacion->anexo_7) Storage::disk('public')->delete($evaluacion->anexo_7);
+                $evaluacion->anexo_7 = $request->file('anexo_7')->store('anexos', 'public');
             }
 
             if ($request->hasFile('anexo_8')) {
-                if ($evaluacion->anexo_8) Storage::delete($evaluacion->anexo_8);
-                $evaluacion->anexo_8 = $request->file('anexo_8')->store('anexos');
+                if ($evaluacion->anexo_8) Storage::disk('public')->delete($evaluacion->anexo_8);
+                $evaluacion->anexo_8 = $request->file('anexo_8')->store('anexos', 'public');
             }
 
-            $evaluacion->pregunta_1 = $request->pregunta_1;
-            $evaluacion->pregunta_2 = $request->pregunta_2;
-            $evaluacion->pregunta_3 = $request->pregunta_3;
-            $evaluacion->pregunta_4 = $request->pregunta_4;
-            $evaluacion->pregunta_5 = $request->pregunta_5;
             $evaluacion->user_update = auth()->user()->name ?? 'admin';
             $evaluacion->date_update = now();
 
@@ -100,18 +81,18 @@ class EvaluacionController extends Controller
 
             DB::commit();
 
-            return redirect()->route('evaluacion.index')->with('success', 'Evaluación actualizada correctamente.');
+            return redirect()->route('evaluacion.index')->with('success', 'Anexos actualizados correctamente.');
         } catch (Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Error al actualizar la evaluación: ' . $e->getMessage());
+            return back()->withErrors('Error al actualizar los anexos: ' . $e->getMessage());
         }
     }
 
     public function destroy(Evaluacione $evaluacion)
     {
         try {
-            if ($evaluacion->anexo_7) Storage::delete($evaluacion->anexo_7);
-            if ($evaluacion->anexo_8) Storage::delete($evaluacion->anexo_8);
+            if ($evaluacion->anexo_7) Storage::disk('public')->delete($evaluacion->anexo_7);
+            if ($evaluacion->anexo_8) Storage::disk('public')->delete($evaluacion->anexo_8);
 
             $evaluacion->delete();
 
@@ -121,53 +102,38 @@ class EvaluacionController extends Controller
         }
     }
 
-    // Guardar Anexos
-public function storeAnexos(Request $request)
-{
-    $request->validate([
-        'alumno_id' => 'required|exists:personas,id',
-        'anexo_7' => 'nullable|file|mimes:pdf',
-        'anexo_8' => 'nullable|file|mimes:pdf',
-    ]);
+    public function storeAnexos(Request $request)
+    {
+        $request->validate([
+            'alumno_id' => 'required|exists:personas,id',
+            'anexo_7'   => 'nullable|file|mimes:pdf',
+            'anexo_8'   => 'nullable|file|mimes:pdf',
+        ]);
 
-    $evaluacion = Evaluacione::firstOrNew(['alumno_id' => $request->alumno_id]);
+        $evaluacion = Evaluacione::firstOrNew(['alumno_id' => $request->alumno_id]);
 
-    $evaluacion->anexo_7 = $request->file('anexo_7')->store('anexos', 'public');
-    $evaluacion->anexo_8 = $request->file('anexo_8')->store('anexos', 'public');
+        if ($request->hasFile('anexo_7')) {
+            if ($evaluacion->anexo_7) Storage::disk('public')->delete($evaluacion->anexo_7);
+            $evaluacion->anexo_7 = $request->file('anexo_7')->store('anexos', 'public');
+        }
 
+        if ($request->hasFile('anexo_8')) {
+            if ($evaluacion->anexo_8) Storage::disk('public')->delete($evaluacion->anexo_8);
+            $evaluacion->anexo_8 = $request->file('anexo_8')->store('anexos', 'public');
+        }
 
-    $evaluacion->save();
+        if (!$evaluacion->exists) {
+            $evaluacion->user_create = auth()->user()->name ?? 'admin';
+            $evaluacion->date_create = now();
+            $evaluacion->estado = true;
+        } else {
+            $evaluacion->user_update = auth()->user()->name ?? 'admin';
+            $evaluacion->date_update = now();
+        }
 
-    return redirect()->route('evaluacion.index', ['open' => $request->alumno_id])
-                     ->with('success', 'Anexos guardados correctamente.');
-}
+        $evaluacion->save();
 
-
-// Guardar Entrevista
-public function storeEntrevista(Request $request)
-{
-    $request->validate([
-        'alumno_id' => 'required|exists:personas,id',
-        'pregunta_1' => 'required|string',
-        'pregunta_2' => 'required|string',
-        'pregunta_3' => 'required|string',
-        'pregunta_4' => 'required|string',
-        'pregunta_5' => 'required|string',
-    ]);
-
-    $evaluacion = Evaluacione::firstOrNew(['alumno_id' => $request->alumno_id]);
-
-    $evaluacion->pregunta_1 = $request->pregunta_1;
-    $evaluacion->pregunta_2 = $request->pregunta_2;
-    $evaluacion->pregunta_3 = $request->pregunta_3;
-    $evaluacion->pregunta_4 = $request->pregunta_4;
-    $evaluacion->pregunta_5 = $request->pregunta_5;
-
-    $evaluacion->save();
-
-    return redirect()->route('evaluacion.index', ['open' => $request->alumno_id])
-                     ->with('success', 'Entrevista guardada correctamente.');
-}
-
-
+        return redirect()->route('evaluacion.index', ['open' => $request->alumno_id])
+                         ->with('success', 'Anexos guardados correctamente.');
+    }
 }

@@ -104,6 +104,21 @@
             </li>
         @endif
 
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('evaluacion.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Evaluación</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('pregunta.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Pregunta</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+
         @if(auth()->user()->persona?->rol_id == 3)
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('Validacion.Matricula') }}">
@@ -118,6 +133,7 @@
                     <span>Matricula</span></a>
             </li>
         @endif
+
 
             <!-- Divider -->
             <hr class="sidebar-divider">

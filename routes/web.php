@@ -17,7 +17,8 @@ use App\Http\Controllers\evaluacionController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
 use App\Http\Requests\StoreSemestreRequest;
-
+use App\Http\Controllers\preguntaController;
+use App\Http\Controllers\respuestaController;
 use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticaController;
@@ -94,12 +95,18 @@ Route::resource('escuela',escuelaController::class);
 
 //Semestre
 Route::resource('semestre',semestreController::class);
-
-
-
-
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
 
+// Evaluación
+Route::resource('evaluacion', EvaluacionController::class);
+Route::post('/evaluacion/store-anexos', [EvaluacionController::class, 'storeAnexos'])->name('evaluacion.storeAnexos');
+Route::post('/evaluacion/store-entrevista', [EvaluacionController::class, 'storeEntrevista'])->name('evaluacion.storeEntrevista');
+
+//Preguntas
+Route::resource('pregunta', preguntaController::class);
+
+//Respuestas
+Route::post('/respuestas', [respuestaController::class, 'store'])->name('respuestas.store');
 
 //Matricula 
 Route::get("/matricula", [matriculaController::class, "index" ])->middleware('auth')->name("matricula_index");

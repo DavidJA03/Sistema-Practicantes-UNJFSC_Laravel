@@ -89,7 +89,7 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
                 
-            @endif
+            @endif  
 
             @if ($rol == 1 || $rol == 3)
                 <li class="nav-item"><a class="nav-link" href="{{ route('estudiante') }}"><i class="fas fa-fw fa-users"></i><span>Lista de Estudiantes</span></a></li>

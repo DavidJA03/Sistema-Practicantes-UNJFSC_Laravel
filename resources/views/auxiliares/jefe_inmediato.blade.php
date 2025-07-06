@@ -42,7 +42,7 @@
                                 <td>{{ $jefe->cargo }}</td>
                                 <td>{{ $jefe->telefono }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-mostrar btn-info btn-sm">
+                                    <button type="button" class="btn btn-mostrar btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalJefeInmediato{{ $jefe->id }}">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -60,6 +60,30 @@
         </div>
     </div>
 </div>
+
+@foreach ($jefes as $jefe)
+<div class="modal fade" id="modalJefeInmediato{{ $jefe->id }}" tabindex="-1" role="dialog" aria-labelledby="modalJefeInmediatoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalJefeInmediatoLabel">Información del Jefe Inmediato</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>DNI:</strong> {{ $jefe->dni }}</p>
+                <p><strong>Apellidos y Nombres:</strong> {{ $jefe->apellidos . ' ' . $jefe->nombres }}</p>
+                <p><strong>Cargo:</strong> {{ $jefe->cargo }}</p>
+                <p><strong>Telefono:</strong> {{ $jefe->telefono }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 @endsection
 
 @push('js')

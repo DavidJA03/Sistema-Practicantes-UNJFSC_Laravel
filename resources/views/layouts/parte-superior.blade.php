@@ -92,6 +92,21 @@
             </li>
         @endif
 
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('evaluacion.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Evaluación</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('pregunta.index') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Pregunta</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+
         @if(auth()->user()->persona?->rol_id == 3)
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('Validacion.Matricula') }}">
@@ -112,6 +127,20 @@
 
         <hr class="sidebar-divider">
         <div class="sidebar-heading">Prácticas</div>
+
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">
+                Addons
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('matricula_index') }}">
+                    <i class="fas fa-address-card"></i>
+                    <span>Matricula</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
 
         @if ($practica == 'desarrollo')
             <li class="nav-item">

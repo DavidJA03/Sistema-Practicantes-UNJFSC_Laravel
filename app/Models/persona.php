@@ -71,4 +71,16 @@ class Persona extends Model
         return $this->belongsTo(type_users::class, 'type_user_id');
     }
 
+    public function evaluacione()
+    {
+        return $this->hasOne(Evaluacione::class, 'alumno_id');
+    }
+
+    public function respuestas()
+    {
+        return $this->hasMany(Respuesta::class);
+    }
+
+
+
 }

@@ -22,13 +22,14 @@ class validacionMatriculaController extends Controller
 */ 
 
         $estudiantes = grupo_estudiante::with([
-            'grupoPractica.semestre',
-            'grupoPractica.escuela',
+            'grupo.semestre',
+            'grupo.escuela',
             'estudiante.matricula',
             'supervisor'
-        ])->whereHas('  ', function ($query) use ($id) {
+        ])->whereHas('grupo', function ($query) use ($id) {
             $query->where('id_docente', $id);
         })->get();
+
 
         return view('ValidacionMatricula.ValidacionMatricula', compact('estudiantes'));
     }

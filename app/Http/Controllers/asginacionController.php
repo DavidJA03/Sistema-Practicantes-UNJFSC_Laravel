@@ -32,7 +32,6 @@ class asginacionController extends Controller
             'nombre_grupo' => 'required|string|max:50',
         ]);
 
-        // Verificar si ya existe un grupo con mismo docente, semestre y escuela
         $existe = grupos_practica::where('id_semestre', $request->id_semestre)
             ->where('id_escuela', $request->id_escuela)
             ->exists();

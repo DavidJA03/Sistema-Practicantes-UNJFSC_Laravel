@@ -17,7 +17,8 @@ class Persona extends Model
         'nombres',
         'apellidos',
         'celular',
-        'sexo',
+        'sexo', 
+        'ruta_foto',
         'correo_inst',
         'departamento',
         'provincia',
@@ -43,10 +44,9 @@ class Persona extends Model
         return $this->hasOne(Matricula::class);
     }
 
-
     public function practica()
     {
-        return $this->hasOne(Practica::class, 'estudiante_id');
+        return $this->hasOne(Practica::class, 'estudiante_id','id');
     }
     public function gruposComoDocente()
     {
@@ -66,6 +66,9 @@ class Persona extends Model
     public function escuela()
     {
         return $this->belongsTo(Escuela::class, 'id_escuela'); // o el campo que tengas como FK
+    }
+    public function type_user() {
+        return $this->belongsTo(type_users::class, 'type_user_id');
     }
 
     public function evaluacione()

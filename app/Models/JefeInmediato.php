@@ -21,6 +21,6 @@ class JefeInmediato extends Model
 
     public function practica()
     {
-        return $this->belongsTo(Practica::class, 'practicas_id');
+        return $this->belongsTo(Practica::class, 'practicas_id','id');
     }
 }

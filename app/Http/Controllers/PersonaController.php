@@ -20,7 +20,8 @@ class PersonaController extends Controller
         $personas = Persona::where('rol_id', 2)->get();
         return view('list_users.docente', compact('personas'));
     }
-        /**
+
+    /**
      * Show the user profile
      *
      * @return \Illuminate\Http\JsonResponse
@@ -237,5 +238,26 @@ class PersonaController extends Controller
                 'message' => 'Error al actualizar la persona: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function storeFoto(Request $request){
+        $request->validate([
+            'persona_id' => 'required|exists:personas,id',
+            'foto' => 'required|file|mimes:jpg,jpeg,png|max:20480',
+        ]);
+
+        $personaId = $request->persona_id;
+
+        // Guardar el archivo
+        $nombre = 'foto_' . $personaId . '_' . time() . '.' . $request->file('foto')->getClientOriginalExtension();
+        $ruta = $request->file('foto')->storeAs('fotos', $nombre, 'public');
+
+        // Buscar o crear la matrícula
+        $persona = Persona::findOrFail($personaId);
+        $persona->update([
+            'ruta_foto' => 'storage/' . $ruta,
+        ]);
+
+        return back()->with('success', 'Foto subida correctamente.');
     }
 }

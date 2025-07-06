@@ -12,6 +12,7 @@ use App\Http\Controllers\escuelaController;
 use App\Http\Controllers\grupoEstudianteController;
 use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
+use App\Http\Controllers\validacionMatriculaController;
 use App\Http\Controllers\evaluacionController;
 use App\Http\Requests\StoreFacultadRequest;
 use App\Http\Requests\StoreEscuelaRequest;
@@ -157,3 +158,11 @@ Route::get("/grupoEstudiante", [grupoEstudianteController::class, "index" ])->na
 Route::post('/asignarAlumnos', [grupoEstudianteController::class, 'asignarAlumnos'])->name('grupos.asignarAlumnos');
 
 Route::GET('/grupos/eliminar-asignado/{id}', [GrupoEstudianteController::class, 'destroy'])->name('grupos.eliminarAsignado');
+
+Route::get('/vMatricula', [validacionMatriculaController::class, 'Vmatricula'])->name('Validacion.Matricula');
+
+Route::post('/matricula/actualizar-ficha/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoFicha'])->name('actualizar.estado.ficha');
+Route::post('/matricula/actualizar-record/{id}', [ValidacionMatriculaController::class, 'actualizarEstadoRecord'])->name('actualizar.estado.record');
+Route::post('/practicas/proceso', [PracticaController::class, 'proceso'])->middleware('auth')->name('proceso');
+
+Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store.foto');

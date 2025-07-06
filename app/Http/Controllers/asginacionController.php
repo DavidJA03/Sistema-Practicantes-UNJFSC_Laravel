@@ -17,7 +17,7 @@ class asginacionController extends Controller
         $semestres = Semestre::all();
         $escuelas = Escuela::all();
         $facultades = Facultade::all();
-        $grupos_practica = grupos_practica::all();
+        $grupos_practica = grupos_practica::all(); 
 
         return view('asignatura.asignatura', compact('docentes', 'semestres', 'escuelas', 'facultades', 'grupos_practica'));
 

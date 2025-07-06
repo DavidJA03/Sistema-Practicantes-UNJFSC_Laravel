@@ -15,13 +15,20 @@ class validacionMatriculaController extends Controller
 {
     public function Vmatricula(){
         $id = auth()->id();
+/*
+        $estudiantes = grupos_practica::with([
+             'estudiante.matricula', 
+        ])->where('id_docente', $id)->get();
+*/ 
 
         $estudiantes = grupo_estudiante::with([
             'grupoPractica.semestre',
             'grupoPractica.escuela',
-            'estudiante.matricula', 
-            'supervisor' 
-        ])->where('id_supervisor', $id)->get();
+            'estudiante.matricula',
+            'supervisor'
+        ])->whereHas('  ', function ($query) use ($id) {
+            $query->where('id_docente', $id);
+        })->get();
 
         return view('ValidacionMatricula.ValidacionMatricula', compact('estudiantes'));
     }

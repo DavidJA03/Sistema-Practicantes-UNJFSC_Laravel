@@ -10,7 +10,7 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-file-invoice mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if ($practicaData->estado == 2)
+                                @if ($practicaData->ruta_fut != null)
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Formulario de Trámite (FUT)</h4>
                                     <a href="{{ asset($practicaData->ruta_fut) }}" target="_blank" class="btn btn-warning btn-sm">
@@ -34,7 +34,7 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-envelope mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if ($practicaData->estado == 3)
+                                @if ($practicaData->ruta_carta_aceptacion != null)
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Carta de Aceptación</h4>
                                     <a href="{{ asset($practicaData->ruta_carta_aceptacion) }}" target="_blank" class="btn btn-warning btn-sm">

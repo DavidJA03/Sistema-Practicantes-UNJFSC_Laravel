@@ -10,7 +10,7 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-scroll mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if($practicaData->estado == 4)
+                                @if($practicaData->ruta_constancia_cumplimiento != null)
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Constancia de Cumplimiento</h4>
                                     <a href="{{ asset($practicaData->ruta_constancia_cumplimiento) }}" target="_blank" class="btn btn-warning btn-sm">
@@ -34,7 +34,7 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-file-invoice mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if($practicaData->estado == 4)
+                                @if($practicaData->ruta_informe_final != null)
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Informe Final de PPP</h4>
                                     <a href="{{ asset($practicaData->ruta_informe_final) }}" target="_blank" class="btn btn-warning btn-sm">

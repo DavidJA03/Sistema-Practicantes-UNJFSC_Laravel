@@ -84,7 +84,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="razon_social" class="form-label">Razón Social</label>
-                                <input type="text" class="form-control" id="razon_social" name="razon_social" maxlength="11" value="{{ $practicaData->empresa->razon_social  ?? '' }}" @if($empresaExiste) readonly @endif required>
+                                <input type="text" class="form-control" id="razon_social" name="razon_social" value="{{ $practicaData->empresa->razon_social  ?? '' }}" @if($empresaExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="mb-3">

@@ -72,7 +72,7 @@
                                     data-ruta_carta_aceptacion="{{ $persona->practica->ruta_carta_aceptacion ?? 'No registrado' }}"
                                     data-ruta_carta_presentacion="{{ $persona->practica->ruta_carta_presentacion ?? 'No registrado' }}"
                                     data-ruta_registro_actividades="{{ $persona->practica->ruta_registro_actividades ?? 'No registrado' }}"
-                                    data-ruta_control_mensual_actividades="{{ $persona->practica->ruta_control_mensual_actividades ?? 'No registrado' }}"
+                                    data-ruta_control_mensual_actividades="{{ $persona->practica->ruta_control_actividades ?? 'No registrado' }}"
                                 >
                                     Proceso
                                 </button>

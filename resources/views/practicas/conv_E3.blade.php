@@ -10,7 +10,7 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-envelope mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if ($practicaData->estado == 3)
+                                @if ($practicaData->ruta_registro_actividades != null)
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Registro de Actividades</h4>
                                     <a href="{{ asset($practicaData->ruta_registro_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
@@ -34,10 +34,10 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-file-signature mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if ($practicaData->estado == 3)
+                                @if ($practicaData->ruta_control_actividades != null)
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Control Mensual de Actividades</h4>
-                                    <a href="{{ asset($practicaData->ruta_control_mensual_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
+                                    <a href="{{ asset($practicaData->ruta_control_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
                                         Ver PDF
                                     </a>
                                 </div>

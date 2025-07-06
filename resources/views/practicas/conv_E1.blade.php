@@ -72,49 +72,53 @@
                     @csrf
                     <div class="mb-3">
                         <label for="empresa" class="form-label">Nombre de la Empresa</label>
-                        <input type="text" class="form-control" id="empresa" name="empresa" required>
+                        <input type="text" class="form-control" id="empresa" name="empresa" value="{{ $practicaData->empresa->nombre  ?? '' }}" @if($empresaExiste) readonly @endif required>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="ruc" class="form-label">RUC</label>
-                                <input type="text" class="form-control" id="ruc" name="ruc" maxlength="11" placeholder="Ej: 20123456789" required>
+                                <input type="text" class="form-control" id="ruc" name="ruc" maxlength="11" placeholder="Ej: 20123456789" value="{{ $practicaData->empresa->ruc  ?? '' }}" @if($empresaExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="razon_social" class="form-label">Razón Social</label>
-                                <input type="text" class="form-control" id="razon_social" name="razon_social" maxlength="11" required>
+                                <input type="text" class="form-control" id="razon_social" name="razon_social" value="{{ $practicaData->empresa->razon_social  ?? '' }}" @if($empresaExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Av. Siempre Viva #123" required>
+                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Av. Siempre Viva #123" value="{{ $practicaData->empresa->direccion  ?? '' }}" @if($empresaExiste) readonly @endif required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ej: 987654321" required>
+                                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ej: 987654321" value="{{ $practicaData->empresa->telefono  ?? '' }}" @if($empresaExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="empresa@dominio.com" required>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="empresa@dominio.com" value="{{ $practicaData->empresa->correo  ?? '' }}" @if($empresaExiste) readonly @endif required>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="sitio_web" class="form-label">Sitio web (opcional)</label>
-                        <input type="url" class="form-control" id="sitio_web" name="sitio_web" placeholder="https://www.miempresa.com">
+                        <input type="url" class="form-control" id="sitio_web" name="sitio_web" placeholder="https://www.linkedin.com" value="{{ $practicaData->empresa->web  ?? '' }}" @if($empresaExiste) readonly @endif>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                @if($empresaExiste)
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                @else
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="submit" form="formEmpresa" class="btn btn-primary">Guardar</button>
+                @endif
             </div>
         </div>
     </div>
@@ -133,55 +137,55 @@
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Apellidos y Nombres</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ $practicaData->jefeInmediato->nombres  ?? '' }}" @if($jefeExiste) readonly @endif required>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="dni" class="form-label">DNI</label>
-                                <input type="text" class="form-control" id="dni" name="dni" maxlength="8" required>
+                                <input type="text" class="form-control" id="dni" name="dni" maxlength="8" value="{{ $practicaData->jefeInmediato->dni  ?? '' }}" @if($jefeExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="direccion" class="form-label">Dirección (opcional)</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion">
+                                <label for="sitio_web" class="form-label">Sitio web (opcional)</label>
+                                <input type="url" class="form-control" id="sitio_web" name="sitio_web" placeholder="https://www.linkedin.com" value="{{ $practicaData->jefeInmediato->web  ?? '' }}" @if($jefeExiste) readonly @endif>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="area" class="form-label">Area o Departamento</label>
-                                <input type="text" class="form-control" id="area" name="area" maxlength="11" required>
+                                <input type="text" class="form-control" id="area" name="area" maxlength="11" value="{{ $practicaData->jefeInmediato->area  ?? '' }}" @if($jefeExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="cargo" class="form-label">Cargo o Puesto</label>
-                                <input type="text" class="form-control" id="cargo" name="cargo" required>
+                                <input type="text" class="form-control" id="cargo" name="cargo" value="{{ $practicaData->jefeInmediato->cargo  ?? '' }}" @if($jefeExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="telefono" name="telefono" maxlength="9" placeholder="Ej: 987654321" required>
+                                <input type="text" class="form-control" id="telefono" name="telefono" maxlength="9" placeholder="Ej: 987654321" value="{{ $practicaData->jefeInmediato->telefono  ?? '' }}" @if($jefeExiste) readonly @endif required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="empresa@dominio.com" required>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="empresa@dominio.com" value="{{ $practicaData->jefeInmediato->correo  ?? '' }}" @if($jefeExiste) readonly @endif required>
                             </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sitio_web" class="form-label">Sitio web (opcional)</label>
-                        <input type="url" class="form-control" id="sitio_web" name="sitio_web" placeholder="https://www.miempresa.com">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                @if($jefeExiste)
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                @else
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="submit" form="formJefeInmediato" class="btn btn-primary">Guardar</button>
+                @endif
             </div>
         </div>
     </div>

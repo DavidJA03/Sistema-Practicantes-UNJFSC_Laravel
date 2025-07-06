@@ -43,11 +43,12 @@
           </thead>
           <tbody>
             @foreach ($estudiantes as $index => $grupo)
-<tr>
-  <td>{{ $grupo->id }}</td>
-  <td>{{ $grupo->estudiante->nombres ?? 'Sin estudiante' }}</td>
-  <td>{{ $grupo->grupoPractica->semestre->codigo ?? 'Sin semestre' }}</td>
-  <td>{{ $grupo->grupoPractica->escuela->name ?? 'Sin escuela' }}</td>
+      <tr>
+        <td>{{ $grupo->id }}</td> 
+        <td>{{ $grupo->estudiante->nombres ?? 'Sin estudiante' }}</td>
+        <td>{{ $grupo->grupo->semestre->codigo ?? 'Sin semestre' }}</td>
+        <td>{{ $grupo->grupo->escuela->name ?? 'Sin escuela' }}</td>
+
 
   <td>
     <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalFicha{{ $grupo->id }}">

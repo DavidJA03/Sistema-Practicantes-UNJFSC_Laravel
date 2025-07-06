@@ -37,4 +37,9 @@ class grupos_practica extends Model
     {
         return $this->belongsTo(Escuela::class, 'id_escuela');
     }
+    public function grupoPractica()
+    {
+        return $this->belongsTo(grupos_practica::class);
+    }
+
 }

@@ -73,6 +73,7 @@
                     @endif
 
                 </li>
+                @if($rol ==1)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#bloqueacademico">
                         <i class="bi bi-book-fill"></i><span>Bloque Académico</span>
@@ -86,6 +87,7 @@
                         </div>
                     </div>
                 </li>
+                @endif
                 <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
                 
@@ -110,7 +112,7 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>
             @endif
 
-            @if ($rol == 1 || $rol == 4)
+            @if ( $rol == 4)
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Validación de datos</div>
                 <li class="nav-item"><a class="nav-link" href="{{ route('matricula_index') }}"><i class="fas fa-address-card"></i><span>Matrícula</span></a></li>

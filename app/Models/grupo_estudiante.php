@@ -16,25 +16,18 @@ class grupo_estudiante extends Model
     'id_grupo_practica',
     'estado'
     ];
-
-
-
     public function estudiante()
     {
         return $this->belongsTo(Persona::class, 'id_estudiante');
     }
- 
     public function supervisor()
     {
         return $this->belongsTo(Persona::class, 'id_supervisor');
     }
-
     public function grupo()
     {
         return $this->belongsTo(grupos_practica::class, 'id_grupo_practica');
     }
-    public function grupoPractica()
-    {
-        return $this->belongsTo(grupos_practica::class, 'id_grupo_practica');
-    }
+   
+
 }

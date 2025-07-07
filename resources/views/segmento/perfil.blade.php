@@ -21,7 +21,7 @@
                                 <i class="fas fa-edit"></i>    
                                 Editar 
                             </button>
-                            <button type="button" class="btn btn-success btn-sm d-none ml-2" id="perfUpdate">
+                            <button type="submit" form="formEditPerfil" class="btn btn-success btn-sm d-none ml-2" id="perfUpdate">
                                 <i class="fas fa-save"></i>
                                 Actualizar
                             </button>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form id="formEditPerfil">
+                    <form id="formEditPerfil" method="POST" action="{{ route('persona.editar') }}" enctype="multipart/form-data">
                         <meta name="csrf-token" content="{{ csrf_token() }}">
                         @csrf
                         @method('POST')
@@ -90,7 +90,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="provincia">Provincia</label>
-                                <select class="form-control" id="provincia" name="provincia" readonly>
+                                <select class="form-control" id="provincia" name="provincia" data-valor="{{ $persona->provincia ?? '' }}" disabled>
                                     <option value="">Seleccione una provincia</option>
                                 </select>
                             </div>
@@ -98,7 +98,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="distrito">Distrito</label>
-                                <select class="form-control" id="distrito" name="distrito"  disabled readonly>
+                                <select class="form-control" id="distrito" name="distrito" data-valor="{{ $persona->distrito ?? '' }}"  disabled>
                                     <option value="">Seleccione un distrito</option>
                                 </select>
                             </div>
@@ -108,7 +108,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Fotografía -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">

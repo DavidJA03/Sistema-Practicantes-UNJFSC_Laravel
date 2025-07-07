@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     const etapa1 = document.getElementById("etapa1");
     const etapa2 = document.getElementById("etapa2");
@@ -6,169 +7,97 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnEtapa2 = document.getElementById("btnEtapa2");
     const btnEtapa3 = document.getElementById("btnEtapa3");
 
-    // Mostrar Etapa 2
-    btnEtapa2?.addEventListener("click", function () {
+    btnEtapa2?.addEventListener("click", () => {
         etapa1.style.display = "none";
         etapa2.style.display = "block";
         etapa3.style.display = "none";
     });
 
-    // Mostrar Etapa 3
-    btnEtapa3?.addEventListener("click", function () {
+    btnEtapa3?.addEventListener("click", () => {
         etapa1.style.display = "none";
         etapa2.style.display = "none";
         etapa3.style.display = "block";
     });
 
-    // Regresar a Etapa 1
     document.querySelectorAll(".btn-regresar-etapa1").forEach(btn => {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", () => {
             etapa1.style.display = "block";
             etapa2.style.display = "none";
             etapa3.style.display = "none";
         });
     });
 
-    // Regresar a Etapa 2
     document.querySelectorAll(".btn-regresar-etapa2").forEach(btn => {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", () => {
             etapa1.style.display = "block";
             etapa2.style.display = "none";
             etapa3.style.display = "none";
         });
     });
-});
 
-document.addEventListener('DOMContentLoaded', function () {
     const modalProceso = document.getElementById('modalProceso');
 
-    modalProceso.addEventListener('show.bs.modal', function (event) {
+    modalProceso.addEventListener('show.bs.modal', async function (event) {
         const button = event.relatedTarget;
+        const idPractica = button.getAttribute('data-id_practica');
 
-        const id_practica = button.getAttribute('data-id_practica');
-        const estado = button.getAttribute('data-estado');
+        try {
+            const response = await fetch(`/practica/${idPractica}`);
+            const data = await response.json();
 
-        if (estado == '1') {
-            actualizarBotones(1);
-            actualizarFormularios(1);
-        } else if (estado == '2') {
-            actualizarBotones(2);
-            actualizarFormularios(2);
-        } else if (estado == '3') {
-            actualizarBotones(3);
-            actualizarFormularios(3);
-        } else if (estado == '4') {
-            actualizarBotones(4);
-            actualizarFormularios(4);
-        } else {
-            actualizarBotones(4);
+            // Mostrar estado
+            const estado = parseInt(data.estado) || 1;
+            actualizarBotones(estado);
+            actualizarFormularios(estado);
+
+            // Mostrar sección según tipo práctica
+            const esDesarrollo = data.tipo_practica === 'desarrollo';
+            document.getElementById('seccion-desarrollo-E2').style.display = esDesarrollo ? 'block' : 'none';
+            document.getElementById('seccion-convalidacion-E2').style.display = esDesarrollo ? 'none' : 'block';
+            document.getElementById('seccion-desarrollo-E3').style.display = esDesarrollo ? 'block' : 'none';
+            document.getElementById('seccion-convalidacion-E3').style.display = esDesarrollo ? 'none' : 'block';
+
+            // IDs para formularios
+            ['idE1', 'idE2', 'idE3', 'idE4'].forEach(id => {
+                document.getElementById(id).value = data.id;
+            });
+
+            // Empresa
+            document.getElementById('modal-nombre-empresa').textContent = data.empresa?.nombre || '';
+            document.getElementById('modal-ruc-empresa').textContent = data.empresa?.ruc || '';
+            document.getElementById('modal-razon_social-empresa').textContent = data.empresa?.razon_social || '';
+            document.getElementById('modal-direccion-empresa').textContent = data.empresa?.direccion || '';
+            document.getElementById('modal-telefono-empresa').textContent = data.empresa?.telefono || '';
+            document.getElementById('modal-email-empresa').textContent = data.empresa?.correo || '';
+            document.getElementById('modal-sitio_web-empresa').textContent = data.empresa?.web || '';
+
+            // Jefe inmediato
+            document.getElementById('modal-name-jefe').textContent = data.jefe_inmediato?.nombres || '';
+            document.getElementById('modal-area-jefe').textContent = data.jefe_inmediato?.area || '';
+            document.getElementById('modal-cargo-jefe').textContent = data.jefe_inmediato?.cargo || '';
+            document.getElementById('modal-dni-jefe').textContent = data.jefe_inmediato?.dni || '';
+            document.getElementById('modal-sitio_web-jefe').textContent = data.jefe_inmediato?.web || '';
+            document.getElementById('modal-telefono-jefe').textContent = data.jefe_inmediato?.telefono || '';
+            document.getElementById('modal-email-jefe').textContent = data.jefe_inmediato?.correo || '';
+
+            // Rutas de archivos
+            document.getElementById('btn-ruta-fut').href = data.ruta_fut || '';
+            document.getElementById('btn-ruta-plan-actividades').href = data.ruta_plan_actividades || '';
+            document.getElementById('btn-ruta-informe-final').href = data.ruta_informe_final || '';
+            document.getElementById('btn-ruta-constancia-cumplimiento').href = data.ruta_constancia_cumplimiento || '';
+            document.getElementById('btn-ruta-carta-aceptacion-C2').href = data.ruta_carta_aceptacion || '';
+            document.getElementById('btn-ruta-carta-aceptacion-E3').href = data.ruta_carta_aceptacion || '';
+            document.getElementById('btn-ruta-carta-presentacion').href = data.ruta_carta_presentacion || '';
+            document.getElementById('btn-ruta-registro-actividades').href = data.ruta_registro_actividades || '';
+            document.getElementById('btn-ruta-control-mensual-actividades').href = data.ruta_control_actividades || '';
+
+        } catch (error) {
+            console.error('Error al obtener datos:', error);
         }
-
-        const tipo_practica = button.getAttribute('data-tipo_practica');
-        if (tipo_practica == 'desarrollo') {
-            document.getElementById('seccion-desarrollo-E2').style.display = "block";
-            document.getElementById('seccion-convalidacion-E2').style.display = "none";
-            document.getElementById('seccion-desarrollo-E3').style.display = "block";
-            document.getElementById('seccion-convalidacion-E3').style.display = "none";
-        } else {
-            document.getElementById('seccion-desarrollo-E2').style.display = "none";
-            document.getElementById('seccion-convalidacion-E2').style.display = "block";
-            document.getElementById('seccion-desarrollo-E3').style.display = "none";
-            document.getElementById('seccion-convalidacion-E3').style.display = "block";
-        }
-
-        const nombre = button.getAttribute('data-nombre');
-        const ruc = button.getAttribute('data-ruc');
-        const razon_social = button.getAttribute('data-razon_social');
-        const direccion = button.getAttribute('data-direccion');
-        const telefono = button.getAttribute('data-telefono');
-        const email = button.getAttribute('data-email');
-        const sitio_web = button.getAttribute('data-sitio_web');
-
-        const jefe_inmediato = button.getAttribute('data-jefe_inmediato');
-        const area_jefe = button.getAttribute('data-area-jefe');
-        const cargo_jefe = button.getAttribute('data-cargo-jefe');
-        const dni_jefe = button.getAttribute('data-dni-jefe');
-        const web_jefe = button.getAttribute('data-web-jefe');
-        const telefono_jefe = button.getAttribute('data-telefono-jefe');
-        const email_jefe = button.getAttribute('data-email-jefe');
-
-        const ruta_fut = button.getAttribute('data-ruta_fut');
-        const ruta_plan_actividades = button.getAttribute('data-ruta_plan_actividades');
-        const ruta_informe_final = button.getAttribute('data-ruta_informe_final');
-        const ruta_constancia_cumplimiento = button.getAttribute('data-ruta_constancia_cumplimiento');
-        const ruta_carta_aceptacion = button.getAttribute('data-ruta_carta_aceptacion');
-        const ruta_carta_presentacion = button.getAttribute('data-ruta_carta_presentacion');
-        const ruta_registro_actividades = button.getAttribute('data-ruta_registro_actividades');
-        const ruta_control_mensual_actividades = button.getAttribute('data-ruta_control_mensual_actividades');
-
-        document.getElementById('idE1').value = id_practica;
-        document.getElementById('idE2').value = id_practica;
-        document.getElementById('idE3').value = id_practica;
-        document.getElementById('idE4').value = id_practica;
-
-        document.getElementById('modal-nombre-empresa').textContent = nombre;
-        document.getElementById('modal-ruc-empresa').textContent = ruc;
-        document.getElementById('modal-razon_social-empresa').textContent = razon_social;
-        document.getElementById('modal-direccion-empresa').textContent = direccion;
-        document.getElementById('modal-telefono-empresa').textContent = telefono;
-        document.getElementById('modal-email-empresa').textContent = email;
-        document.getElementById('modal-sitio_web-empresa').textContent = sitio_web;
-
-        document.getElementById('modal-name-jefe').textContent = jefe_inmediato;
-        document.getElementById('modal-area-jefe').textContent = area_jefe;
-        document.getElementById('modal-cargo-jefe').textContent = cargo_jefe;
-        document.getElementById('modal-dni-jefe').textContent = dni_jefe;
-        document.getElementById('modal-sitio_web-jefe').textContent = web_jefe;
-        document.getElementById('modal-telefono-jefe').textContent = telefono_jefe;
-        document.getElementById('modal-email-jefe').textContent = email_jefe;
-
-        document.getElementById('btn-ruta-fut').href = ruta_fut;
-        document.getElementById('btn-ruta-plan-actividades').href = ruta_plan_actividades;
-        document.getElementById('btn-ruta-informe-final').href = ruta_informe_final;
-        document.getElementById('btn-ruta-constancia-cumplimiento').href = ruta_constancia_cumplimiento;
-        document.getElementById('btn-ruta-carta-aceptacion-C2').href = ruta_carta_aceptacion;
-        document.getElementById('btn-ruta-carta-aceptacion-E3').href = ruta_carta_aceptacion;
-        document.getElementById('btn-ruta-carta-presentacion').href = ruta_carta_presentacion;
-        document.getElementById('btn-ruta-registro-actividades').href = ruta_registro_actividades;
-        document.getElementById('btn-ruta-control-mensual-actividades').href = ruta_control_mensual_actividades;
     });
-});
 
-document.addEventListener("DOMContentLoaded", function () {
-    const btn1 = document.getElementById("btn1");
-    const btn2 = document.getElementById("btn2");
-    const btn3 = document.getElementById("btn3");
-    const btn4 = document.getElementById("btn4");
-
-    const primeraEtapa = document.getElementById("primeraetapa");
-    const segundaEtapa = document.getElementById("segundaetapa");
-    const terceraEtapa = document.getElementById("terceraetapa");
-    const cuartaEtapa = document.getElementById("cuartaetapa");
-
-    function ocultarTodo() {
-        primeraEtapa.style.display = "none";
-        segundaEtapa.style.display = "none";
-        terceraEtapa.style.display = "none";
-        cuartaEtapa.style.display = "none";
-    }
-
-    function mostrarEtapa(etapa) {
-        ocultarTodo();
-        etapa.style.display = "block";
-    }
-
-    btn1.addEventListener("click", () => mostrarEtapa(primeraEtapa));
-    btn2.addEventListener("click", () => mostrarEtapa(segundaEtapa));
-    btn3.addEventListener("click", () => mostrarEtapa(terceraEtapa));
-    btn4.addEventListener("click", () => mostrarEtapa(cuartaEtapa));
-
-    // Al abrir el modal, mostrar la primera etapa por defecto
-    const modalProceso = document.getElementById("modalProceso");
-    modalProceso.addEventListener("show.bs.modal", function (event) {
-        const button = event.relatedTarget;
-
-        // Reiniciar formularios y botones
+    // Mostrar primera etapa por defecto
+    modalProceso.addEventListener("show.bs.modal", () => {
         document.querySelectorAll('.form-etapa').forEach(form => {
             form.querySelectorAll('select, button, input').forEach(el => {
                 el.removeAttribute('disabled');
@@ -178,62 +107,45 @@ document.addEventListener("DOMContentLoaded", function () {
             form.style.opacity = '1';
         });
 
-        mostrarEtapa(primeraEtapa);
+        document.getElementById("primeraetapa").style.display = "block";
+        document.getElementById("segundaetapa").style.display = "none";
+        document.getElementById("terceraetapa").style.display = "none";
+        document.getElementById("cuartaetapa").style.display = "none";
+    });
+});
 
-        // Estado de la práctica
-        const estado = parseInt(button.getAttribute('data-estado')) || 1;
-        actualizarBotones(estado);
-        actualizarFormularios(estado);
+// Control de botones por etapa
+document.addEventListener("DOMContentLoaded", function () {
+    const botones = {
+        1: document.getElementById("btn1"),
+        2: document.getElementById("btn2"),
+        3: document.getElementById("btn3"),
+        4: document.getElementById("btn4")
+    };
 
-        // Mostrar secciones según tipo_practica
-        const tipo_practica = button.getAttribute('data-tipo_practica');
-        const esDesarrollo = tipo_practica === 'desarrollo';
+    const etapas = {
+        1: document.getElementById("primeraetapa"),
+        2: document.getElementById("segundaetapa"),
+        3: document.getElementById("terceraetapa"),
+        4: document.getElementById("cuartaetapa")
+    };
 
-        document.getElementById('seccion-desarrollo-E2').style.display = esDesarrollo ? 'block' : 'none';
-        document.getElementById('seccion-convalidacion-E2').style.display = esDesarrollo ? 'none' : 'block';
-        document.getElementById('seccion-desarrollo-E3').style.display = esDesarrollo ? 'block' : 'none';
-        document.getElementById('seccion-convalidacion-E3').style.display = esDesarrollo ? 'none' : 'block';
+    function ocultarTodo() {
+        Object.values(etapas).forEach(etapa => etapa.style.display = "none");
+    }
 
-        // Asignar valores al modal (solo ejemplo de algunos)
-        document.getElementById('idE1').value = button.getAttribute('data-id_practica');
-        document.getElementById('idE2').value = button.getAttribute('data-id_practica');
-        document.getElementById('idE3').value = button.getAttribute('data-id_practica');
-        document.getElementById('idE4').value = button.getAttribute('data-id_practica');
+    function mostrarEtapa(n) {
+        ocultarTodo();
+        etapas[n].style.display = "block";
+    }
 
-        document.getElementById('modal-nombre-empresa').textContent = button.getAttribute('data-nombre') || '';
-        document.getElementById('modal-ruc-empresa').textContent = button.getAttribute('data-ruc') || '';
-        document.getElementById('modal-razon_social-empresa').textContent = button.getAttribute('data-razon_social') || '';
-        document.getElementById('modal-direccion-empresa').textContent = button.getAttribute('data-direccion') || '';
-        document.getElementById('modal-telefono-empresa').textContent = button.getAttribute('data-telefono') || '';
-        document.getElementById('modal-email-empresa').textContent = button.getAttribute('data-email') || '';
-        document.getElementById('modal-sitio_web-empresa').textContent = button.getAttribute('data-sitio_web') || '';
-
-        document.getElementById('modal-name-jefe').textContent = button.getAttribute('data-jefe_inmediato') || '';
-        document.getElementById('modal-area-jefe').textContent = button.getAttribute('data-area-jefe') || '';
-        document.getElementById('modal-cargo-jefe').textContent = button.getAttribute('data-cargo-jefe') || '';
-        document.getElementById('modal-dni-jefe').textContent = button.getAttribute('data-dni-jefe') || '';
-        document.getElementById('modal-sitio_web-jefe').textContent = button.getAttribute('data-web-jefe') || '';
-        document.getElementById('modal-telefono-jefe').textContent = button.getAttribute('data-telefono-jefe') || '';
-        document.getElementById('modal-email-jefe').textContent = button.getAttribute('data-email-jefe') || '';
-
-        document.getElementById('btn-ruta-fut').href = button.getAttribute('data-ruta_fut') || '';
-        document.getElementById('btn-ruta-plan-actividades').href = button.getAttribute('data-ruta_plan_actividades') || '';
-        document.getElementById('btn-ruta-informe-final').href = button.getAttribute('data-ruta_informe_final') || '';
-        document.getElementById('btn-ruta-constancia-cumplimiento').href = button.getAttribute('data-ruta_constancia_cumplimiento') || '';
-        document.getElementById('btn-ruta-carta-aceptacion-C2').href = button.getAttribute('data-ruta_carta_aceptacion') || '';
-        document.getElementById('btn-ruta-carta-aceptacion-E3').href = button.getAttribute('data-ruta_carta_aceptacion') || '';
-        document.getElementById('btn-ruta-carta-presentacion').href = button.getAttribute('data-ruta_carta_presentacion') || '';
-        document.getElementById('btn-ruta-registro-actividades').href = button.getAttribute('data-ruta_registro_actividades') || '';
-        document.getElementById('btn-ruta-control-mensual-actividades').href = button.getAttribute('data-ruta_control_mensual_actividades') || '';
+    Object.entries(botones).forEach(([num, btn]) => {
+        btn.addEventListener("click", () => mostrarEtapa(Number(num)));
     });
 });
 
 function actualizarBotones(estadoActual) {
-    // Seleccionar todos los botones
-    const botones = document.querySelectorAll('.btn-etapa');
-    
-    // Recorrer todos los botones
-    botones.forEach(boton => {
+    document.querySelectorAll('.btn-etapa').forEach(boton => {
         const estadoBoton = parseInt(boton.getAttribute('data-estado')) || 1;
 
         if (estadoBoton <= estadoActual) {
@@ -253,27 +165,23 @@ function actualizarBotones(estadoActual) {
 }
 
 function actualizarFormularios(estadoActual) {
-    const formularios = document.querySelectorAll('.form-etapa');
-
-    formularios.forEach(formulario => {
+    document.querySelectorAll('.form-etapa').forEach(formulario => {
         const estadoFormulario = parseInt(formulario.getAttribute('data-estado')) || 1;
         const elementos = formulario.querySelectorAll('select, button');
 
         if (estadoFormulario === estadoActual) {
-            // Activar solo el formulario correspondiente al estado actual
             formulario.classList.remove('disabled');
             formulario.style.opacity = '1';
-            elementos.forEach(element => {
-                element.removeAttribute('disabled');
-                element.classList.remove('disabled');
+            elementos.forEach(el => {
+                el.removeAttribute('disabled');
+                el.classList.remove('disabled');
             });
         } else {
-            // Desactivar los demás formularios
             formulario.classList.add('disabled');
             formulario.style.opacity = '0.6';
-            elementos.forEach(element => {
-                element.setAttribute('disabled', 'disabled');
-                element.classList.add('disabled');
+            elementos.forEach(el => {
+                el.setAttribute('disabled', 'disabled');
+                el.classList.add('disabled');
             });
         }
     });

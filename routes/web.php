@@ -6,7 +6,6 @@ use App\Http\Controllers\cerrarSesionController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\PersonaController;
-use App\Http\Controllers\UsuarioMasivoController;
 use App\Http\Controllers\facultadController;
 use App\Http\Controllers\escuelaController;
 use App\Http\Controllers\grupoEstudianteController;
@@ -48,29 +47,23 @@ Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->na
 Route::get('/segmento/perfil', [PersonaController::class, 'users'])->middleware('auth')->name('perfil');
 
 // Rutas para personas
-Route::post('/personas', [PersonaController::class, 'store'])->name('personas.store');
 Route::get('/personas/check-dni/{dni}', [PersonaController::class, 'checkDni'])->middleware('auth')->name('personas.check.dni');
 Route::get('/personas/check-email/{email}', [PersonaController::class, 'checkEmail'])->middleware('auth')->name('personas.check.email');
 
-// Ruta para cargar el modal de registro
-Route::get('/segmento/modal-registro', [PersonaController::class, 'registro'])->middleware('auth')->name('modal.registro');
-
-Route::get('/segmento/modal-carga-masiva', [UsuarioMasivoController::class, 'index'])->middleware('auth')->name('modal.carga_masiva');
-
 // Ruta para la carga masiva de usuarios
-Route::post('/usuarios-masivos', [UsuarioMasivoController::class, 'store'])->name('usuarios.masivos.store');
+Route::post('/segmento/usuarios-masivos', [PersonaController::class, 'store_masivo'])->name('usuarios.masivos.store');
 
-Route::get('/segmento/registrar', function () {
-    return view('segmento.registrar');
-})->middleware('auth')->name('registrar');
+Route::get('/segmento/registrar', [PersonaController::class, 'registro'])->middleware('auth')->name('registrar');
+
+Route::post('/segmento/registrar', [PersonaController::class, 'store'])->name('personas.store');
+
+Route::get('/escuelas/{facultad_id}', [PersonaController::class, 'getEscuelas']);
 
 Route::get('/list_users/modal-editar', function () {
     return view('list_users.edit_persona');
 })->middleware('auth')->name('modal.editar');
 
-Route::post('/list_users/modal-editar/{id}', [PersonaController::class, 'update'])->middleware('auth')->name('modal.editar');
-
-Route::post('/segmento/actualizar_perfil/{id}', [PersonaController::class, 'update'])->middleware('auth')->name('actualizar_perfil');
+Route::post('/persona/editar', [PersonaController::class, 'update'])->middleware('auth')->name('persona.editar');
 
 Route::get('/list_users/docente', [PersonaController::class, 'lista_docentes'])->middleware('auth')->name('docente');
 
@@ -83,16 +76,10 @@ Route::delete('/personas/{id}', [PersonaController::class, 'destroy'])->middlewa
 // Ruta para obtener los datos de un docente
 Route::get('/personas/{id}', [PersonaController::class, 'edit'])->middleware('auth')->name('personas.edit');
 
-// Ruta para actualizar una persona
-Route::put('/personas/{id}', [PersonaController::class, 'update'])->middleware('auth')->name('personas.update');
-
 //Bloque Academico
 Route::resource('facultad',facultadController::class);
 
-
 Route::resource('escuela',escuelaController::class);
-
-
 
 Route::resource('semestre',semestreController::class);
 Route::get('/semestre/{semestre}/edit', [SemestreController::class, 'edit'])->name('semestre.edit');
@@ -171,3 +158,6 @@ Route::post('/matricula/actualizar-record/{id}', [ValidacionMatriculaController:
 Route::post('/practicas/proceso', [PracticaController::class, 'proceso'])->middleware('auth')->name('proceso');
 
 Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store.foto');
+
+
+Route::get('/practica/{id}', [PracticaController::class, 'show'])->name('practica.show');

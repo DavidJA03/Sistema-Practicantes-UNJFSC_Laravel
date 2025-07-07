@@ -1,12 +1,11 @@
-// Función para cargar el modal usando AJAX
-async function cargarModal() {
-    try {
-        const response = await fetch('/segmento/modal-registro');
-        const modalHtml = await response.text();
-        return modalHtml;
-    } catch (error) {
-        console.error('Error al cargar el modal:', error);
-        return '';
+function completarCorreo() {
+    const codigo = document.getElementById('codigo').value.trim();
+    const correoInst = document.getElementById('correo_inst');
+    
+    if (codigo) {
+        correoInst.value = codigo + '@unjfsc.edu.pe';
+    } else {
+        correoInst.value = '';
     }
 }
 
@@ -62,62 +61,45 @@ async function cargarDistritos(provinciaId) {
     }
 }
 
-// Inicializar el modal
-async function inicializarModal() {
-    const modalHtml = await cargarModal();
-    if (modalHtml) {
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        
-        // Evento para mostrar el modal al hacer clic en los cards
-        const cardRegistro = document.querySelector('.card-registro');
-        if (cardRegistro) {
-            cardRegistro.addEventListener('click', function (e) {
-                e.preventDefault();
-                $('#modalRegistro').modal('show');
-                cargarProvincias();
-            });
-        }
+// Iniciar cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function() {
+    cargarProvincias();
+    document.getElementById('provincia').addEventListener('change', function() {
+        cargarDistritos(this.value);
+    });
 
-        // Evento para cargar distritos cuando se selecciona una provincia
-        document.getElementById('provincia').addEventListener('change', function() {
-            const provinciaId = this.value;
-            cargarDistritos(provinciaId);
-        });
+    function aplicarLogicaFacultadEscuela(facultadID, escuelaID) {
+        const facultadSelect = document.getElementById(facultadID);
+        const escuelaSelect = document.getElementById(escuelaID);
 
-        // Evento para registrar el usuario
-        document.getElementById('btnRegistrar').addEventListener('click', async function() {
-            const formData = new FormData(document.getElementById('formRegistro'));
-            
-            try {
-                // Obtener el token CSRF
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                
-                const response = await fetch('/personas', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                });
+        facultadSelect.addEventListener('change', function () {
+            const facultadIdSeleccionada = this.value;
 
-                const data = await response.json();
-
-                if (data.success) {
-                    alert('Persona registrada exitosamente');
-                    $('#modalRegistro').modal('hide');
-                    // Limpiar el formulario
-                    document.getElementById('formRegistro').reset();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error en la petición:', error);
-                alert('Error al registrar la persona. Por favor, inténtelo de nuevo.');
+            if (!facultadIdSeleccionada) {
+                escuelaSelect.disabled = true;
+                escuelaSelect.value = "";
+                Array.from(escuelaSelect.options).forEach(option => option.hidden = true);
+                return;
             }
+
+            escuelaSelect.disabled = false;
+
+            Array.from(escuelaSelect.options).forEach(option => {
+                const facultadDeEscuela = option.getAttribute('data-facultad');
+
+                if (option.value === "") {
+                    option.hidden = false;
+                } else {
+                    option.hidden = facultadDeEscuela !== facultadIdSeleccionada;
+                }
+            });
+
+            escuelaSelect.value = "";
         });
     }
-}
 
-// Iniciar cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', inicializarModal);;
+    // Aplicar lógica a ambos combos
+    aplicarLogicaFacultadEscuela('facultadRegistro', 'escuelaRegistro');
+    aplicarLogicaFacultadEscuela('facultadMasiva', 'escuelaMasiva');
+
+});

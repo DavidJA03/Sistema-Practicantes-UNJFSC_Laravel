@@ -27,7 +27,8 @@ class Persona extends Model
         'rol_id',
         'date_create',
         'date_update',
-        'estado'
+        'estado',
+        'id_escuela'
     ];
 
     public function user()
@@ -48,7 +49,7 @@ class Persona extends Model
     {
         return $this->hasMany(Matricula::class, 'persona_id'); 
     }
- public function practica()
+    public function practica()
     {
         return $this->hasOne(Practica::class, 'estudiante_id','id');
     }
@@ -85,6 +86,13 @@ class Persona extends Model
         return $this->hasMany(Respuesta::class);
     }
 
-
+    protected static function booted()
+    {
+        static::deleting(function ($persona) {
+            if ($persona->user) {
+                $persona->user->delete();
+            }
+        });
+    }
 
 }

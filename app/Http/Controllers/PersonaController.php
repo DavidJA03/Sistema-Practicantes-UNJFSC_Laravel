@@ -8,53 +8,37 @@ use App\Models\type_users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Models\Facultade;
+use App\Models\Escuela;
 
 class PersonaController extends Controller
 {
-    /**
-     * Show the user profile
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function lista_docentes(){
         $personas = Persona::where('rol_id', 2)->get();
-        return view('list_users.docente', compact('personas'));
+        $facultades = Facultade::where('estado', 1)->get();
+        $escuelas = Escuela::where('estado', 1)->get();
+        return view('list_users.docente', compact('personas', 'facultades', 'escuelas'));
     }
 
-    /**
-     * Show the user profile
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function lista_supervisores(){
         $personas = Persona::where('rol_id', 3)->get();
-        return view('list_users.supervisor', compact('personas'));
+        $facultades = Facultade::where('estado', 1)->get();
+        $escuelas = Escuela::where('estado', 1)->get();
+        return view('list_users.supervisor', compact('personas', 'facultades', 'escuelas'));
     }
-    /**
-     * Show the user profile
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function lista_estudiantes(){
         $personas = Persona::where('rol_id', 4)->get();
-        return view('list_users.estudiante', compact('personas'));
+        $facultades = Facultade::where('estado', 1)->get();
+        $escuelas = Escuela::where('estado', 1)->get();
+        return view('list_users.estudiante', compact('personas', 'facultades', 'escuelas'));
     }
-    /**
-     * Obtener los datos de una persona
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function edit($id){
         $persona = Persona::findOrFail($id);
         return response()->json($persona);
     }
 
-    /**
-     * Show the user profile
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function users(){
         // Obtener el usuario logeado
         $user = auth()->user();
@@ -64,25 +48,25 @@ class PersonaController extends Controller
         
         return view('segmento.perfil', compact('persona'));
     }
-    /**
-     * Show the registration modal
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function registro(){
         $roles = type_users::where('estado', 1)
             ->where('name', '!=', 'admin')
             ->get();
+        $facultades = Facultade::where('estado', 1)->get();
+        $escuelas = Escuela::where('estado', 1)->get();
         
-        return view('segmento.cuadro_registro', compact('roles'));
+        return view('segmento.registrar', compact('roles', 'facultades', 'escuelas'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+    public function getEscuelas($facultad_id){
+        $escuelas = Escuela::where('facultad_id', $facultad_id)
+            ->where('estado', 1)
+            ->get();
+
+        return response()->json($escuelas);
+    }
+
     public function destroy($id){
         $persona = Persona::findOrFail($id);
         $persona->delete();
@@ -90,26 +74,7 @@ class PersonaController extends Controller
         return redirect()->back()->with('success', 'Persona eliminada correctamente.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(Request $request){
-        $validated = $request->validate([
-            'codigo' => 'string|size:10',
-            'nombres' => 'string|max:50',
-            'apellidos' => 'string|max:50',
-            'dni' => 'string|size:8|unique:personas,dni',
-            'celular' => 'string|size:9',
-            'correo_inst' => 'email|max:150|unique:personas,correo_inst',
-            'sexo' => 'in:M,F',
-            'provincia' => 'string|max:50',
-            'distrito' => 'string|max:50',
-            'rol' => 'exists:type_users,id',
-        ]);
-
         // Si no se proporciona correo, usar el DNI como correo temporal
         if (empty($request->correo_inst)) {
             $request->correo_inst = $request->dni . '@temporal.com';
@@ -137,7 +102,7 @@ class PersonaController extends Controller
                 'celular' => $request->celular,
                 'sexo' => $request->sexo,
                 'correo_inst' => $request->correo_inst,
-                'departamento' => null,
+                'departamento' => 'Lima Provincia',
                 'provincia' => $request->provincia,
                 'distrito' => $request->distrito,
                 'usuario_id' => $user->id,
@@ -145,31 +110,117 @@ class PersonaController extends Controller
                 'date_create' => now(),
                 'date_update' => now(),
                 'estado' => 1,
-                'id_escuela' => null,
+                'id_escuela' => $request->escuela,
             ]);
 
             $persona->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Persona registrada exitosamente',
-                'data' => $persona
-            ], 201);
+            return back()->with('success', 'Formulario de Trámite (FUT) subido correctamente.');
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function store_masivo(Request $request){
+        $request->validate([
+            'archivo' => 'file|mimes:csv,txt|max:2048',
+            'rol' => 'exists:type_users,id',
+            'escuela' => 'exists:escuelas,id',
+        ]);
+
+        try {
+            $archivo = $request->file('archivo');
+            $contenido = file($archivo->path());
+            
+            // Saltar las primeras 3 líneas (headers y datos no necesarios)
+            array_shift($contenido); // Línea 1
+            array_shift($contenido); // Línea 2
+            array_shift($contenido); // Línea 3
+            
+            // Obtener los headers de la línea 4
+            $headers = str_getcsv(array_shift($contenido));
+            
+            // Mapear los campos del CSV a los campos de la base de datos
+            $campoMap = [
+                'CodigoUniversitario' => 'codigo',
+                'Alumno' => 'nombres',
+                'Textbox4' => 'correo_inst'
+            ];
+            
+            $usuariosCreados = 0;
+            $errores = [];
+
+            foreach ($contenido as $linea) {
+                $datos = str_getcsv($linea);
+                
+                if (count($datos) !== count($headers)) {
+                    $errores[] = "Formato incorrecto en la línea " . ($usuariosCreados + 1);
+                    continue;
+                }
+
+                // Crear un array con los datos mapeados
+                $usuarioData = [];
+                foreach ($headers as $index => $header) {
+                    if (isset($campoMap[$header])) {
+                        if ($header === 'Alumno') {
+                            // Separar apellidos y nombres
+                            $nombresCompletos = $datos[$index];
+                            $partes = explode(' ', $nombresCompletos);
+                            
+                            // Tomar las dos primeras palabras como apellidos
+                            $apellidos = implode(' ', array_slice($partes, 0, 2));
+                            // Tomar el resto como nombres
+                            $nombres = implode(' ', array_slice($partes, 2));
+                            
+                            $usuarioData['apellidos'] = $apellidos;
+                            $usuarioData['nombres'] = $nombres;
+                        } else {
+                            $usuarioData[$campoMap[$header]] = $datos[$index];
+                        }
+                    }
+                }
+
+                try {
+                    // Crear usuario
+                    $user = User::create([
+                        'name' => $usuarioData['codigo'],
+                        'email' => $usuarioData['correo_inst'],
+                        'password' => Hash::make($usuarioData['codigo']),
+                    ]);
+
+                    // Crear persona
+                    $persona = new Persona([
+                        'codigo' => $usuarioData['codigo'],
+                        'nombres' => $usuarioData['nombres'],
+                        'apellidos' => $usuarioData['apellidos'],
+                        'correo_inst' => $usuarioData['correo_inst'],
+                        'departamento' => 'Lima Provincias',
+                        'usuario_id' => $user->id,
+                        'rol_id' => $request->rol, // Usar el ID del rol seleccionado
+                        'date_create' => now(),
+                        'date_update' => now(),
+                        'estado' => 1,
+                        'id_escuela' => $request->escuela,
+                    ]);
+
+                    $persona->save();
+                    $usuariosCreados++;
+                } catch (\Exception $e) {
+                    $errores[] = "Error al crear usuario en la línea " . ($usuariosCreados + 1) . ": " . $e->getMessage();
+                }
+            }
+
+            return back()->with('success', 'Formulario de Trámite (FUT) subido correctamente.');
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al registrar la persona: ' . $e->getMessage()
+                'message' => 'Error al procesar el archivo: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Check if a person exists by DNI
-     *
-     * @param  string  $dni
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function checkDni($dni){
         $persona = Persona::where('dni', $dni)->first();
         return response()->json([
@@ -177,12 +228,6 @@ class PersonaController extends Controller
         ]);
     }
 
-    /**
-     * Check if a person exists by email
-     *
-     * @param  string  $email
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function checkEmail($email){
         $persona = Persona::where('correo_inst', $email)->first();
         return response()->json([
@@ -190,17 +235,10 @@ class PersonaController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(Request $request, $id){
-        $persona = Persona::findOrFail($id);
+    public function update(Request $request){
+        $persona = Persona::findOrFail($request->persona_id);
 
-        $validated = $request->validate([
+        /*$validated = $request->validate([
             'codigo' => 'nullable|string|size:10',
             'nombres' => 'nullable|string|max:50',
             'apellidos' => 'nullable|string|max:50',
@@ -210,10 +248,10 @@ class PersonaController extends Controller
             'sexo' => 'in:M,F',
             'provincia' => 'nullable|string|max:50',
             'distrito' => 'nullable|string|max:50',
-        ]);
+        ]);*/
 
         try {
-            $persona->update([
+            $data = [
                 'codigo' => $request->codigo,
                 'nombres' => $request->nombres,
                 'apellidos' => $request->apellidos,
@@ -223,14 +261,17 @@ class PersonaController extends Controller
                 'correo_inst' => $request->correo_inst,
                 'provincia' => $request->provincia,
                 'distrito' => $request->distrito,
-                'date_update' => now()
-            ]);
+                'date_update' => now(),
+            ];
+        
+            // Solo actualizar id_escuela si viene en el request
+            if ($request->filled('escuela')) {
+                $data['id_escuela'] = $request->escuela;
+            }
+        
+            $persona->update($data);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Persona actualizada exitosamente',
-                'data' => $persona
-            ], 200);
+            return back()->with('success', 'Persona actualizada correctamente.');
 
         } catch (\Exception $e) {
             return response()->json([

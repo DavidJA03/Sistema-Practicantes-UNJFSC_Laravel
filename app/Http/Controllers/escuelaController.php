@@ -19,8 +19,6 @@ class EscuelaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-
-
     {
         $facultades = Facultade::all();
         // Trae todas las escuelas con la relación facultad
@@ -28,6 +26,19 @@ class EscuelaController extends Controller
 
         return view('escuela.index', compact('escuelas', 'facultades'));
     }
+
+    public function create()
+    {
+        $facultades = Facultade::all();
+        return view('escuela.create', compact('facultades'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(StoreEscuelaRequest $request)
     {
         try {
@@ -49,6 +60,22 @@ class EscuelaController extends Controller
             return back()->withErrors('Error al registrar la escuela: ' . $e->getMessage());
         }
     }
+
+    public function edit($id)
+    {
+        $escuela = Escuela::findOrFail($id);
+        $facultades = Facultade::all();
+
+        return view('escuela.edit', compact('escuela', 'facultades'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(UpdateEscuelaRequest $request, $id)
     {
         try {
@@ -84,10 +111,6 @@ class EscuelaController extends Controller
         try {
             $escuela = Escuela::findOrFail($id);
             $escuela->delete();
-
-
-        return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
-
 
             return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
         } catch (Exception $e) {

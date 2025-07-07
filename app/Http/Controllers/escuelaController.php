@@ -12,7 +12,13 @@ use Exception;
 
 class EscuelaController extends Controller
 {
-    public function index()
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
     {
         $facultades = Facultade::all();
         // Trae todas las escuelas con la relación facultad

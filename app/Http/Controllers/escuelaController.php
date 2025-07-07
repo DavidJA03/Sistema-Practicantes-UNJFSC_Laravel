@@ -12,16 +12,7 @@ use Exception;
 
 class EscuelaController extends Controller
 {
-<<<<<<< HEAD
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-=======
     public function index()
->>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     {
         $facultades = Facultade::all();
         // Trae todas las escuelas con la relación facultad
@@ -30,12 +21,6 @@ class EscuelaController extends Controller
         return view('escuela.index', compact('escuelas', 'facultades'));
     }
 
-<<<<<<< HEAD
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $facultades = Facultade::all();
@@ -48,8 +33,6 @@ class EscuelaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-=======
->>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     public function store(StoreEscuelaRequest $request)
     {
         try {
@@ -72,24 +55,6 @@ class EscuelaController extends Controller
         }
     }
 
-<<<<<<< HEAD
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $escuela = Escuela::findOrFail($id);
@@ -105,8 +70,6 @@ class EscuelaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-=======
->>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     public function update(UpdateEscuelaRequest $request, $id)
     {
         try {
@@ -143,14 +106,9 @@ class EscuelaController extends Controller
             $escuela = Escuela::findOrFail($id);
             $escuela->delete();
 
-<<<<<<< HEAD
-        return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
-
-=======
             return redirect()->route('escuela.index')->with('success', 'Escuela eliminada correctamente.');
         } catch (Exception $e) {
             return back()->withErrors('Error al eliminar la escuela: ' . $e->getMessage());
         }
->>>>>>> eea7286f4c01acbe655844924ce0329143e2b733
     }
 }

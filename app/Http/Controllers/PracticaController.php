@@ -21,8 +21,14 @@ class PracticaController extends Controller
     
             //dd($personas);
             
-            return view('practicas.supervision', compact('personas'));
+        return view('practicas.supervision', compact('personas'));
     }
+
+    public function show($id){
+        $practica = Practica::with(['empresa', 'jefeInmediato'])->findOrFail($id);
+        return response()->json($practica);
+    }
+    
 
     public function proceso(Request $request) {
         $id = $request->id;

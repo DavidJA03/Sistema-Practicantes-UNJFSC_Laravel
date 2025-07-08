@@ -192,15 +192,13 @@ modal.show();
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        @foreach ($preguntas as $pregunta)
-                                        @php
-                                            $respuesta = $alumno->respuestas->firstWhere('pregunta_id', $pregunta->id);
-                                        @endphp
-                                        <div class="mb-3">
-                                            <strong>{{ $pregunta->pregunta }}</strong>
-                                            <p>{{ $respuesta ? $respuesta->respuesta : 'No respondida' }}</p>
-                                        </div>
-                                        @endforeach
+                                        @foreach ($alumno->respuestas as $respuesta)
+    <div class="mb-3">
+        <strong>{{ $respuesta->pregunta->pregunta }}</strong>
+        <p>{{ $respuesta->respuesta }}</p>
+    </div>
+@endforeach
+
                                     </div>
                                 </div>
                             </div>

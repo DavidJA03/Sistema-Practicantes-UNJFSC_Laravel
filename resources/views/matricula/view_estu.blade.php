@@ -17,22 +17,45 @@
                                         <div class="text-center">
                                             <i class="bi bi-file-earmark-text text-primary mb-3" style="font-size: 3rem;"></i>
                                             <h5 class="text-primary font-weight-bold mb-3">Ficha de Matrícula</h5>
-                                            
-                                            <!-- Simulando la lógica de Laravel -->
-                                            <div class="mt-3">
-                                                <p><strong>Estado:</strong>
-                                                    <span class="status-badge status-completed">Completo</span>
-                                                    <span class="text-success ms-2">✓</span>
-                                                </p>
-                                                <div class="d-grid gap-2">
-                                                    <a href="#" class="btn btn-outline-primary btn-sm">
-                                                        <i class="bi bi-eye me-1"></i>Ver PDF
-                                                    </a>
-                                                    <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalFicha">
-                                                        <i class="bi bi-pencil me-1"></i>Editar
-                                                    </button>
+                                            @if(isset($persona?->matricula) && $persona?->matricula->ruta_ficha)
+                                                @if ($persona?->matricula->estado_ficha == 'completo')
+                                                    <div class="mt-3">
+                                                        <p><strong>Estado:</strong>
+                                                            <span class="status-badge status-completed">Completo</span>
+                                                            <span class="text-success ms-2">✓</span>
+                                                        </p>
+                                                        <a href="{{ asset($persona?->matricula->ruta_ficha) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                            <i class="bi bi-eye me-1"></i>Ver PDF
+                                                        </a>
+                                                    </div>
+                                                @elseif ($persona?->matricula->estado_ficha == 'en proceso')
+                                                    <!-- Simulando la lógica de Laravel -->
+                                                    <div class="mt-3">
+                                                        <p><strong>Estado:</strong>
+                                                            <span class="status-badge status-active">En Progreso</span>
+                                                        </p>
+                                                        <div class="d-grid gap-2">
+                                                            <a href="{{ asset($persona?->matricula->ruta_ficha) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                                <i class="bi bi-eye me-1"></i>Ver PDF
+                                                            </a>
+                                                            <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalFicha">
+                                                                <i class="bi bi-pencil me-1"></i>Editar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @else
+                                                <div class="mt-3">
+                                                    <p><strong>Estado:</strong>
+                                                        <span class="status-badge status-pending">Pendiente</span>
+                                                    </p>
+                                                    <div class="d-grid">
+                                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFicha">
+                                                            <i class="bi bi-upload me-1"></i>Cargar Ficha de Matrícula
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -42,19 +65,49 @@
                                     <div class="document-card p-4 border rounded-3 h-100" style="background: linear-gradient(145deg, #f8fafc, #f1f5f9);">
                                         <div class="text-center">
                                             <i class="bi bi-file-earmark-bar-graph text-primary mb-3" style="font-size: 3rem;"></i>
-                                            <h5 class="text-primary font-weight-bold mb-3">Récord Académico</h5>
-                                            
-                                            <!-- Simulando la lógica de Laravel -->
-                                            <div class="mt-3">
-                                                <p><strong>Estado:</strong>
-                                                    <span class="status-badge status-pending">Pendiente</span>
-                                                </p>
-                                                <div class="d-grid">
-                                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRecord">
-                                                        <i class="bi bi-upload me-1"></i>Cargar Récord Académico
-                                                    </button>
+                                            <h5 class="text-primary font-weight-bold mb-3">Récord Académico {{ $persona->nombres }}</h5>
+                                            @if(isset($persona?->matricula) && $persona?->matricula->ruta_record)
+                                                @if ($persona?->matricula->estado_record == 'completo')
+                                                    <div class="mt-3">
+                                                        <p><strong>Estado:</strong>
+                                                            <span class="status-badge status-completed">Completo</span>
+                                                            <span class="text-success ms-2">✓</span>
+                                                        </p>
+                                                        <div class="d-grid gap-2">
+                                                            <a href="{{ asset($persona?->matricula->ruta_record) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                                <i class="bi bi-eye me-1"></i>Ver PDF
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                @elseif ($persona?->matricula->estado_record == 'en proceso')
+                                                <!-- Simulando la lógica de Laravel -->
+                                                <div class="mt-3">
+                                                    <p><strong>Estado:</strong>
+                                                        <span class="status-badge status-active">En Progreso</span>
+                                                    </p>
+                                                    <div class="d-grid gap-2">
+                                                        <a href="{{ asset($persona?->matricula->ruta_record) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                            <i class="bi bi-eye me-1"></i>Ver PDF
+                                                        </a>
+                                                        <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalRecord">
+                                                            <i class="bi bi-pencil me-1"></i>Editar
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                @endif
+                                            @else
+                                                <div class="mt-3">
+                                                    <p><strong>Estado:</strong>
+                                                        <span class="status-badge status-pending">Pendiente</span>
+                                                    </p>
+                                                    <div class="d-grid">
+                                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRecord">
+                                                            <i class="bi bi-upload me-1"></i>Cargar Récord Académico
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -79,7 +132,7 @@
                 <div class="modal-dialog">
                     <form action="{{ route('subir.ficha') }}" method="POST" enctype="multipart/form-data" class="modal-content">
                         @csrf
-                        <input type="hidden" name="persona_id" value="">
+                        <input type="hidden" name="persona_id" value="{{ $persona->id }}">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalFichaLabel">
                                 <i class="bi bi-upload me-2"></i>Subir Ficha de Matrícula
@@ -114,7 +167,7 @@
                 <div class="modal-dialog">
                     <form action="{{ route('subir.record') }}" method="POST" enctype="multipart/form-data" class="modal-content">
                         @csrf
-                        <input type="hidden" name="persona_id" value="">
+                        <input type="hidden" name="persona_id" value="{{ $persona->id }}">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalRecordLabel">
                                 <i class="bi bi-upload me-2"></i>Subir Récord Académico

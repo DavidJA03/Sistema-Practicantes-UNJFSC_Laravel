@@ -13,4 +13,11 @@ class matriculaController extends Controller
         $matricula = $persona?->matricula; // Puede ser null si aún no tiene
         return view('matricula.indexM', compact('matricula', 'persona'));
     }
+
+        public function modal(){
+        $user = Auth::user(); // Usuario autenticado s
+        $persona = $user->persona; // Relación uno a uno
+        $matricula = $persona?->matricula; // Puede ser null si aún no tiene
+        return view('matricula.view_estu', compact('matricula', 'persona'));
+    }
 }

@@ -187,70 +187,15 @@
         .dropdown-toggle::after {
             display: none;
         }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem 0;
-            }
-            
-            .welcome-header {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .section-card {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .clickable-card {
-                transition: all 0.3s ease;
-            }
-
-            .clickable-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-                background: linear-gradient(145deg, #e2e8f0, #f1f5f9) !important;
-            }
-
-            .document-card {
-                transition: all 0.2s ease;
-                border: 1px solid var(--border-gray) !important;
-            }
-
-            .document-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            }
-
-            .upload-area-modal {
-                background-color: #fafbfc;
-                transition: all 0.2s ease;
-            }
-
-            .upload-area-modal:hover {
-                border-color: var(--primary-blue) !important;
-                background-color: var(--light-blue);
-            }
-
-            .modal-content {
-                border: none;
-                border-radius: 16px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            }
-
-            .modal-header {
-                border-radius: 16px 16px 0 0;
-                border-bottom: none;
-            }
-
-            .btn-close-white {
-                filter: invert(1) grayscale(100%) brightness(200%);
-            }
-        }
     </style>
+    @stack('css')
 </head>
 <body>
+    @php
+        $user = auth()->user();
+        $persona = $user->persona;
+        $nombreCompleto = $persona->nombres . ' ' . $persona->apellidos;
+    @endphp
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
         <div class="container-fluid">
@@ -261,9 +206,12 @@
             
             <div class="dropdown">
                 <button class="btn btn-link dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
-                         alt="Perfil" class="rounded-circle me-2" width="32" height="32">
-                    <span class="d-none d-md-inline text-muted">María González</span>
+                    @if(auth()->user()->persona->ruta_foto)
+                        <img class="img-profile rounded-circle me-2" width="32" height="32" src="{{ asset(auth()->user()->persona->ruta_foto) }}">
+                    @else
+                        <i class="bi bi-person-circle me-2" alt="Perfil" class="rounded-circle me-2" style="font-size: 32px"></i>
+                    @endif
+                    <span class="d-none d-md-inline text-muted-semibold">{{ $nombreCompleto }}</span>
                     <i class="bi bi-chevron-down ms-1"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -276,25 +224,6 @@
     @yield('content')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Funcionalidad para subir archivos
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const files = e.target.files;
-            if (files.length > 0) {
-                alert(`${files.length} archivo(s) seleccionado(s) para subir`);
-            }
-        });
-
-        // Efectos de hover para las tarjetas
-        document.querySelectorAll('.section-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-2px)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-    </script>
+    @stack('js')
 </body>
 </html>

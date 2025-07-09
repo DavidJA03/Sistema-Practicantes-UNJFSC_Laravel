@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         editing = !editing;
 
         if (editing) {
-            formInputs.forEach(input => input.removeAttribute('readonly'));
+            formInputs.forEach(input => input.removeAttribute('disabled'));
             provinciaSelect.disabled = false;
             distritoSelect.disabled = false;
 
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             editBtn.classList.add('btn-warning');
         } else {
             formInputs.forEach(input => {
-                input.setAttribute('readonly', true);
+                input.setAttribute('disabled', true);
                 input.value = originalValues[input.id];
             });
 

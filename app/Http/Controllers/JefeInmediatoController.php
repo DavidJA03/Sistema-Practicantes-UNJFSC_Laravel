@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JefeInmediato;
 use App\Models\Empresa;
+use App\Models\Practica;
 use Illuminate\Support\Facades\Auth;
 
 class JefeInmediatoController extends Controller
@@ -47,7 +48,7 @@ class JefeInmediatoController extends Controller
             'sitio_web' => 'nullable|url|max:255'
         ]);
 
-        $jefeInmediato = JefeInmediato::create([
+        JefeInmediato::create([
             'nombres' => $validated['name'],
             'dni' => $validated['dni'],
             'cargo' => $validated['cargo'],
@@ -62,38 +63,48 @@ class JefeInmediatoController extends Controller
         return redirect()->back()->with('success', 'Jefe Inmediato registrado exitosamente');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $jefeInmediato = JefeInmediato::findOrFail($id);
+        $practica = Practica::findOrFail($jefeInmediato->practicas_id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'dni' => 'required|string|max:8',
+            'cargo' => 'required|string|max:255',
+            'area' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'sitio_web' => 'nullable|url|max:255'
+        ]);
+
+        $jefeInmediato->update([
+            'nombres' => $validated['name'],
+            'dni' => $validated['dni'],
+            'cargo' => $validated['cargo'],
+            'area' => $validated['area'],
+            'telefono' => $validated['telefono'],
+            'correo' => $validated['email'],
+            'web' => $validated['sitio_web'] ?? null,
+            'estado' => 1,
+        ]);
+
+        $practica->update([
+            'estado_proceso' => 'en proceso',
+            'estado' => 1,
+        ]);
+
+        return redirect()->back()->with('success', 'Jefe Inmediato actualizado exitosamente');
     }
 
     /**

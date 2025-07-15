@@ -18,15 +18,17 @@
                                             <i class="bi bi-file-earmark-text text-primary mb-3" style="font-size: 3rem;"></i>
                                             <h5 class="text-primary font-weight-bold mb-3">Ficha de Matrícula</h5>
                                             @if(isset($persona?->matricula) && $persona?->matricula->ruta_ficha)
-                                                @if ($persona?->matricula->estado_ficha == 'completo')
+                                                @if ($persona?->matricula->estado_ficha == 'Completo')
                                                     <div class="mt-3">
                                                         <p><strong>Estado:</strong>
                                                             <span class="status-badge status-completed">Completo</span>
                                                             <span class="text-success ms-2">✓</span>
                                                         </p>
-                                                        <a href="{{ asset($persona?->matricula->ruta_ficha) }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                                                            <i class="bi bi-eye me-1"></i>Ver PDF
-                                                        </a>
+                                                        <div class="d-grid gap-2">
+                                                            <a href="{{ asset($persona?->matricula->ruta_ficha) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                                <i class="bi bi-eye me-1"></i>Ver PDF
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 @elseif ($persona?->matricula->estado_ficha == 'en proceso')
                                                     <!-- Simulando la lógica de Laravel -->
@@ -65,9 +67,9 @@
                                     <div class="document-card p-4 border rounded-3 h-100" style="background: linear-gradient(145deg, #f8fafc, #f1f5f9);">
                                         <div class="text-center">
                                             <i class="bi bi-file-earmark-bar-graph text-primary mb-3" style="font-size: 3rem;"></i>
-                                            <h5 class="text-primary font-weight-bold mb-3">Récord Académico {{ $persona->nombres }}</h5>
+                                            <h5 class="text-primary font-weight-bold mb-3">Récord Académico</h5>
                                             @if(isset($persona?->matricula) && $persona?->matricula->ruta_record)
-                                                @if ($persona?->matricula->estado_record == 'completo')
+                                                @if ($persona?->matricula->estado_record == 'Completo')
                                                     <div class="mt-3">
                                                         <p><strong>Estado:</strong>
                                                             <span class="status-badge status-completed">Completo</span>
@@ -153,8 +155,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary-custom">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bi bi-upload me-1"></i>Subir Archivo
                             </button>
                         </div>
@@ -188,8 +190,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary-custom">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bi bi-upload me-1"></i>Subir Archivo
                             </button>
                         </div>

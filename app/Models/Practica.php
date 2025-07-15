@@ -12,10 +12,8 @@ class Practica extends Model
 
     protected $fillable = [
         'estudiante_id',
-        'grupo_practica_id',
+        'estado_proceso',
         'tipo_practica',
-        'titulo_practica',
-        'area',
         'ruta_fut',
         'ruta_carta_aceptacion',
         'ruta_carta_presentacion',
@@ -24,7 +22,6 @@ class Practica extends Model
         'ruta_registro_actividades',
         'ruta_control_actividades',
         'ruta_informe_final',
-        'estado_proceso',
         'estado'
     ];
 

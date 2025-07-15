@@ -79,7 +79,7 @@
             <div class="welcome-header">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h1 class="h3 mb-2">Bienvenida, {{ $nombreCompleto }}</h1>
+                        <h1 class="h3 mb-2">Bienvenido(a), {{ $nombreCompleto }}</h1>
                         <p class="mb-0 opacity-90">Aquí encontrarás toda la información y herramientas para gestionar tus prácticas pre-profesionales</p>
                     </div>
                     <div class="col-md-4 text-md-end">
@@ -115,7 +115,7 @@
 
                         <div class="info-item">
                             <div class="info-label">Semestre</div>
-                            <div class="info-value">8vo Semestre</div>
+                            <div class="info-value">{{ $semestre->codigo }} - {{$semestre->ciclo}}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Codigo Institucional</div>
@@ -135,28 +135,37 @@
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="fw-semibold">Estado de Inscripción</span>
-                                <span class="status-badge status-active">Activa</span>
+                                @if(isset($persona?->matricula) && ($persona->matricula->ruta_ficha || $persona->matricula->ruta_record))
+                                    @if ($persona?->matricula->estado_ficha == 'Completo' && $persona?->matricula->estado_record == 'Completo')
+                                        <span class="status-badge status-completed">Completo</span>
+                                        <span class="text-success">✓</span>
+                                    @elseif ($persona?->matricula->estado_ficha == 'en proceso' || $persona?->matricula->estado_record == 'en proceso')
+                                        <span class="status-badge status-active">En Proceso</span>
+                                    @endif
+                                @else
+                                    <span class="status-badge status-pending">Pendiente</span>
+                                @endif
                             </div>
                         </div>
 
                         <div class="info-item">
                             <div class="info-label">Período Académico</div>
-                            <div class="info-value">2024-1</div>
+                            <div class="info-value">{{ $semestre->codigo }}</div>
                         </div>
 
                         <div class="info-item">
-                            <div class="info-label">Materias Inscritas</div>
-                            <div class="info-value">6 materias</div>
+                            <div class="info-label">Docente Titular</div>
+                            <div class="info-value">{{ $docente->apellidos }}  {{ $docente->nombres }}</div>
                         </div>
 
                         <div class="info-item">
-                            <div class="info-label">Créditos Totales</div>
-                            <div class="info-value">18 créditos</div>
+                            <div class="info-label">Escuela Porfesional</div>
+                            <div class="info-value">{{ $escuelaNombre }}</div>
                         </div>
 
                         <div class="info-item">
-                            <div class="info-label">Fecha Límite Retiro</div>
-                            <div class="info-value">15 de Marzo, 2024</div>
+                            <div class="info-label">Requisitos</div>
+                            <div class="info-value">F. Matricula - R. Academico</div>
                         </div>
 
                     </div>
@@ -203,7 +212,7 @@
     </div>
     @include('segmento.view_estu')
     <!-- Modal Matricula -->
-    @include('matricula.view_estu')
+    @include('matricula.view_estu_mat')
 @endsection
 
 @push('js')

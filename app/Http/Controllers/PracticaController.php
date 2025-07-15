@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Empresa;
+use App\Models\grupo_estudiante;
+use App\Models\grupos_practica;
+use App\Models\JefeInmediato;
 use App\Models\Practica;
 use App\Models\Persona;
+use App\Models\Semestre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +33,6 @@ class PracticaController extends Controller
         $practica = Practica::with(['empresa', 'jefeInmediato'])->findOrFail($id);
         return response()->json($practica);
     }
-    
 
     public function proceso(Request $request) {
         $id = $request->id;
@@ -76,20 +80,33 @@ class PracticaController extends Controller
                 $mensajeError .= 'faltan documentos requeridos para este estado.';
             }
             return back()->with('error', $mensajeError);
-        }
-        
+        }        
         
         if ($nuevoEstado === 'aprobado') {
             $practica->estado += 1;
         } elseif ($nuevoEstado === 'rechazado') {
-            //$practica->estado = 0; // o cualquier otro valor que represente "rechazado"
+            $practica->estado_proceso = 'rechazado';
+            if ($request->test) {
+                $empresa = Empresa::where('practicas_id', $id)->first();
+                $empresa->update([
+                    'estado' => 2,
+                ]);
+                
+                $jefeInmediato = JefeInmediato::where('practicas_id', $id)->first();
+                $jefeInmediato->update([
+                    'estado' => 2,
+                ]);
+            }
+        }
+
+        if($practica->estado === 5) {
+            $practica->estado_proceso = 'completo';
         }
         
         $practica->save();
         
         return back()->with('success', 'Estado actualizado correctamente.');
     }
-    
 
     public function storeDesarrollo(Request $request){
         $user = Auth::user();
@@ -103,6 +120,7 @@ class PracticaController extends Controller
         if ($ed == 1) {
             Practica::create([
                 'estudiante_id' => $user->persona->id,
+                'estado_proceso' => 'en_proceso',
                 'tipo_practica' => 'desarrollo',
                 'estado' => 1,
                 'date_create' => now(),
@@ -111,6 +129,7 @@ class PracticaController extends Controller
         }elseif ($ed == 2) {
             Practica::create([
                 'estudiante_id' => $user->persona->id,
+                'estado_proceso' => 'en proceso',
                 'tipo_practica' => 'convalidacion',
                 'estado' => 1,
                 'date_create' => now(),
@@ -136,12 +155,20 @@ class PracticaController extends Controller
             return redirect()->back()->with('error', 'Práctica no encontrada');
         }
 
+        $grupo_estudiante = grupo_estudiante::where('id_estudiante', $user->persona->id)->first();
+        $grupo_practica = grupos_practica::findOrFail($grupo_estudiante->id_grupo_practica);
+
+        $semestre = Semestre::findOrFail($grupo_practica->id_semestre);
+
+        $docente = Persona::findOrFail($grupo_practica->id_docente);
+        $supervisor = Persona::findOrFail($grupo_estudiante->id_supervisor);
+
         
         // Validar existencia de registros relacionados
         $empresaExiste = !is_null($practicaData->empresa);
         $jefeExiste = !is_null($practicaData->jefeInmediato);
         //dd($practicaData);
-        return view('practicas.desarrollo', compact('practicaData', 'empresaExiste', 'jefeExiste'));
+        return view('practicas.desarrollo', compact('practicaData', 'empresaExiste', 'jefeExiste', 'docente', 'supervisor', 'semestre'));
     }
 
     public function convalidacion(){
@@ -183,6 +210,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_fut' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Formulario de Trámite (FUT) subido correctamente.');
@@ -204,6 +232,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_carta_presentacion' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Carta de Presentación subida correctamente.');
@@ -225,6 +254,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_carta_aceptacion' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Carta de Aceptación subida correctamente.');
@@ -246,6 +276,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_plan_actividades' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Plan de Actividades de las PPP subido correctamente.');
@@ -267,6 +298,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_constancia_cumplimiento' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Constancia de Cumplimiento subida correctamente.');
@@ -288,6 +320,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_informe_final' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Informe Final de PPP subido correctamente.');
@@ -309,6 +342,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_registro_actividades' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Registro de Actividades subido correctamente.');
@@ -330,6 +364,7 @@ class PracticaController extends Controller
         $practica = Practica::findOrFail($personaId);
         $practica->update([
             'ruta_control_actividades' => 'storage/' . $ruta,
+            'estado_proceso' => 'en proceso',
         ]);
 
         return back()->with('success', 'Control Mensual de Actividades subido correctamente.');

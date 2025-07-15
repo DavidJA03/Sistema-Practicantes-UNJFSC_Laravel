@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
+use App\Models\Practica;
 use Illuminate\Support\Facades\Auth;
 
 class EmpresaController extends Controller
@@ -46,7 +47,7 @@ class EmpresaController extends Controller
             'sitio_web' => 'nullable|url|max:255'
         ]);
 
-        $empresa = Empresa::create([
+        Empresa::create([
             'nombre' => $validated['empresa'],
             'ruc' => $validated['ruc'],
             'razon_social' => $validated['razon_social'],
@@ -61,38 +62,48 @@ class EmpresaController extends Controller
 
         return redirect()->back()->with('success', 'Empresa registrada exitosamente');
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $empresa = Empresa::findOrFail($id);
+        $practica = Practica::findOrFail($empresa->practicas_id);
+        
+        $validated = $request->validate([
+            'empresa' => 'required|string|max:255',
+            'ruc' => 'required|string|max:11',
+            'razon_social' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'sitio_web' => 'nullable|url|max:255'
+        ]);
+
+        $empresa->update([
+            'nombre' => $validated['empresa'],
+            'ruc' => $validated['ruc'],
+            'razon_social' => $validated['razon_social'],
+            'direccion' => $validated['direccion'],
+            'telefono' => $validated['telefono'],
+            'correo' => $validated['email'],
+            'sitio_web' => $validated['sitio_web'] ?? null,
+            'estado' => 1,
+        ]);
+
+        $practica->update([
+            'estado_proceso' => 'en proceso',
+        ]);
+
+        return redirect()->back()->with('success', 'Empresa actualizada exitosamente');
     }
 
     /**

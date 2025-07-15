@@ -102,7 +102,7 @@ Route::post('/subir/ficha', [ArchivoController::class, 'subirFicha'])->middlewar
 Route::post('/subir/record', [ArchivoController::class, 'subirRecord'])->middleware('auth')->name('subir.record');
 
 Route::get('/practicas/desarrollo', [PracticaController::class, 'desarrollo'])->middleware('auth')->name('desarrollo');
-Route::post('/practicas/desarrollo', [PracticaController::class, 'storeDesarrollo'])->middleware('auth')->name('desarrollo');
+Route::post('/practicas', [PracticaController::class, 'storeDesarrollo'])->middleware('auth')->name('desarrollo.store');
 
 Route::get('/practicas/convalidacion', [PracticaController::class, 'convalidacion'])->middleware('auth')->name('convalidacion');
 
@@ -162,3 +162,6 @@ Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store
 
 
 Route::get('/practica/{id}', [PracticaController::class, 'show'])->name('practica.show');
+
+Route::post('/practica/{id}/edit', [EmpresaController::class, 'update'])->name('empresa.edit');
+Route::post('/jefe_inmediato/{id}/edit', [JefeInmediatoController::class, 'update'])->name('jefe_inmediato.edit');

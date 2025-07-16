@@ -10,20 +10,25 @@
                         <div class="py-3 text-center">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-file-invoice mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
-                                @if (($practicaData->ruta_fut != null) && ($practicaData->estado_proceso === 'en proceso' || $practicaData->estado_proceso === 'completo'))
+                                @if ($practicaData->ruta_fut != null)
+                                    @if ($practicaData->estado_proceso === 'en proceso' || $practicaData->estado_proceso === 'rechazado')
                                     <div class="flex-column">
                                         <h5 class="text-primary font-weight-bold text-uppercase">Formulario de Trámite (FUT)</h4>
                                         <a href="{{ asset($practicaData->ruta_fut) }}" target="_blank" class="btn btn-warning btn-sm">
                                             Ver PDF
                                         </a>
-                                    </div>
-                                @elseif ($practicaData->ruta_fut == null && $practicaData->estado_proceso === 'rechazado')
-                                    <div class="flex-column">
-                                        <h5 class="text-primary font-weight-bold text-uppercase">Formulario de Trámite (FUT)</h4>
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalFUT">
-                                            Subir Documento
+                                            Editar Documento
                                         </button>
                                     </div>
+                                    @elseif ($practicaData->estado_proceso === 'completo')
+                                        <div class="flex-column">
+                                            <h5 class="text-primary font-weight-bold text-uppercase">Formulario de Trámite (FUT)</h4>
+                                            <a href="{{ asset($practicaData->ruta_fut) }}" target="_blank" class="btn btn-warning btn-sm">
+                                                Ver PDF
+                                            </a>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="flex-column">
                                         <h5 class="text-primary font-weight-bold text-uppercase">Formulario de Trámite (FUT)</h4>

@@ -79,7 +79,7 @@
 
                         {{-- Modal eliminar (dentro del bucle) --}}
                         <div class="modal fade" id="modalEliminar-{{ $pregunta->id }}" tabindex="-1" role="dialog" aria-labelledby="eliminarLabel{{ $pregunta->id }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                                 <form method="POST" action="{{ route('pregunta.destroy', $pregunta->id) }}" class="modal-content">
                                     @csrf
                                     @method('DELETE')
@@ -115,7 +115,7 @@
 
 {{-- Modal Crear Pregunta --}}
 <div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="crearModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <form action="{{ route('pregunta.store') }}" method="POST" class="modal-content">
             @csrf
             <div class="modal-header">
@@ -207,7 +207,7 @@ Swal.fire({
 
                                 {{-- Botón eliminar --}}
                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar-{{ $pregunta->id }}">
-                                    <i class="bi bi-trash"></i> Eliminar
+                                    <i class="bi bi-trash"></i> 
                                 </button>
                             </td>
                         </tr>
@@ -225,7 +225,7 @@ Swal.fire({
 
 {{-- Modal Nueva Pregunta --}}
 <div class="modal fade" id="modalNuevaPregunta" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form action="{{ route('pregunta.store') }}" method="POST" class="modal-content">
             @csrf
             <div class="modal-header">
@@ -249,7 +249,7 @@ Swal.fire({
 {{-- Modales eliminar --}}
 @foreach($preguntas as $pregunta)
 <div class="modal fade" id="modalEliminar-{{ $pregunta->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('pregunta.destroy', $pregunta->id) }}" class="modal-content">
             @csrf
             @method('DELETE')

@@ -49,13 +49,13 @@ Swal.fire({
                         @foreach($facultades as $facultad)
                         <tr>
                             <td>{{ $facultad->id }}</td>
-                            <td>{{ $facultad->name }}</td>
+                            <td class = "text-left">{{ $facultad->name }}</td>
                             <td>
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditar-{{ $facultad->id }}">
-                                    <i class="bi bi-pencil-square"></i> Editar
+                                    <i class="bi bi-pencil-square"></i> 
                                 </button>
                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar-{{ $facultad->id }}">
-                                    <i class="bi bi-trash"></i> Eliminar
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </td>
                         </tr>
@@ -69,7 +69,7 @@ Swal.fire({
 
 <!-- Modal Nueva Facultad -->
 <div class="modal fade" id="nuevaFacultadModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('facultad.store') }}" class="modal-content">
             @csrf
             <div class="modal-header">
@@ -97,7 +97,7 @@ Swal.fire({
 @foreach($facultades as $facultad)
 <!-- Modal Editar -->
 <div class="modal fade" id="modalEditar-{{ $facultad->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('facultad.update', $facultad->id) }}" class="modal-content">
             @csrf
             @method('PUT')
@@ -124,7 +124,7 @@ Swal.fire({
 
 <!-- Modal Eliminar -->
 <div class="modal fade" id="modalEliminar-{{ $facultad->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('facultad.destroy', $facultad->id) }}" class="modal-content">
             @csrf
             @method('DELETE')

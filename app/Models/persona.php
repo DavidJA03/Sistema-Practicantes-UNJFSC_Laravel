@@ -81,6 +81,7 @@ class Persona extends Model
         return $this->hasOne(Evaluacione::class, 'alumno_id');
     }
 
+
     public function respuestas()
     {
         return $this->hasMany(Respuesta::class);

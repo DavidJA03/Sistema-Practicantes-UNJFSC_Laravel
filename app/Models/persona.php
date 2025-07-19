@@ -96,4 +96,10 @@ class Persona extends Model
         });
     }
 
+    public function grupo_estudiante()
+    {
+        return $this->hasOne(grupo_estudiante::class, 'id_estudiante');
+    }
+
+
 }

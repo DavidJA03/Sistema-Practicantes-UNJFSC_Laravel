@@ -98,13 +98,17 @@
                 <li class="nav-item">
                 <a class="nav-link" href="{{ route('evaluacion.index') }}">
                     <i class="bi bi-clipboard-check-fill"></i>
-                    <span>Evaluación</span></a>
+                    <span>Supervisión - Evaluación</span></a>
                 </li>
+            @endif
+            @if ($rol == 1 || $rol == 3)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('pregunta.index') }}">
                         <i class="bi bi-hdd-stack"></i>
-                        <span>Pregunta</span></a>
+                        <span>Preguntas</span></a>
                 </li>
+            @endif
+            @if ($rol == 1 || $rol == 2 || $rol == 3)
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Datos extra</div>
                 

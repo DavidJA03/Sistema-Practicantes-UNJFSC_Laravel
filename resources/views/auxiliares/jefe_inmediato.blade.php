@@ -23,16 +23,6 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>N°</th>
-                                <th>DNI</th>
-                                <th>Apellidos y Nombres</th>
-                                <th>Cargo</th>
-                                <th>Telefono</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                             @foreach ($jefes as $index => $jefe)
                             <tr data-docente-id="{{ $jefe->id }}">

@@ -24,17 +24,6 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>N°</th>
-                            <th>Código</th>
-                            <th>Apellidos y Nombres</th>
-                            <th>DNI</th>
-                            <th>Correo</th>
-                            <th>Celular</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         @foreach ($personas as $index => $persona)
                         <tr data-docente-id="{{ $persona->id }}">
@@ -48,7 +37,7 @@
                                 <button type="button" class="btn btn-mostrar btn-info btn-sm" 
                                 data-toggle="modal" data-target="#modalEditar{{ $persona->id }}" 
                                 data-d="{{ $persona->distrito }}" data-p="{{ $persona->provincia }}"
-                                data-f="{{ $persona->escuela->facultad_id }}" data-e="{{ $persona->id_escuela }}">
+                                data-f="{{ $persona->escuela->facultad_id ?? '' }}" data-e="{{ $persona->id_escuela ?? '' }}">
                                     <i class="fas fa-eye"></i>
                                 </button>
                                 <form action="{{ route('personas.destroy', $persona->id) }}" method="POST" class="d-inline">
@@ -230,7 +219,7 @@
                     <i class="fas fa-save"></i>
                     Actualizar
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" id="btnCancelar" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnCancelar" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

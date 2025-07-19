@@ -11,19 +11,31 @@
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-envelope mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
                                 @if ($practicaData->ruta_registro_actividades != null)
-                                <div class="flex-column">
-                                    <h5 class="text-primary font-weight-bold text-uppercase">Registro de Actividades</h4>
-                                    <a href="{{ asset($practicaData->ruta_registro_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
-                                        Ver PDF
-                                    </a>
-                                </div>
+                                    @if ($practicaData->estado_proceso === 'en proceso' || $practicaData->estado_proceso === 'rechazado')
+                                    <div class="flex-column">
+                                        <h5 class="text-primary font-weight-bold text-uppercase">Registro de Actividades</h4>
+                                        <a href="{{ asset($practicaData->ruta_registro_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
+                                            Ver PDF
+                                        </a>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRegistroActividades">
+                                            Editar Documento
+                                        </button>
+                                    </div>
+                                    @elseif ($practicaData->estado_proceso === 'completo')
+                                        <div class="flex-column">
+                                            <h5 class="text-primary font-weight-bold text-uppercase">Registro de Actividades</h4>
+                                            <a href="{{ asset($practicaData->ruta_registro_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
+                                                Ver PDF
+                                            </a>
+                                        </div>
+                                    @endif
                                 @else
-                                <div class="flex-column">
-                                    <h5 class="text-primary font-weight-bold text-uppercase">Registro de Actividades</h4>
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRegistroActividades">
-                                        Subir Documento
-                                    </button>
-                                </div>
+                                    <div class="flex-column">
+                                        <h5 class="text-primary font-weight-bold text-uppercase">Registro de Actividades</h4>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRegistroActividades">
+                                            Subir Documento
+                                        </button>
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -35,12 +47,24 @@
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <i class="fas fa-file-signature mr-3" style="font-size: 50px; color: rgb(123, 145, 229);"></i>
                                 @if ($practicaData->ruta_control_actividades != null)
-                                <div class="flex-column">
-                                    <h5 class="text-primary font-weight-bold text-uppercase">Control Mensual de Actividades</h4>
-                                    <a href="{{ asset($practicaData->ruta_control_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
-                                        Ver PDF
-                                    </a>
-                                </div>
+                                    @if ($practicaData->estado_proceso === 'en proceso' || $practicaData->estado_proceso === 'rechazado')
+                                    <div class="flex-column">
+                                        <h5 class="text-primary font-weight-bold text-uppercase">Control Mensual de Actividades</h4>
+                                        <a href="{{ asset($practicaData->ruta_control_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
+                                            Ver PDF
+                                        </a>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalControlMensual">
+                                            Editar Documento
+                                        </button>
+                                    </div>
+                                    @elseif ($practicaData->estado_proceso === 'completo')
+                                        <div class="flex-column">
+                                            <h5 class="text-primary font-weight-bold text-uppercase">Control Mensual de Actividades</h4>
+                                            <a href="{{ asset($practicaData->ruta_control_actividades) }}" target="_blank" class="btn btn-warning btn-sm">
+                                                Ver PDF
+                                            </a>
+                                        </div>
+                                    @endif
                                 @else
                                 <div class="flex-column">
                                     <h5 class="text-primary font-weight-bold text-uppercase">Control Mensual de Actividades</h4>
@@ -57,6 +81,20 @@
         </div>
     </div>
 </div>
+
+@if ($practicaData->estado_proceso === 'rechazado')
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <div class="alert alert-danger shadow-lg p-5 rounded-lg text-center" style="max-width: 400px; width: 100%;">
+            <div class="mb-4">
+                <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
+            </div>
+            <h2 class="font-weight-bold mb-3">¡Atención!</h2>
+            <p class="mb-0" style="font-size: 20px;">
+                Debes corregir los archivos ingresados en la sección de Registro de Actividades y/o Control Mensual de Actividades antes de continuar con el proceso.
+            </p>
+        </div>
+    </div>
+@endif
 
 <!-- Registro de Actividades -->
 <div class="modal fade" id="modalRegistroActividades" tabindex="-1" aria-labelledby="modalRegistroActividadesLabel" aria-hidden="true">

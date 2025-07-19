@@ -122,7 +122,7 @@
                             <i class="fas fa-user" style="font-size: 255px; color: rgb(123, 145, 229);"></i>
                         @endif
                         <hr>
-                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalFoto">Subir Foto</button>
+                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalFoto">Editar Foto</button>
                     </div>
                 </div>
             </div>
@@ -135,7 +135,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalFotoLabel">Subir Foto</h5>
+                <h5 class="modal-title" id="modalFotoLabel">Editar Foto</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('store.foto') }}" method="POST" enctype="multipart/form-data">

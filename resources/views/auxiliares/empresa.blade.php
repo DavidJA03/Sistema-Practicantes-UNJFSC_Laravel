@@ -22,15 +22,6 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>N°</th>
-                                <th>RUC</th>
-                                <th>Nombre de la Empresa</th>
-                                <th>Telefono</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
                             @foreach ($empresas as $index => $empresa)
                             <tr data-docente-id="{{ $empresa->id }}">

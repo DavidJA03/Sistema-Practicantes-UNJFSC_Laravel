@@ -93,16 +93,16 @@
                 
             @endif  
 
-            @if ($rol == 1 || $rol == 3)
+            @if ($rol == 1 || $rol == 2 || $rol == 3)
                 <li class="nav-item"><a class="nav-link" href="{{ route('estudiante') }}"><i class="fas fa-fw fa-users"></i><span>Lista de Estudiantes</span></a></li>
                 <li class="nav-item">
                 <a class="nav-link" href="{{ route('evaluacion.index') }}">
-                    <i class="fas fa-fw fa-user"></i>
+                    <i class="bi bi-clipboard-check-fill"></i>
                     <span>Evaluación</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('pregunta.index') }}">
-                        <i class="fas fa-fw fa-user"></i>
+                        <i class="bi bi-hdd-stack"></i>
                         <span>Pregunta</span></a>
                 </li>
                 <hr class="sidebar-divider">

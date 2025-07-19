@@ -18,6 +18,57 @@
     
 
 </head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Nunito', sans-serif;
+    }
+
+    #wrapper {
+        display: flex;
+    }
+
+    /* Sidebar fijo */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 240px;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1030;
+    }
+
+    /* Contenido principal con margen */
+    #content-wrapper {
+        margin-left: 240px;
+        width: calc(100% - 240px);
+        overflow-x: hidden;
+        background-color: #f8f9fc;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .topbar {
+        z-index: 1029;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        #content-wrapper {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+</style>
 
 <body>
     @stack('scripts')

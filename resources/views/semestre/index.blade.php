@@ -57,12 +57,12 @@ Swal.fire({
                             <td>
                                 {{-- Botón Editar --}}
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditar-{{ $semestre->id }}">
-                                    <i class="bi bi-pencil-square"></i> Editar
+                                    <i class="bi bi-pencil-square"></i> 
                                 </button>
 
                                 {{-- Botón Eliminar --}}
                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar-{{ $semestre->id }}">
-                                    <i class="bi bi-trash"></i> Eliminar
+                                    <i class="bi bi-trash"></i> 
                                 </button>
                             </td>
                         </tr>
@@ -76,7 +76,7 @@ Swal.fire({
 
 {{-- Modal Nuevo Semestre --}}
 <div class="modal fade" id="modalNuevoSemestre" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('semestre.store') }}" class="modal-content">
             @csrf
             <div class="modal-header">
@@ -105,7 +105,7 @@ Swal.fire({
 @foreach($semestres as $semestre)
 {{-- Modal Editar --}}
 <div class="modal fade" id="modalEditar-{{ $semestre->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('semestre.update', $semestre->id) }}" class="modal-content">
             @csrf
             @method('PUT')
@@ -133,7 +133,7 @@ Swal.fire({
 
 {{-- Modal Eliminar --}}
 <div class="modal fade" id="modalEliminar-{{ $semestre->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('semestre.destroy', $semestre->id) }}" class="modal-content">
             @csrf
             @method('DELETE')

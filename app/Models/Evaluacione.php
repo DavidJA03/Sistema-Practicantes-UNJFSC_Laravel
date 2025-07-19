@@ -13,6 +13,7 @@ class Evaluacione extends Model
 
     protected $fillable = [
         'alumno_id',
+        'anexo_6',
         'anexo_7',
         'anexo_8',
         'pregunta_1',

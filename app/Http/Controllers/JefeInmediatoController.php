@@ -5,37 +5,69 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JefeInmediato;
-use App\Models\Empresa;
 use App\Models\Practica;
+use App\Models\grupos_practica;
+use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Auth;
 
 class JefeInmediatoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        $jefes = JefeInmediato::all();
+        $user = auth()->user();
+        $persona = $user->persona;
+        if($persona->rol_id == 1){
+            $jefes = JefeInmediato::all();
+        }else if($persona->rol_id == 2){
+            $jefes = collect();
+            $grupos_practicas = grupos_practica::where('id_docente', $persona->id)->get();
+            foreach ($grupos_practicas as $grupo) {
+                // Obtiene todos los estudiantes del grupo
+                $grupo_estudiantes = grupo_estudiante::where('id_grupo_practica', $grupo->id)->get();
+    
+                foreach ($grupo_estudiantes as $ge) {
+                    // Busca la práctica del estudiante
+                    $practica = Practica::where('estudiante_id', $ge->id_estudiante)->first();
+    
+                    if ($practica) {
+                        // Busca el jefe inmediato asociado a la práctica
+                        $jefe = JefeInmediato::where('practicas_id', $practica->id)->first();
+    
+                        if ($jefe && !$jefes->contains('id', $jefe->id)) {
+                            // Agrega el jefe inmediato si no está ya en la colección
+                            $jefes->push($jefe);
+                        }
+                    }
+                }
+            }
+        } else if($persona->rol_id == 3){
+            $jefes = collect();
+            $grupo_estudiantes = grupo_estudiante::where('id_supervisor', $persona->id)->get();
+    
+            foreach ($grupo_estudiantes as $ge) {
+                // Busca la práctica del estudiante
+                $practica = Practica::where('estudiante_id', $ge->id_estudiante)->first();
+
+                if ($practica) {
+                    // Busca el jefe inmediato asociado a la práctica
+                    $jefe = JefeInmediato::where('practicas_id', $practica->id)->first();
+
+                    if ($jefe && !$jefes->contains('id', $jefe->id)) {
+                        // Agrega el jefe inmediato si no está ya en la colección
+                        $jefes->push($jefe);
+                    }
+                }
+            }
+        }
         return view('auxiliares.jefe_inmediato', compact('jefes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, $practicas_id)
     {
         $validated = $request->validate([
@@ -107,12 +139,6 @@ class JefeInmediatoController extends Controller
         return redirect()->back()->with('success', 'Jefe Inmediato actualizado exitosamente');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

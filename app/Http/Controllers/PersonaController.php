@@ -50,13 +50,15 @@ class PersonaController extends Controller
     }
 
     public function registro(){
+        $user = auth()->user();
+        $persona = $user->persona;
         $roles = type_users::where('estado', 1)
             ->where('name', '!=', 'admin')
             ->get();
         $facultades = Facultade::where('estado', 1)->get();
         $escuelas = Escuela::where('estado', 1)->get();
         
-        return view('segmento.registrar', compact('roles', 'facultades', 'escuelas'));
+        return view('segmento.registrar', compact('roles', 'facultades', 'escuelas', 'persona'));
     }
 
     public function getEscuelas($facultad_id){

@@ -25,15 +25,6 @@
                             <th class="align-middle text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th class="align-middle text-center">N°</th>
-                            <th class="align-middle text-center">Tipo de Práctica</th>
-                            <th class="align-middle text-center">Apellidos y Nombres</th>
-                            <th class="align-middle text-center">Area</th>
-                            <th class="align-middle text-center">Acciones</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         @foreach ($personas as $index => $persona)
                         <tr data-docente-id="{{ $persona->id }}">

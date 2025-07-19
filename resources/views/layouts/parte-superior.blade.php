@@ -90,7 +90,10 @@
                 @endif
                 <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
+                <div class="sidebar-heading">Datos extra</div>
                 
+                <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>                
             @endif  
 
             @if ($rol == 1 || $rol == 2 || $rol == 3)
@@ -130,10 +133,6 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
         </ul>
-  
-
-
-
 
         <div id="content-wrapper" class="d-flex flex-column">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">

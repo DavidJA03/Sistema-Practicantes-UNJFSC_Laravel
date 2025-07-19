@@ -84,6 +84,7 @@ class PracticaController extends Controller
         
         if ($nuevoEstado === 'aprobado') {
             $practica->estado += 1;
+            //$practica->estado_proceso = 'completo';
         } elseif ($nuevoEstado === 'rechazado') {
             $practica->estado_proceso = 'rechazado';
             if ($request->test) {

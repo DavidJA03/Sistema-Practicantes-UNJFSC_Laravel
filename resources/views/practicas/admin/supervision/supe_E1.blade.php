@@ -42,6 +42,7 @@
             <form id="formProcesoE1" class="form-etapa" action="{{ route('proceso') }}" method="POST" data-estado="1">
                 @csrf
                 <input type="hidden" name="id" id="idE1">
+                <input type="hidden" name="test" id="test"  value="1">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">

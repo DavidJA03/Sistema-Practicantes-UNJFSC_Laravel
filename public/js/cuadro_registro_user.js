@@ -1,9 +1,39 @@
 function completarCorreo() {
-    const codigo = document.getElementById('codigo').value.trim();
+    const codigo = document.getElementById('codigo')?.value.trim() || '';
+    const nombres = document.getElementById('nombres')?.value.trim() || '';
+    const apellidos = document.getElementById('apellidos')?.value.trim() || '';
+    const rolSelect = document.getElementById('rolRegistro');
     const correoInst = document.getElementById('correo_inst');
     
-    if (codigo) {
-        correoInst.value = codigo + '@unjfsc.edu.pe';
+    if (!correoInst) return;
+    
+    const selectedRole = rolSelect ? parseInt(rolSelect.value) : 0;
+    
+    if (selectedRole === 4) {
+        // For role 1 (students): Use code as email prefix
+        correoInst.value = codigo ? codigo + '@unjfsc.edu.pe' : '';
+    } else if (selectedRole === 2 || selectedRole === 3) {
+        // For roles 2 and 3 (teachers/supervisors): Use first letter of first name + _ + first last name
+        let emailPrefix = '';
+        
+        // Get first letter of first name
+        if (nombres) {
+            emailPrefix += nombres[0].toLowerCase();
+        }
+        
+        // Add first last name if available
+        const primerApellido = apellidos.split(' ')[0];
+        if (primerApellido) {
+            emailPrefix += '_' + primerApellido.toLowerCase();
+        }
+        
+        // Remove any special characters and normalize
+        emailPrefix = emailPrefix
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remove accents
+            .replace(/[^a-z0-9_]/g, ''); // Remove any remaining non-alphanumeric chars except _
+            
+        correoInst.value = emailPrefix ? emailPrefix + '@unjfsc.edu.pe' : '';
     } else {
         correoInst.value = '';
     }

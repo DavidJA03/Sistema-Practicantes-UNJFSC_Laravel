@@ -62,6 +62,10 @@ class Persona extends Model
     {
         return $this->hasMany(grupo_estudiante::class, 'id_estudiante');
     }
+    public function gruposEstudiante()
+    {
+        return $this->hasOne(grupo_estudiante::class, 'id_estudiante');
+    }
 
     public function gruposComoSupervisor()
     {
@@ -81,6 +85,7 @@ class Persona extends Model
         return $this->hasOne(Evaluacione::class, 'alumno_id');
     }
 
+
     public function respuestas()
     {
         return $this->hasMany(Respuesta::class);
@@ -94,5 +99,11 @@ class Persona extends Model
             }
         });
     }
+
+    public function grupo_estudiante()
+    {
+        return $this->hasOne(grupo_estudiante::class, 'id_estudiante');
+    }
+
 
 }

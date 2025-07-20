@@ -49,6 +49,25 @@ document.addEventListener("DOMContentLoaded", function () {
             const estado = parseInt(data.estado) || 1;
             actualizarBotones(estado);
             actualizarFormularios(estado);
+            
+            // Actualizar los selects de estado con el estado_proceso correspondiente a cada etapa
+            const etapas = ['E1', 'E2', 'E3', 'E4'];
+            etapas.forEach(etapa => {
+                const selectId = `estado${etapa}`;
+                const selectEstado = document.getElementById(selectId);
+                if (selectEstado && data.estado_proceso) {
+                    // Si el estado_proceso es 'completo', mostrar 'Aprobado', de lo contrario usar el valor real
+                    selectEstado.value = data.estado_proceso === 'completo' ? 'aprobado' : data.estado_proceso;
+                    
+                    // Si el estado_proceso es 'completo', cambiar el texto de la opción seleccionada
+                    if (data.estado_proceso === 'completo') {
+                        const option = selectEstado.querySelector(`option[value="aprobado"]`);
+                        if (option) {
+                            option.textContent = 'Completo';
+                        }
+                    }
+                }
+            });
 
             // Mostrar sección según tipo práctica
             const esDesarrollo = data.tipo_practica === 'desarrollo';
@@ -80,16 +99,36 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('modal-telefono-jefe').textContent = data.jefe_inmediato?.telefono || '';
             document.getElementById('modal-email-jefe').textContent = data.jefe_inmediato?.correo || '';
 
-            // Rutas de archivos
-            document.getElementById('btn-ruta-fut').href = data.ruta_fut || '';
-            document.getElementById('btn-ruta-plan-actividades').href = data.ruta_plan_actividades || '';
-            document.getElementById('btn-ruta-informe-final').href = data.ruta_informe_final || '';
-            document.getElementById('btn-ruta-constancia-cumplimiento').href = data.ruta_constancia_cumplimiento || '';
-            document.getElementById('btn-ruta-carta-aceptacion-C2').href = data.ruta_carta_aceptacion || '';
-            document.getElementById('btn-ruta-carta-aceptacion-E3').href = data.ruta_carta_aceptacion || '';
-            document.getElementById('btn-ruta-carta-presentacion').href = data.ruta_carta_presentacion || '';
-            document.getElementById('btn-ruta-registro-actividades').href = data.ruta_registro_actividades || '';
-            document.getElementById('btn-ruta-control-mensual-actividades').href = data.ruta_control_actividades || '';
+            // Rutas de archivos - Actualizar hrefs y deshabilitar botones si no hay ruta
+            const updateButton = (buttonId, filePath) => {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    if (filePath) {
+                        button.href = filePath;
+                        button.removeAttribute('disabled');
+                        button.classList.remove('disabled');
+                        button.style.cursor = 'pointer';
+                        button.style.opacity = '1';
+                    } else {
+                        button.removeAttribute('href');
+                        button.setAttribute('disabled', 'disabled');
+                        button.classList.add('disabled');
+                        button.style.cursor = 'not-allowed';
+                        button.style.opacity = '0.6';
+                    }
+                }
+            };
+
+            // Actualizar todos los botones de documentos
+            updateButton('btn-ruta-fut', data.ruta_fut);
+            updateButton('btn-ruta-plan-actividades', data.ruta_plan_actividades);
+            updateButton('btn-ruta-informe-final', data.ruta_informe_final);
+            updateButton('btn-ruta-constancia-cumplimiento', data.ruta_constancia_cumplimiento);
+            updateButton('btn-ruta-carta-aceptacion-C2', data.ruta_carta_aceptacion);
+            updateButton('btn-ruta-carta-aceptacion-E3', data.ruta_carta_aceptacion);
+            updateButton('btn-ruta-carta-presentacion', data.ruta_carta_presentacion);
+            updateButton('btn-ruta-registro-actividades', data.ruta_registro_actividades);
+            updateButton('btn-ruta-control-mensual-actividades', data.ruta_control_actividades);
 
         } catch (error) {
             console.error('Error al obtener datos:', error);
@@ -137,6 +176,30 @@ document.addEventListener("DOMContentLoaded", function () {
     function mostrarEtapa(n) {
         ocultarTodo();
         etapas[n].style.display = "block";
+        
+        // Actualizar todos los selects de etapas anteriores a la actual
+        for (let i = 1; i <= 4; i++) {
+            const selectId = `estadoE${i}`;
+            const selectEstado = document.getElementById(selectId);
+            if (selectEstado) {
+                if (i < n) {
+                    // Para etapas anteriores, forzar a mostrar 'Aprobado' y deshabilitar
+                    selectEstado.value = 'aprobado';
+                    const option = selectEstado.querySelector(`option[value="aprobado"]`);
+                    if (option) {
+                        option.textContent = 'Aprobado';
+                    }
+                    selectEstado.setAttribute('disabled', 'disabled');
+                } else if (i === n) {
+                    // Para la etapa actual, manejar según estado_proceso
+                    const selectedOption = selectEstado.options[selectEstado.selectedIndex];
+                    if (selectedOption) {
+                        selectedOption.textContent = selectedOption.value === 'aprobado' ? 'Aprobado' : 
+                                                  (selectedOption.value === 'completo' ? 'Completo' : selectedOption.textContent);
+                    }
+                }
+            }
+        }
     }
 
     Object.entries(botones).forEach(([num, btn]) => {
@@ -167,22 +230,27 @@ function actualizarBotones(estadoActual) {
 function actualizarFormularios(estadoActual) {
     document.querySelectorAll('.form-etapa').forEach(formulario => {
         const estadoFormulario = parseInt(formulario.getAttribute('data-estado')) || 1;
-        const elementos = formulario.querySelectorAll('select, button');
+        const elementos = formulario.querySelectorAll('select, button, input');
+        const isActive = estadoFormulario === estadoActual;
 
-        if (estadoFormulario === estadoActual) {
-            formulario.classList.remove('disabled');
-            formulario.style.opacity = '1';
-            elementos.forEach(el => {
+        // Actualizar clases y atributos del formulario
+        formulario.classList.toggle('disabled', !isActive);
+        formulario.style.opacity = isActive ? '1' : '0.6';
+
+        // Actualizar elementos del formulario
+        elementos.forEach(el => {
+            if (isActive) {
                 el.removeAttribute('disabled');
                 el.classList.remove('disabled');
-            });
-        } else {
-            formulario.classList.add('disabled');
-            formulario.style.opacity = '0.6';
-            elementos.forEach(el => {
-                el.setAttribute('disabled', 'disabled');
-                el.classList.add('disabled');
-            });
-        }
+            } else {
+                // Para los selects, solo deshabilitar pero mantener el valor visible
+                if (el.tagName === 'SELECT') {
+                    el.setAttribute('disabled', 'disabled');
+                } else {
+                    el.setAttribute('disabled', 'disabled');
+                    el.classList.add('disabled');
+                }
+            }
+        });
     });
 }

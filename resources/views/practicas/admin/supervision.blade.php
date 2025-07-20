@@ -25,15 +25,6 @@
                             <th class="align-middle text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th class="align-middle text-center">N°</th>
-                            <th class="align-middle text-center">Tipo de Práctica</th>
-                            <th class="align-middle text-center">Apellidos y Nombres</th>
-                            <th class="align-middle text-center">Area</th>
-                            <th class="align-middle text-center">Acciones</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         @foreach ($personas as $index => $persona)
                         <tr data-docente-id="{{ $persona->id }}">
@@ -102,25 +93,25 @@
                 </div>
                 <div id="primeraetapa">
                     <div id="etapa1">
-                        @include('practicas.supe_E1', ['etapa' => 1])
+                        @include('practicas.admin.supervision.supe_E1', ['etapa' => 1])
                     </div>
 
                     <div id="etapa2" style="display: none;">
-                        @include('practicas.supe_E1', ['etapa' => 2])
+                        @include('practicas.admin.supervision.supe_E1', ['etapa' => 2])
                     </div>
 
                     <div id="etapa3" style="display: none;">
-                        @include('practicas.supe_E1', ['etapa' => 3])
+                        @include('practicas.admin.supervision.supe_E1', ['etapa' => 3])
                     </div>
                 </div>
                 <div id="segundaetapa">
-                    @include('practicas.supe_E2')
+                    @include('practicas.admin.supervision.supe_E2')
                 </div>
                 <div id="terceraetapa">
-                    @include('practicas.supe_E3')
+                    @include('practicas.admin.supervision.supe_E3')
                 </div>
                 <div id="cuartaetapa">
-                    @include('practicas.supe_E4')
+                    @include('practicas.admin.supervision.supe_E4')
                 </div>
             </div>
             <div class="modal-footer">

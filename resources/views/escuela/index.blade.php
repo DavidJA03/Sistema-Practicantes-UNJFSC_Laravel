@@ -50,14 +50,14 @@ Swal.fire({
                         @foreach($escuelas as $escuela)
                         <tr>
                             <td>{{ $escuela->id }}</td>
-                            <td>{{ $escuela->facultad->name ?? 'Sin Facultad' }}</td>
-                            <td>{{ $escuela->name }}</td>
+                            <td class="text-left">{{ $escuela->facultad->name ?? 'Sin Facultad' }}</td>
+                            <td class="text-left">{{ $escuela->name }}</td>
                             <td>
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarEscuelaModal-{{ $escuela->id }}">
-                                    <i class="bi bi-pencil-square"></i> Editar
+                                    <i class="bi bi-pencil-square"></i> 
                                 </button>
                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ $escuela->id }}">
-                                    <i class="bi bi-trash"></i> Eliminar
+                                    <i class="bi bi-trash"></i> 
                                 </button>
                             </td>
                         </tr>
@@ -72,7 +72,7 @@ Swal.fire({
 
 <!-- Modal Nueva Escuela -->
 <div class="modal fade" id="nuevaEscuelaModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form action="{{ route('escuela.store') }}" method="POST" class="modal-content">
             @csrf
             <div class="modal-header">
@@ -106,7 +106,7 @@ Swal.fire({
 @foreach($escuelas as $escuela)
 <!-- Modal Editar -->
 <div class="modal fade" id="editarEscuelaModal-{{ $escuela->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form action="{{ route('escuela.update', $escuela->id) }}" method="POST" class="modal-content">
             @csrf
             @method('PUT')
@@ -140,7 +140,7 @@ Swal.fire({
 
 <!-- Modal Eliminar -->
 <div class="modal fade" id="confirmModal-{{ $escuela->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form action="{{ route('escuela.destroy', $escuela->id) }}" method="POST" class="modal-content">
             @csrf
             @method('DELETE')

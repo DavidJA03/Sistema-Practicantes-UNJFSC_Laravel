@@ -5,36 +5,69 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JefeInmediato;
-use App\Models\Empresa;
+use App\Models\Practica;
+use App\Models\grupos_practica;
+use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Auth;
 
 class JefeInmediatoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        $jefes = JefeInmediato::all();
+        $user = auth()->user();
+        $persona = $user->persona;
+        if($persona->rol_id == 1){
+            $jefes = JefeInmediato::all();
+        }else if($persona->rol_id == 2){
+            $jefes = collect();
+            $grupos_practicas = grupos_practica::where('id_docente', $persona->id)->get();
+            foreach ($grupos_practicas as $grupo) {
+                // Obtiene todos los estudiantes del grupo
+                $grupo_estudiantes = grupo_estudiante::where('id_grupo_practica', $grupo->id)->get();
+    
+                foreach ($grupo_estudiantes as $ge) {
+                    // Busca la práctica del estudiante
+                    $practica = Practica::where('estudiante_id', $ge->id_estudiante)->first();
+    
+                    if ($practica) {
+                        // Busca el jefe inmediato asociado a la práctica
+                        $jefe = JefeInmediato::where('practicas_id', $practica->id)->first();
+    
+                        if ($jefe && !$jefes->contains('id', $jefe->id)) {
+                            // Agrega el jefe inmediato si no está ya en la colección
+                            $jefes->push($jefe);
+                        }
+                    }
+                }
+            }
+        } else if($persona->rol_id == 3){
+            $jefes = collect();
+            $grupo_estudiantes = grupo_estudiante::where('id_supervisor', $persona->id)->get();
+    
+            foreach ($grupo_estudiantes as $ge) {
+                // Busca la práctica del estudiante
+                $practica = Practica::where('estudiante_id', $ge->id_estudiante)->first();
+
+                if ($practica) {
+                    // Busca el jefe inmediato asociado a la práctica
+                    $jefe = JefeInmediato::where('practicas_id', $practica->id)->first();
+
+                    if ($jefe && !$jefes->contains('id', $jefe->id)) {
+                        // Agrega el jefe inmediato si no está ya en la colección
+                        $jefes->push($jefe);
+                    }
+                }
+            }
+        }
         return view('auxiliares.jefe_inmediato', compact('jefes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, $practicas_id)
     {
         $validated = $request->validate([
@@ -47,7 +80,7 @@ class JefeInmediatoController extends Controller
             'sitio_web' => 'nullable|url|max:255'
         ]);
 
-        $jefeInmediato = JefeInmediato::create([
+        JefeInmediato::create([
             'nombres' => $validated['name'],
             'dni' => $validated['dni'],
             'cargo' => $validated['cargo'],
@@ -62,46 +95,50 @@ class JefeInmediatoController extends Controller
         return redirect()->back()->with('success', 'Jefe Inmediato registrado exitosamente');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $jefeInmediato = JefeInmediato::findOrFail($id);
+        $practica = Practica::findOrFail($jefeInmediato->practicas_id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'dni' => 'required|string|max:8',
+            'cargo' => 'required|string|max:255',
+            'area' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'sitio_web' => 'nullable|url|max:255'
+        ]);
+
+        $jefeInmediato->update([
+            'nombres' => $validated['name'],
+            'dni' => $validated['dni'],
+            'cargo' => $validated['cargo'],
+            'area' => $validated['area'],
+            'telefono' => $validated['telefono'],
+            'correo' => $validated['email'],
+            'web' => $validated['sitio_web'] ?? null,
+            'estado' => 1,
+        ]);
+
+        $practica->update([
+            'estado_proceso' => 'en proceso',
+            'estado' => 1,
+        ]);
+
+        return redirect()->back()->with('success', 'Jefe Inmediato actualizado exitosamente');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

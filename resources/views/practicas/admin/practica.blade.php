@@ -103,7 +103,7 @@
                                 Swal.showLoading();
                             }
                         });
-                        axios.post("{{ route('desarrollo', ['ed' => 1]) }}")
+                        axios.post("{{ route('desarrollo.store', ['ed' => 1]) }}")
                             .then(response => {
                                 // Redirigir solo si se guardó correctamente
                                 window.location.href = '/practicas/desarrollo';
@@ -142,7 +142,7 @@
                                 Swal.showLoading();
                             }
                         });
-                        axios.post("{{ route('desarrollo', ['ed' => 2]) }}")
+                        axios.post("{{ route('desarrollo.store', ['ed' => 2]) }}")
                             .then(response => {
                                 // Redirigir solo si se guardó correctamente
                                 window.location.href = '/practicas/convalidacion';

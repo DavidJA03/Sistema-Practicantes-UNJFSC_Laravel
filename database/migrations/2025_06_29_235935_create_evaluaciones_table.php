@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('evaluaciones', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('alumno_id')->unique();
+            $table->string('anexo_6')->nullable();
             $table->string('anexo_7')->nullable();
             $table->string('anexo_8')->nullable();
             $table->string('user_create')->nullable();

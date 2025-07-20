@@ -19,12 +19,22 @@ class loginController extends Controller
         
         if(!Auth::validate($request->only('email', 'password'))){
             return redirect()->to('login')->withErrors('Credenciales incorectas');
-               
         }
 
         $user = Auth::getProvider()->retrieveByCredentials($request->only('email','password'));
         Auth::login($user);
-        
-        return redirect()->route('panel');
+        $persna = $user->persona;
+        $tipoUsuario = $persna->rol_id;
+        if($tipoUsuario == 4){
+            return redirect()->route('panel.estudiantes');
+        } elseif($tipoUsuario == 2) {
+            return redirect()->route('panel');
+        } elseif($tipoUsuario == 1) {
+            return redirect()->route('panel');
+        } elseif($tipoUsuario == 3) {
+            return redirect()->route('panel');
+        } else {
+            return redirect()->route('panel');
+        }
     }
 }

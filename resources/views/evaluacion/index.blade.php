@@ -2,14 +2,12 @@
 
 @section('title', 'Evaluación de Estudiantes')
 
-{{-- CSS de DataTables --}}
 @push('css')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 @endpush
 
 @section('content')
 
-{{-- SweetAlert y abrir modal si corresponde --}}
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if(session('success'))
@@ -25,13 +23,6 @@ Swal.fire({
 });
 </script>
 @endif
-@if(request('open'))
-<script>
-var alumnoId = "{{ request('open') }}";
-var modal = new bootstrap.Modal(document.getElementById('menuEvaluarModal-' + alumnoId));
-modal.show();
-</script>
-@endif
 @endpush
 
 <div class="container-fluid mt-4">
@@ -41,89 +32,95 @@ modal.show();
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tablaEvaluacion" class="table table-bordered table-hover align-middle" width="100%" cellspacing="0">
+                <table id="tablaEvaluacion" class="table table-bordered table-hover align-middle" width="100%">
                     <thead class="table-dark text-center">
                         <tr>
                             <th>ID</th>
                             <th>Nombre del Estudiante</th>
-                            <th>Evaluación</th>
+                            <th width="30%">Evaluación</th>
                         </tr>
                     </thead>
-                    <tbody class="text-center">
+                    <tbody>
                         @foreach($alumnos as $alumno)
                         @php
                             $evaluacion = $alumno->evaluacione;
-                            $anexosCompletos = $evaluacion && $evaluacion->anexo_7 && $evaluacion->anexo_8;
+                            $anexosCompletos = $evaluacion && $evaluacion->anexo_6 && $evaluacion->anexo_7 && $evaluacion->anexo_8;
                             $entrevistaCompleta = $alumno->respuestas && $alumno->respuestas->count();
+
+                            $usuario = auth()->user();
+                            $esSupervisor = $alumno->grupo_estudiante->id_supervisor == $usuario->id;
+                            $esDocente = optional($alumno->grupo_estudiante->grupo)->id_docente == $usuario->id;
+                            $esAdmin = $usuario->persona?->rol_id == 1;
                         @endphp
                         <tr>
-                            <td>{{ $alumno->id }}</td>
+                            <td class="text-center">{{ $alumno->id }}</td>
                             <td>{{ $alumno->nombres }} {{ $alumno->apellidos }}</td>
-                            <td>
-                                @if($anexosCompletos)
-                                    <a href="{{ Storage::url($evaluacion->anexo_7) }}" class="btn btn-success btn-sm" target="_blank">
-                                        <i class="bi bi-file-earmark-text"></i> Anexo 7
-                                    </a>
-                                    <a href="{{ Storage::url($evaluacion->anexo_8) }}" class="btn btn-success btn-sm" target="_blank">
-                                        <i class="bi bi-file-earmark-text"></i> Anexo 8
-                                    </a>
-                                @endif
+                            <td class="text-center">
+                                @if($esSupervisor || $esAdmin)
+                                    @if($evaluacion)
+                                        @if($evaluacion->anexo_6)
+                                            <a href="{{ Storage::url($evaluacion->anexo_6) }}" class="btn btn-success btn-sm" target="_blank"><i class="bi bi-file-pdf-fill"></i><i class="bi bi-6-square"></i></a>
+                                        @endif
+                                        @if($evaluacion->anexo_7)
+                                            <a href="{{ Storage::url($evaluacion->anexo_7) }}" class="btn btn-success btn-sm" target="_blank"><i class="bi bi-file-pdf-fill"></i><i class="bi bi-7-square"></i></a>
+                                        @endif
+                                        @if($evaluacion->anexo_8)
+                                            <a href="{{ Storage::url($evaluacion->anexo_8) }}" class="btn btn-success btn-sm" target="_blank"><i class="bi bi-file-pdf-fill"></i><i class="bi bi-8-square"></i></a>
+                                        @endif
+                                    @endif
 
-                                @if($entrevistaCompleta)
-                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#verEntrevistaModal-{{ $alumno->id }}">
-                                        <i class="bi bi-chat-text"></i> Entrevista
-                                    </button>
-                                @endif
+                                    @if($entrevistaCompleta)
+                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#verEntrevistaModal-{{ $alumno->id }}"><i class="bi bi-chat-text"></i></button>
+                                    @endif
 
-                                @if(!$anexosCompletos || !$entrevistaCompleta)
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#menuEvaluarModal-{{ $alumno->id }}">
-                                        <i class="bi bi-check2-circle"></i> Evaluar
+                                    @if(!$anexosCompletos || !$entrevistaCompleta)
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#menuEvaluarModal-{{ $alumno->id }}">
+                                            <i class="bi bi-check2-circle"></i> Evaluar
+                                        </button>
+                                    @endif
+                                @elseif($esDocente)
+                                    <button class="btn btn-outline-{{ $anexosCompletos && $entrevistaCompleta ? 'success' : 'warning' }} btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#verTodoDocenteModal-{{ $alumno->id }}">
+                                        {{ $anexosCompletos && $entrevistaCompleta ? 'Completado' : 'En Proceso' }}
                                     </button>
+                                @else
+                                    <span class="text-muted">Sin acciones</span>
                                 @endif
                             </td>
                         </tr>
 
-                        {{-- Modal Opciones --}}
-                        @if(!$anexosCompletos || !$entrevistaCompleta)
-                        <div class="modal fade" id="menuEvaluarModal-{{ $alumno->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
+                        {{-- Modal Evaluar --}}
+                        <div class="modal fade" id="menuEvaluarModal-{{ $alumno->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content text-center">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Opciones de Evaluación - {{ $alumno->nombres }} {{ $alumno->apellidos }}</h5>
+                                        <h5 class="modal-title">Opciones de Evaluación - {{ $alumno->nombres }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-                                    <div class="modal-body text-center">
+                                    <div class="modal-body">
                                         @if(!$anexosCompletos)
-                                        <button class="btn btn-outline-primary mb-2"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#subirAnexosModal-{{ $alumno->id }}"
-                                            data-bs-dismiss="modal">
-                                            📄 Subir Anexos
-                                        </button>
+                                            <button class="btn btn-outline-primary mb-2" data-bs-toggle="modal" data-bs-target="#subirAnexosModal-{{ $alumno->id }}" data-bs-dismiss="modal">
+                                                <i class="bi bi-upload"></i> Subir Anexos
+                                            </button>
                                         @else
-                                        <p class="text-muted mb-2">✔ Anexos completados</p>
+                                            <p class="text-muted mb-2">✔ Anexos completados</p>
                                         @endif
-
+<p></p>
                                         @if(!$entrevistaCompleta)
-                                        <button class="btn btn-outline-success"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#realizarEntrevistaModal-{{ $alumno->id }}"
-                                            data-bs-dismiss="modal">
-                                            📝 Realizar Entrevista
-                                        </button>
+                                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#realizarEntrevistaModal-{{ $alumno->id }}" data-bs-dismiss="modal">
+                                                <i class="bi bi-check"></i> Realizar Entrevista
+                                            </button>
                                         @else
-                                        <p class="text-muted">✔ Entrevista completada</p>
+                                            <p class="text-muted">✔ Entrevista completada</p>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @endif
 
                         {{-- Modal Subir Anexos --}}
-                        @if(!$anexosCompletos)
-                        <div class="modal fade" id="subirAnexosModal-{{ $alumno->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
+                        <div class="modal fade" id="subirAnexosModal-{{ $alumno->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <form method="POST" action="{{ route('evaluacion.storeAnexos') }}" enctype="multipart/form-data">
                                         @csrf
@@ -133,14 +130,13 @@ modal.show();
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="form-group">
-                                                <label>Anexo 7 (PDF)</label>
-                                                <input type="file" name="anexo_7" class="form-control" accept="application/pdf" required>
+                                            @for($i = 6; $i <= 8; $i++)
+                                            <div class="mb-3">
+                                                <label class="form-label">Anexo {{ $i }} (PDF)</label>
+                                                <input type="file" name="anexo_{{ $i }}" class="form-control" accept="application/pdf"
+                                                       {{ empty($evaluacion->{'anexo_'.$i}) ? 'required' : '' }}>
                                             </div>
-                                            <div class="form-group mt-3">
-                                                <label>Anexo 8 (PDF)</label>
-                                                <input type="file" name="anexo_8" class="form-control" accept="application/pdf" required>
-                                            </div>
+                                            @endfor
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" class="btn btn-success">Guardar</button>
@@ -150,12 +146,10 @@ modal.show();
                                 </div>
                             </div>
                         </div>
-                        @endif
 
-                        {{-- Modal Entrevista --}}
-                        @if(!$entrevistaCompleta)
-                        <div class="modal fade" id="realizarEntrevistaModal-{{ $alumno->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
+                        {{-- Modal Realizar Entrevista --}}
+                        <div class="modal fade" id="realizarEntrevistaModal-{{ $alumno->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <form method="POST" action="{{ route('respuestas.store') }}">
                                         @csrf
@@ -166,8 +160,8 @@ modal.show();
                                         </div>
                                         <div class="modal-body">
                                             @foreach ($preguntas as $pregunta)
-                                            <div class="form-group mt-2">
-                                                <label>{{ $pregunta->pregunta }}</label>
+                                            <div class="mb-3">
+                                                <label class="form-label">{{ $pregunta->pregunta }}</label>
                                                 <input type="text" name="respuestas[{{ $pregunta->id }}]" class="form-control" required>
                                             </div>
                                             @endforeach
@@ -180,25 +174,21 @@ modal.show();
                                 </div>
                             </div>
                         </div>
-                        @endif
 
                         {{-- Modal Ver Entrevista --}}
                         @if($entrevistaCompleta)
-                        <div class="modal fade" id="verEntrevistaModal-{{ $alumno->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
+                        <div class="modal fade" id="verEntrevistaModal-{{ $alumno->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Entrevista de {{ $alumno->nombres }} {{ $alumno->apellidos }}</h5>
+                                        <h5 class="modal-title">Entrevista de {{ $alumno->nombres }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        @foreach ($preguntas as $pregunta)
-                                        @php
-                                            $respuesta = $alumno->respuestas->firstWhere('pregunta_id', $pregunta->id);
-                                        @endphp
+                                        @foreach ($alumno->respuestas as $respuesta)
                                         <div class="mb-3">
-                                            <strong>{{ $pregunta->pregunta }}</strong>
-                                            <p>{{ $respuesta ? $respuesta->respuesta : 'No respondida' }}</p>
+                                            <strong>{{ $respuesta->pregunta->pregunta }}</strong>
+                                            <p>{{ $respuesta->respuesta }}</p>
                                         </div>
                                         @endforeach
                                     </div>
@@ -206,6 +196,37 @@ modal.show();
                             </div>
                         </div>
                         @endif
+
+                        {{-- Modal Docente ver todo --}}
+                        <div class="modal fade" id="verTodoDocenteModal-{{ $alumno->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Evaluación completa de {{ $alumno->nombres }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h6>Anexos:</h6>
+                                        @for($i = 6; $i <= 8; $i++)
+                                            @if($evaluacion && $evaluacion->{'anexo_'.$i})
+                                                <a href="{{ Storage::url($evaluacion->{'anexo_'.$i}) }}" class="btn btn-outline-secondary btn-sm mb-2" target="_blank">
+                                                    <i class="bi bi-file-pdf-fill"></i> Anexo {{ $i }}
+                                                </a><br>
+                                            @endif
+                                        @endfor
+
+                                        <hr>
+                                        <h6>Entrevista:</h6>
+                                        @foreach ($alumno->respuestas as $respuesta)
+                                            <div class="mb-2">
+                                                <strong>{{ $respuesta->pregunta->pregunta }}</strong>
+                                                <p>{{ $respuesta->respuesta }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         @endforeach
                     </tbody>
@@ -216,7 +237,6 @@ modal.show();
 </div>
 @endsection
 
-{{-- JS de DataTables --}}
 @push('js')
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -224,17 +244,17 @@ modal.show();
 $(document).ready(function() {
     $('#tablaEvaluacion').DataTable({
         language: {
-            "lengthMenu": "Mostrar _MENU_ registros por página",
-            "zeroRecords": "No se encontraron resultados",
-            "info": "Mostrando página _PAGE_ de _PAGES_",
-            "infoEmpty": "No hay registros disponibles",
-            "infoFiltered": "(filtrado de _MAX_ registros totales)",
-            "search": "Buscar:",
-            "paginate": {
-                "first":      "Primero",
-                "last":       "Último",
-                "next":       "Siguiente",
-                "previous":   "Anterior"
+            lengthMenu: "Mostrar _MENU_ registros por página",
+            zeroRecords: "No se encontraron resultados",
+            info: "Mostrando página _PAGE_ de _PAGES_",
+            infoEmpty: "No hay registros disponibles",
+            infoFiltered: "(filtrado de _MAX_ registros totales)",
+            search: "Buscar:",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
             },
         }
     });

@@ -112,23 +112,31 @@
                 @endif
                 <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
+                <div class="sidebar-heading">Datos extra</div>
                 
+                <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>                
             @endif  
 
+
             @if ($rol == 1 || $rol == 3 )
+
                 <li class="nav-item"><a class="nav-link" href="{{ route('estudiante') }}"><i class="fas fa-fw fa-users"></i><span>Lista de Estudiantes</span></a></li>
                 <li class="nav-item">
                 <a class="nav-link" href="{{ route('evaluacion.index') }}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Evaluación</span></a>
+                    <i class="bi bi-clipboard-check-fill"></i>
+                    <span>Supervisión - Evaluación</span></a>
                 </li>
+            @endif
+            @if ($rol == 1 || $rol == 3)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('pregunta.index') }}">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>Pregunta</span></a>
+                        <i class="bi bi-hdd-stack"></i>
+                        <span>Preguntas</span></a>
                 </li>
             @endif
                 @if ($rol == 1 || $rol == 2 || $rol == 3 )
+            
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Datos extra</div>
                 <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
@@ -153,10 +161,6 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
         </ul>
-  
-
-
-
 
         <div id="content-wrapper" class="d-flex flex-column">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">

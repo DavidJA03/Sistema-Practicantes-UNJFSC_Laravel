@@ -47,10 +47,7 @@ Route::get('/panel', [panelPrincipal::class, 'dashboard'])->middleware('auth')->
 Route::get('/login', [loginController::class, 'index'])->name('login');
 Route::post('/login', [loginController::class, 'login']);
 Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion');
-Route::get('/panel/estudiantes', function () {
-    return view('panel.index_estudiante');
-})->middleware('auth')->name('estudiantes');
-
+Route::get('/estudiantes', [homeController::class, 'index_estudiante'])->middleware('auth')->name('panel.estudiantes');
 
 // ... otras rutas ...
 
@@ -107,11 +104,12 @@ Route::post('/respuestas', [respuestaController::class, 'store'])->name('respues
 
 
 Route::get("/matricula", [matriculaController::class, "index" ])->middleware('auth')->name("matricula_index");
+Route::get("/matricula/estudiante", [matriculaController::class, "modal" ])->middleware('auth')->name("matricula_modal");
 Route::post('/subir/ficha', [ArchivoController::class, 'subirFicha'])->middleware('auth')->name('subir.ficha');
 Route::post('/subir/record', [ArchivoController::class, 'subirRecord'])->middleware('auth')->name('subir.record');
 
 Route::get('/practicas/desarrollo', [PracticaController::class, 'desarrollo'])->middleware('auth')->name('desarrollo');
-Route::post('/practicas/desarrollo', [PracticaController::class, 'storeDesarrollo'])->middleware('auth')->name('desarrollo');
+Route::post('/practicas', [PracticaController::class, 'storeDesarrollo'])->middleware('auth')->name('desarrollo.store');
 
 Route::get('/practicas/convalidacion', [PracticaController::class, 'convalidacion'])->middleware('auth')->name('convalidacion');
 
@@ -171,6 +169,7 @@ Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store
 
 
 Route::get('/practica/{id}', [PracticaController::class, 'show'])->name('practica.show');
+
 Route::get('/dashboard-docente', [DashboardDocenteController::class, 'index'])->name('dashboard.docente');
 Route::get('/dashboardSupervisor', [supervisorDashboard::class, 'indexsupervisor'])->name('supervisor.Dashboard');
 
@@ -207,4 +206,8 @@ Route::get('/docente/supervisores/{escuela}', [DashboardDocenteController::class
 Route::get('/EstudianteDashborad', [estudianteDashboardController::class, 'index'])->name('dashboard.estudiante');
 
 
+
+
+Route::post('/practica/{id}/edit', [EmpresaController::class, 'update'])->name('empresa.edit');
+Route::post('/jefe_inmediato/{id}/edit', [JefeInmediatoController::class, 'update'])->name('jefe_inmediato.edit');
 

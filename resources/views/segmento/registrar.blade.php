@@ -58,32 +58,34 @@
                     @method('POST')
                     <div class="form-group">
                         <label for="rol">Tipo de Usuario</label>
-                        <select class="form-control" id="rol" name="rol" required>
+                        <select class="form-control" id="rolMasivo" name="rol" required onchange="toggleFacultadEscuela('facultadEscuelaContainerMasivo')">
                             <option value="">Seleccione un tipo de usuario</option>
                             @foreach($roles as $rol)
                                 <option value="{{ $rol->id }}">{{ $rol->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="facultadMasiva">Facultad</label>
-                        <select class="form-control" id="facultadMasiva" name="facultad" required>
-                            <option value="">Seleccione</option>
-                            @foreach($facultades as $facultad)
-                                <option value="{{ $facultad->id }}">{{ $facultad->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="escuelaMasiva">Escuela</label>
-                        <select class="form-control" id="escuelaMasiva" name="escuela" required disabled>
-                            <option value="">Seleccione</option>
-                            @foreach($escuelas as $escuela)
-                                <option value="{{ $escuela->id }}" data-facultad="{{ $escuela->facultad_id }}" hidden>
-                                    {{ $escuela->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <div id="facultadEscuelaContainerMasivo">
+                        <div class="form-group">
+                            <label for="facultadMasiva">Facultad</label>
+                            <select class="form-control" id="facultadMasiva" name="facultad">
+                                <option value="">Seleccione</option>
+                                @foreach($facultades as $facultad)
+                                    <option value="{{ $facultad->id }}">{{ $facultad->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="escuelaMasiva">Escuela</label>
+                            <select class="form-control" id="escuelaMasiva" name="escuela" disabled>
+                                <option value="">Seleccione</option>
+                                @foreach($escuelas as $escuela)
+                                    <option value="{{ $escuela->id }}" data-facultad="{{ $escuela->facultad_id }}" hidden>
+                                        {{ $escuela->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="archivo" class="d-block mb-2">Archivo CSV</label>
@@ -153,13 +155,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="nombres">Nombres</label>
-                                <input type="text" class="form-control" id="nombres" name="nombres" required>
+                                <input type="text" class="form-control" id="nombres" name="nombres" required oninput="completarCorreo()">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="apellidos">Apellidos</label>
-                                <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                                <input type="text" class="form-control" id="apellidos" name="apellidos" required oninput="completarCorreo()">
                             </div>
                         </div>
                     </div>
@@ -167,13 +169,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="correo_inst">Correo Institucional</label>
-                                <input type="email" class="form-control" id="correo_inst" name="correo_inst" placeholder="ejemplo@unjfsc.edu.pe" required>
+                                <input type="email" class="form-control" id="correo_inst" name="correo_inst" placeholder="ejemplo@unjfsc.edu.pe" required disabled>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="rol">Tipo de Usuario</label>
-                                <select class="form-control" id="rol" name="rol" required>
+                                <select class="form-control" id="rolRegistro" name="rol" required onchange="toggleFacultadEscuela('facultadEscuelaContainerRegistro'); completarCorreo();">
                                     <option value="">Seleccione un tipo de usuario</option>
                                     @foreach($roles as $rol)
                                         <option value="{{ $rol->id }}">{{ $rol->name }}</option>
@@ -216,29 +218,31 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="facultadRegistro">Facultad</label>
-                                <select class="form-control" id="facultadRegistro" name="facultad" required>
-                                    <option value="">Seleccione una facultad</option>
-                                    @foreach($facultades as $facultad)
-                                        <option value="{{ $facultad->id }}">{{ $facultad->name }}</option>
-                                    @endforeach
-                                </select>
+                    <div id="facultadEscuelaContainerRegistro">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="facultadRegistro">Facultad</label>
+                                    <select class="form-control" id="facultadRegistro" name="facultad" >
+                                        <option value="">Seleccione una facultad</option>
+                                        @foreach($facultades as $facultad)
+                                            <option value="{{ $facultad->id }}">{{ $facultad->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="escuelaRegistro">Escuela</label>
-                                <select class="form-control" id="escuelaRegistro" name="escuela" required disabled>
-                                    <option value="">Seleccione una escuela</option>
-                                    @foreach($escuelas as $escuela)
-                                        <option value="{{ $escuela->id }}" data-facultad="{{ $escuela->facultad_id }}" hidden>
-                                            {{ $escuela->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="escuelaRegistro">Escuela</label>
+                                    <select class="form-control" id="escuelaRegistro" name="escuela"  disabled>
+                                        <option value="">Seleccione una escuela</option>
+                                        @foreach($escuelas as $escuela)
+                                            <option value="{{ $escuela->id }}" data-facultad="{{ $escuela->facultad_id }}" hidden>
+                                                {{ $escuela->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -252,6 +256,53 @@
     </div>
 </div>
 <!--Fin Registro-->
+
+@push('scripts')
+<script>
+    function toggleFacultadEscuela(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        // Find the closest form and then find the role select within that form
+        const form = container.closest('form');
+        let rolSelect;
+        
+        // Handle both modals
+        if (form.id === 'formUsuarioMasivo') {
+            rolSelect = document.getElementById('rolMasivo');
+        } else if (form.id === 'formRegistro') {
+            rolSelect = document.getElementById('rolRegistro');
+        }
+        
+        if (!rolSelect) return;
+        
+        const selectedRole = parseInt(rolSelect.value);
+        
+        // Show/hide based on selected role (2 or 3)
+        if (selectedRole === 2 || selectedRole === 3) {
+            container.style.display = 'none';
+        } else {
+            container.style.display = 'block';
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize both containers
+        toggleFacultadEscuela('facultadEscuelaContainerMasivo');
+        toggleFacultadEscuela('facultadEscuelaContainerRegistro');
+        
+        // Add event listeners for select changes
+        document.getElementById('rolMasivo')?.addEventListener('change', function() {
+            toggleFacultadEscuela('facultadEscuelaContainerMasivo');
+        });
+        
+        document.getElementById('rolRegistro')?.addEventListener('change', function() {
+            toggleFacultadEscuela('facultadEscuelaContainerRegistro');
+        });
+    });
+</script>
+@endpush
 
 @endsection
 

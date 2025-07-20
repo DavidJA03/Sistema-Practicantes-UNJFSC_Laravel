@@ -16,10 +16,8 @@ return new class extends Migration
         Schema::create('practicas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('estudiante_id');
-            $table->integer('grupo_practica_id')->nullable();
+            $table->string('estado_proceso')->nullable();
             $table->string('tipo_practica')->nullable();
-            $table->string('titulo_practica')->nullable();
-            $table->string('area')->nullable();
             $table->string('ruta_fut')->nullable();
             $table->string('ruta_carta_aceptacion')->nullable();
             $table->string('ruta_carta_presentacion')->nullable();
@@ -29,7 +27,6 @@ return new class extends Migration
             $table->string('ruta_control_actividades')->nullable();
             $table->string('ruta_informe_final')->nullable();
             $table->timestamps();
-            $table->string('estado_proceso')->nullable();
             $table->integer('estado');
             $table->foreign('estudiante_id')->references('id')->on('personas')->onDelete('cascade');
             //añadir el foring key de la tabla grupo practica cuando se cree la tabla 

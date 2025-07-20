@@ -101,11 +101,10 @@
                             @if(auth()->user()->persona->ruta_foto)
                                 <img class="img-profile rounded-circle" width="80" height="80" src="{{ asset(auth()->user()->persona->ruta_foto) }}">
                             @else
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
-                                    alt="Foto de perfil" class="profile-avatar mb-3">
+                                <i class="bi bi-person-fill" style="font-size: 55px;"></i>
                             @endif
                             <h6 class="mb-1 mt-4">{{ $nombreCompleto }}</h6>
-                            <p class="text-muted small mt-1">Estudiante de {{ $escuelaNombre }}</p>
+                            <p class="text-muted small">Estudiante de {{ $escuelaNombre }}</p>
                         </div>
 
                         <div class="info-item">
@@ -173,7 +172,7 @@
 
                 <!-- Prácticas -->
                 <div class="col-lg-4 mb-4">
-                    <div class="section-card h-auto">
+                    <div class="section-card h-auto clickable-card" data-bs-toggle="modal" data-bs-target="#modalPracticas" style="cursor: pointer;">
                         <h2 class="section-title">
                             <i class="bi bi-briefcase"></i>
                             Prácticas Pre-profesionales
@@ -182,28 +181,37 @@
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="fw-semibold">Estado Actual</span>
-                                <span class="status-badge status-active">En Progreso</span>
+                                @if(isset($persona?->practica) && ($persona->practica->estado_proceso = 'completo'))
+                                    @if ($persona?->practica->estado_proceso == 'completo')
+                                        <span class="status-badge status-completed">Completo</span>
+                                        <span class="text-success">✓</span>
+                                    @elseif ($persona?->practica->estado_proceso == 'en proceso' || $persona?->practica->estado_proceso == 'rechazado')
+                                        <span class="status-badge status-active">En Proceso</span>
+                                    @endif
+                                @else
+                                    <span class="status-badge status-pending">Pendiente</span>
+                                @endif
                             </div>
                         </div>
 
                         <div class="info-item">
                             <div class="info-label">Empresa</div>
-                            <div class="info-value">TechSolutions S.A.</div>
+                            <div class="info-value">{{ $persona->practica->empresa->nombre ?? 'No Asignada' }}</div>
                         </div>
 
                         <div class="info-item">
-                            <div class="info-label">Tutor Asignado</div>
-                            <div class="info-value">Ing. Carlos Mendoza</div>
+                            <div class="info-label">Jefe Inmediato</div>
+                            <div class="info-value">{{ $persona->practica->jefeInmediato->nombres ?? 'No Asignado' }}</div>
                         </div>
 
                         <div class="info-item">
                             <div class="info-label">Período</div>
-                            <div class="info-value">Enero - Abril 2024</div>
+                            <div class="info-value">{{ $semestre->codigo }}</div>
                         </div>
 
                         <div class="info-item">
-                            <div class="info-label">Horas Completadas</div>
-                            <div class="info-value">120 / 240 horas</div>
+                            <div class="info-label">Supervisor</div>
+                            <div class="info-value">{{ $persona->gruposEstudiante->supervisor->nombres ?? 'No Asignado' }}</div>
                         </div>
                     </div>
                 </div>
@@ -213,6 +221,8 @@
     @include('segmento.view_estu')
     <!-- Modal Matricula -->
     @include('matricula.view_estu_mat')
+    <!-- Modal Prácticas -->
+    @include('practicas.estudiante.practica')
 @endsection
 
 @push('js')
@@ -268,7 +278,6 @@
                 }
             });
         });
-
         // Funcionalidad para subir foto
         document.getElementById('fotoInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -280,6 +289,99 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Verificar estado de matrícula al abrir el modal
+            const modalPracticas = document.getElementById('modalPracticas');
+            const modalInstance = bootstrap.Modal.getInstance(modalPracticas) || new bootstrap.Modal(modalPracticas);
+            
+            modalPracticas.addEventListener('show.bs.modal', function(event) {
+                @if(!($persona->matriculas->contains('estado_ficha', 'Completo') && $persona->matriculas->contains('estado_record', 'Completo')))
+                    event.preventDefault(); // Evita que el modal se muestre
+                    modalInstance.hide(); // Asegura que el modal permanezca oculto
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Acceso denegado',
+                        text: "Primero debes completar tu matrícula para acceder a estas opciones.",
+                        confirmButtonText: 'Entendido'
+                    });
+                @endif
+            });
+            // Event listeners para las opciones de práctica
+            document.querySelectorAll('.practice-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const practiceType = this.getAttribute('data-practice-type');
+                    selectPracticeType(practiceType);
+                });
+
+                // Efectos hover
+                option.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                });
+
+                option.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Función para seleccionar el tipo de prácticas
+            function selectPracticeType(type) {
+                const typeText = type === 'desarrollo' ? 'Desarrollo' : 'Convalidación';
+                const routeParam = type === 'desarrollo' ? 1 : 2;
+                const redirectUrl = type === 'desarrollo' ? '/practicas/desarrollo' : '/practicas/convalidacion';
+
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    html: `¿Deseas continuar con el módulo de <strong>${typeText}</strong>?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--primary-blue)',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, continuar',
+                    cancelButtonText: 'Cancelar',
+                    customClass: {
+                        popup: 'rounded-3',
+                        confirmButton: 'btn-primary-custom',
+                        cancelButton: 'btn-outline-secondary'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Procesando...',
+                            html: 'Configurando tu práctica, por favor espera...',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        axios.post(`{{ route('desarrollo.store', ['ed' => '__ed__']) }}`.replace('__ed__', routeParam))
+                            .then(response => {
+                                window.location.href = redirectUrl;
+                            })
+                            .catch(error => {
+                                console.error('Error storing development type:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'No se pudo guardar el tipo de práctica. Por favor, inténtalo nuevamente.'
+                                });
+                            });
+                    }
+                });
+            }
+
+        });
+
+        // Agregar SweetAlert2 CDN si no está incluido
+        if (typeof Swal === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+            document.head.appendChild(script);
+        }
     </script>
     <script src="{{ asset('js/perfil_edit.js') }}"></script>
 @endpush

@@ -26,7 +26,7 @@ class PracticaController extends Controller
     
             //dd($personas);
             
-        return view('practicas.supervision', compact('personas'));
+        return view('practicas.admin.supervision', compact('personas'));
     }
 
     public function show($id){
@@ -121,7 +121,7 @@ class PracticaController extends Controller
         if ($ed == 1) {
             Practica::create([
                 'estudiante_id' => $user->persona->id,
-                'estado_proceso' => 'en_proceso',
+                'estado_proceso' => 'en proceso',
                 'tipo_practica' => 'desarrollo',
                 'estado' => 1,
                 'date_create' => now(),
@@ -169,7 +169,7 @@ class PracticaController extends Controller
         $empresaExiste = !is_null($practicaData->empresa);
         $jefeExiste = !is_null($practicaData->jefeInmediato);
         //dd($practicaData);
-        return view('practicas.desarrollo', compact('practicaData', 'empresaExiste', 'jefeExiste', 'docente', 'supervisor', 'semestre'));
+        return view('practicas.admin.desarrollo', compact('practicaData', 'empresaExiste', 'jefeExiste', 'docente', 'supervisor', 'semestre'));
     }
 
     public function convalidacion(){
@@ -192,7 +192,7 @@ class PracticaController extends Controller
         $empresaExiste = !is_null($practicaData->empresa);
         $jefeExiste = !is_null($practicaData->jefeInmediato);
         //dd($practicaData);
-        return view('practicas.convalidacion', compact('practicaData', 'empresaExiste', 'jefeExiste'));
+        return view('practicas.admin.convalidacion', compact('practicaData', 'empresaExiste', 'jefeExiste'));
     }
 
     public function storeFut(Request $request){

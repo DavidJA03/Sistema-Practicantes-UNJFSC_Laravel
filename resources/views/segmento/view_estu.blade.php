@@ -99,9 +99,7 @@
                                     <img src="{{ asset($persona->ruta_foto) }}" alt="Foto" class="img-fluid rounded-circle mb-3"
                                         style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #c3dafe;">
                                 @else
-                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=255&h=255&fit=crop&crop=face" 
-                                         alt="Foto" class="img-fluid rounded-circle mb-3" 
-                                         style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #c3dafe;;">
+                                         <i class="img-fluid bi bi-person-fill mb-3" style="font-size: 200px;"></i>
                                 @endif
                                 <hr>
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalFoto">
@@ -143,10 +141,7 @@
                             style="width: 150px; height: 150px; object-fit: cover;" 
                             id="previewImage">
                     @else
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
-                            alt="Vista previa" class="img-fluid rounded-circle" 
-                            style="width: 150px; height: 150px; object-fit: cover;" 
-                            id="previewImage">
+                        <i class="img-fluid bi bi-person-fill mb-3" style="font-size: 200px;"></i>
                     @endif
                 </div>
                 <form action="{{ route('store.foto') }}" method="POST" enctype="multipart/form-data">

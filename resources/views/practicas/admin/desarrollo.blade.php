@@ -40,13 +40,13 @@
 @endphp
 
 @if ($etapa == 1)
-    @include('practicas.desarrollo.desa_E1')
+    @include('practicas.admin.desarrollo.desa_E1')
 @elseif ($etapa == 2)
-    @include('practicas.desarrollo.desa_E2')
+    @include('practicas.admin.desarrollo.desa_E2')
 @elseif ($etapa == 3)
-    @include('practicas.desarrollo.desa_E3')
+    @include('practicas.admin.desarrollo.desa_E3')
 @elseif ($etapa == 4)
-    @include('practicas.desarrollo.desa_E4')
+    @include('practicas.admin.desarrollo.desa_E4')
 @else
     <div class="alert alert-success text-center mt-4" role="alert">
         <h4 class="alert-heading">¡Felicidades!</h4>

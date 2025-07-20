@@ -24,12 +24,23 @@ class homeController extends Controller
             return redirect()->route('home')->with('error', 'No se encontró la persona asociada al usuario.');
         }
         $id_escuela = $persona->id_escuela;
-        $matricula = $persona?->matricula;
-        $escuela = Escuela::findOrFail($id_escuela);
-        $grupo_estudiante = grupo_estudiante::where('id_estudiante', $persona->id)->firstOrFail();
-        $grupo_practica = grupos_practica::findOrFail($grupo_estudiante->id_grupo_practica);
-        $docente = Persona::findOrFail($grupo_practica->id_docente);
-        $semestre = Semestre::findOrFail($grupo_practica->id_semestre);
+        $escuela = Escuela::find($id_escuela);
+        $grupo_estudiante = grupo_estudiante::where('id_estudiante', $persona->id)->first();
+    
+        if (!$escuela || !$grupo_estudiante) {
+            auth()->logout(); // cierra sesión
+            return redirect()->route('login')->with('error', 'Aún no tienes acceso al sistema. Contacta al administrador.');
+        }
+    
+        $grupo_practica = grupos_practica::find($grupo_estudiante->id_grupo_practica);
+        $docente = Persona::find($grupo_practica?->id_docente);
+        $semestre = Semestre::find($grupo_practica?->id_semestre);
+    
+        // Si alguno de estos aún falta, también redirige
+        if (!$grupo_practica || !$docente || !$semestre) {
+            auth()->logout();
+            return redirect()->route('login')->with('error', 'Aún no tienes acceso al sistema. Contacta al administrador.');
+        }
         
         return view('panel.index_estudiante', compact('escuela', 'semestre', 'docente')); 
     }

@@ -40,7 +40,7 @@ Route::get('/panel', [homeController::class, 'index'])->middleware('auth')->name
 Route::get('/login', [loginController::class, 'index'])->name('login');
 Route::post('/login', [loginController::class, 'login']);
 Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion');
-Route::get('/panel/estudiantes', [homeController::class, 'index_estudiante'])->middleware('auth')->name('panel.estudiantes');
+Route::get('/estudiantes', [homeController::class, 'index_estudiante'])->middleware('auth')->name('panel.estudiantes');
 
 // ... otras rutas ...
 

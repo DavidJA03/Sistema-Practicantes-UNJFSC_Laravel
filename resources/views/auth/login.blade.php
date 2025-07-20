@@ -293,6 +293,19 @@
             }
         });
     </script>
+
+@if(session('error'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Acceso denegado',
+            text: "{{ session('error') }}",
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
+
 </body>
 
 </html>

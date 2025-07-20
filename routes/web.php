@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\adminDashboardController;
 use App\Http\Controllers\ArchivoController;
 use App\Http\Controllers\asginacionController;
 use App\Http\Controllers\cerrarSesionController;
+use App\Http\Controllers\DashboardDocenteController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\PersonaController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\escuelaController;
 use App\Http\Controllers\grupoEstudianteController;
 use App\Http\Controllers\matriculaController;
 use App\Http\Controllers\semestreController;
+use App\Http\Controllers\supervisorDashboard;
 use App\Http\Controllers\validacionMatriculaController;
 use App\Http\Controllers\evaluacionController;
 use App\Http\Requests\StoreFacultadRequest;
@@ -22,7 +25,10 @@ use App\Models\grupo_estudiante;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticaController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\estudianteDashboardController;
 use App\Http\Controllers\JefeInmediatoController;
+use App\Http\Controllers\panelPrincipal;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,8 +41,9 @@ use App\Http\Controllers\JefeInmediatoController;
 |
 */  
 
+
 Route::get('/', [loginController::class, 'index']);
-Route::get('/panel', [homeController::class, 'index'])->middleware('auth')->name('panel');
+Route::get('/panel', [panelPrincipal::class, 'dashboard'])->middleware('auth')->name('panel');
 Route::get('/login', [loginController::class, 'index'])->name('login');
 Route::post('/login', [loginController::class, 'login']);
 Route::get('/cerrarSecion', [cerrarSesionController::class, 'cerrarSecion'])->name('cerrarSecion');
@@ -164,3 +171,40 @@ Route::post('/store.foto', [PersonaController::class, 'storeFoto'])->name('store
 
 
 Route::get('/practica/{id}', [PracticaController::class, 'show'])->name('practica.show');
+Route::get('/dashboard-docente', [DashboardDocenteController::class, 'index'])->name('dashboard.docente');
+Route::get('/dashboardSupervisor', [supervisorDashboard::class, 'indexsupervisor'])->name('supervisor.Dashboard');
+
+Route::get('/dashboardAdmin', [adminDashboardController::class, 'indexAdmin'])->name('admin.Dashboard');
+
+Route::get('/api/escuelas/{facultadId}', function ($facultadId) {
+    return DB::table('escuelas')->where('facultad_id', $facultadId)->get();
+});
+
+
+Route::get('/api/docentes/{escuelaId}', function ($escuelaId) {
+    return DB::table('personas')
+        ->join('grupos_practicas', 'personas.id', '=', 'grupos_practicas.id_docente')
+        ->where('grupos_practicas.id_escuela', $escuelaId)
+        ->select('personas.id', DB::raw("CONCAT(personas.nombres, ' ', personas.apellidos) as nombre"))
+        ->distinct()
+        ->get();
+});
+
+
+Route::get('/api/semestres/{docenteId}', function ($docenteId) {
+    return DB::table('grupos_practicas')
+        ->join('semestres', 'grupos_practicas.id_semestre', '=', 'semestres.id')
+        ->where('grupos_practicas.id_docente', $docenteId)
+        ->select('semestres.id', 'semestres.codigo')
+        ->distinct()
+        ->get();
+});
+
+Route::get('/docente/semestres/{escuela}', [DashboardDocenteController::class, 'getSemestres']);
+Route::get('/docente/supervisores/{escuela}', [DashboardDocenteController::class, 'getSupervisores']);
+
+
+Route::get('/EstudianteDashborad', [estudianteDashboardController::class, 'index'])->name('dashboard.estudiante');
+
+
+

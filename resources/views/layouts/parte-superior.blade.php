@@ -23,6 +23,28 @@
             </a>
 
             <hr class="sidebar-divider my-0">
+
+
+            <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.docente') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Dashboard  Docente</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('supervisor.Dashboard') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Dashboard Supervisor</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('admin.Dashboard') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Dashboard Admin</span>
+                </a>
+            </li>
+
             @if($rol ==1 || $rol ==2    )
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('panel') }}">
@@ -96,7 +118,9 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>                
             @endif  
 
-            @if ($rol == 1 || $rol == 2 || $rol == 3)
+
+            @if ($rol == 1 || $rol == 3 )
+
                 <li class="nav-item"><a class="nav-link" href="{{ route('estudiante') }}"><i class="fas fa-fw fa-users"></i><span>Lista de Estudiantes</span></a></li>
                 <li class="nav-item">
                 <a class="nav-link" href="{{ route('evaluacion.index') }}">
@@ -111,14 +135,14 @@
                         <span>Preguntas</span></a>
                 </li>
             @endif
-            @if ($rol == 1 || $rol == 2 || $rol == 3)
+                @if ($rol == 1 || $rol == 2 || $rol == 3 )
+            
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Datos extra</div>
-                
                 <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>
-            @endif
-
+                @endif
+             
             @if ( $rol == 4)
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Validación de datos</div>

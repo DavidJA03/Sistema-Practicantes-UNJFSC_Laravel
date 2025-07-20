@@ -24,34 +24,11 @@
 
             <hr class="sidebar-divider my-0">
 
-
-            <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.docente') }}">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>Dashboard  Docente</span></a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('supervisor.Dashboard') }}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Dashboard Supervisor</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.Dashboard') }}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Dashboard Admin</span>
-                </a>
-            </li>
-
-            @if($rol ==1 || $rol ==2    )
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('panel') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span>
                 </a>
             </li>
-            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('perfil') }}">
                     <i class="fas fa-fw fa-user"></i><span>Perfil</span>

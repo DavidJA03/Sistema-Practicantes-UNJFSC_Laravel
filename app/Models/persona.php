@@ -77,7 +77,7 @@ class Persona extends Model
         return $this->belongsTo(Escuela::class, 'id_escuela'); // o el campo que tengas como FK
     }
     public function type_user() {
-        return $this->belongsTo(type_users::class, 'type_user_id');
+        return $this->belongsTo(type_users::class, 'rol_id');
     }
 
     public function evaluacione()
@@ -103,6 +103,15 @@ class Persona extends Model
     public function grupo_estudiante()
     {
         return $this->hasOne(grupo_estudiante::class, 'id_estudiante');
+    }
+    public function grupo_estudiantes2()
+{
+    return $this->hasMany(\App\Models\grupo_estudiante::class, 'id_supervisor', 'id');
+}
+
+        public function grupos_practica()
+    {
+        return $this->hasMany(\App\Models\grupos_practica::class, 'id_docente', 'id');
     }
 
 

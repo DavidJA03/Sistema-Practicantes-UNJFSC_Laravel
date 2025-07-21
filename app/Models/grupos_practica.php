@@ -42,4 +42,9 @@ class grupos_practica extends Model
         return $this->belongsTo(grupos_practica::class);
     }
 
+public function grupo_estudiante()
+{
+    return $this->hasMany(\App\Models\grupo_estudiante::class, 'id_grupo_practica', 'id');
+}
+
 }

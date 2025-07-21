@@ -103,7 +103,14 @@
                         </div>
                     </div>
                 </li>
+
+                @endif
+                <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
+               @endif  
+
             @endif
+
 
             <!-- Supervisión -->
             @if($rol == 1 || $rol == 2)

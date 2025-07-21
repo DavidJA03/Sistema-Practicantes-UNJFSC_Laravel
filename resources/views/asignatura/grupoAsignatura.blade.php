@@ -693,6 +693,63 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
+
+
+            {{-- Lista de supervisores ya asignados a la escuela --}}
+{{-- Lista de supervisores ya asignados a la escuela --}}
+{{-- Supervisor Asignado --}}
+<div id="supervisor-asignado-{{ $grupo->id }}" class="mb-3 border p-3 rounded shadow-sm bg-white">
+  <label class="font-weight-bold mb-2">Supervisor Asignado</label>
+
+  <select class="form-control custom-select mb-2" name="id_supervisor" id="select-supervisor-{{ $grupo->id }}">
+
+    @php
+      $docente3 = \App\Models\Persona::where('rol_id', 3)
+          ->whereHas('grupo_estudiantes2.grupo', function ($query) use ($grupo) {
+              $query->where('id_escuela', $grupo->id_escuela);
+          })
+          ->get();
+    @endphp
+
+    @foreach($docente3 as $docente)
+      <option value="{{ $docente->id }}" {{ $docente->id == $grupo->id_docente ? 'selected' : '' }}>
+        {{ $docente->nombres }} {{ $docente->apellidos }}
+      </option>
+    @endforeach 
+  </select>
+
+  <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="mostrarNuevoSupervisor({{ $grupo->id }})">
+    Asignar nuevo supervisor
+  </button>
+</div>
+
+{{-- Nueva Asignación de Supervisor --}}
+<div id="nuevo-supervisor-{{ $grupo->id }}" class="mb-3 border p-3 rounded shadow-sm bg-light" style="display: none;">
+  <label class="font-weight-bold mb-2">Asignar Nuevo Supervisor</label>
+
+  @if($docente2->isEmpty())
+    <div class="alert alert-warning text-center mb-2">
+      No hay supervisores disponibles
+    </div>
+  @else
+    <select class="form-control custom-select mb-2" name="id_supervisor" id="select-nuevo-supervisor-{{ $grupo->id }}" disabled>
+
+      @foreach($docente2 as $docente)
+        <option value="{{ $docente->id }}" {{ $docente->id == $grupo->id_docente ? 'selected' : '' }}>
+          {{ $docente->nombres }} {{ $docente->apellidos }}
+        </option>
+      @endforeach 
+    </select>
+  @endif
+
+  <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="cancelarNuevoSupervisor({{ $grupo->id }})">
+    Cancelar
+  </button>
+</div>
+
+
+
+
             <label class="font-weight-bold">
               <i class="bi bi-person-badge"></i>
               Docente Asignado
@@ -704,6 +761,7 @@
               </option>
               @endforeach
             </select>
+
           </div>
           <div class="form-group">
             <div class="card-header">
@@ -733,14 +791,14 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @php
-                  $estudiantesAsignados = \App\Models\grupo_estudiante::where('id_grupo_practica', $grupo->id)->pluck('id_estudiante')->toArray();
-                  $estudiantesGrupo = \App\Models\Persona::with('escuela')
-                      ->where('rol_id', 4)
-                      ->where('id_escuela', $grupo->id_escuela)
-                      ->whereNotIn('id', $estudiantesAsignados)
-                      ->get();
-                  @endphp
+                @php
+                    $estudiantesAsignados = \App\Models\grupo_estudiante::pluck('id_estudiante')->toArray();
+                    $estudiantesGrupo = \App\Models\Persona::with('escuela')
+                        ->where('rol_id', 4)
+                        ->where('id_escuela', $grupo->id_escuela)
+                        ->whereNotIn('id',  $estudiantesAsignados)
+                        ->get();
+                @endphp
                   @foreach($estudiantesGrupo as $estudiante)
                   <tr>
                     <td class="text-center">
@@ -910,6 +968,29 @@
     </div>
   </div>
 </div>
+
+<script>
+  function mostrarNuevoSupervisor(grupoId) {
+    document.getElementById(`supervisor-asignado-${grupoId}`).style.display = 'none';
+    document.getElementById(`nuevo-supervisor-${grupoId}`).style.display = 'block';
+
+    const nuevoSelect = document.getElementById(`select-nuevo-supervisor-${grupoId}`);
+    if (nuevoSelect) {
+        nuevoSelect.disabled = false;
+    }
+  }
+
+  function cancelarNuevoSupervisor(grupoId) {
+    document.getElementById(`nuevo-supervisor-${grupoId}`).style.display = 'none';
+    document.getElementById(`supervisor-asignado-${grupoId}`).style.display = 'block';
+
+    const nuevoSelect = document.getElementById(`select-nuevo-supervisor-${grupoId}`);
+    if (nuevoSelect) {
+        nuevoSelect.disabled = true;
+    }
+  }
+</script>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {

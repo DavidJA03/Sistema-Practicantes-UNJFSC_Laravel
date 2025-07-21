@@ -998,6 +998,12 @@
             }, 300);
         });
 
+
+            Array.from(escuelaSelect.options).forEach(option => {
+                if (option.value === "") {
+                    option.hidden = false; 
+                    return;
+
         // Validación en tiempo real para selects
         const selects = document.querySelectorAll('select.form-control');
         selects.forEach(select => {
@@ -1008,6 +1014,7 @@
                 } else if (!this.disabled) {
                     this.classList.add('is-invalid');
                     this.classList.remove('is-valid');
+
                 }
             });
         });

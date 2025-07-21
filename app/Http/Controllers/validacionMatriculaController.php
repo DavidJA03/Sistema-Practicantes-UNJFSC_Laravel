@@ -14,22 +14,31 @@ use Illuminate\Support\Facades\Auth;
 class validacionMatriculaController extends Controller
 {
     public function Vmatricula(){
+        $idPersona = auth()->user()->persona->id;
         $id = auth()->id();
-/*
-        $estudiantes = grupos_practica::with([
-             'estudiante.matricula', 
-        ])->where('id_docente', $id)->get();
-*/ 
+        //$persona = auth()->user()->persona;
+/*$nombre = $persona?->type_user?->nombre;
+$nombres = $nombre;*/
+        
+        if($id ==1) {
+            $estudiantes = grupo_estudiante::with([
+                'grupo.semestre',
+                'grupo.escuela',
+                'estudiante.matricula',
+                'supervisor'
+            ])->get();
+        }else{
+            $estudiantes = grupo_estudiante::with([
+                'grupo.semestre',
+                'grupo.escuela',
+                'estudiante.matricula',
+                'supervisor'
+            ])->whereHas('grupo', function ($query) use ($idPersona) {
+                $query->where('id_docente', $idPersona); // Aquí filtras por docente dentro de la relación
+            })->get();
 
-        $estudiantes = grupo_estudiante::with([
-            'grupo.semestre',
-            'grupo.escuela',
-            'estudiante.matricula',
-            'supervisor'
-        ])->whereHas('grupo', function ($query) use ($id) {
-            $query->where('id_docente', $id);
-        })->get();
-
+        }
+        
 
         return view('ValidacionMatricula.ValidacionMatricula', compact('estudiantes'));
     }

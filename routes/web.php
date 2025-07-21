@@ -99,6 +99,7 @@ Route::post('/evaluacion/store-entrevista', [EvaluacionController::class, 'store
 //Preguntas
 Route::resource('pregunta', preguntaController::class);
 
+
 //Respuestas
 Route::post('/respuestas', [respuestaController::class, 'store'])->name('respuestas.store');
 

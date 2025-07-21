@@ -633,11 +633,13 @@ Swal.fire({
                                             {{ $pregunta->estado ? 'Deshabilitar' : 'Habilitar' }}
                                         </button>
                                     </form>
-
+                                    {{-- Botón editar --}}
+                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalEditarPregunta-{{ $pregunta->id }}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
                                     {{-- Botón eliminar --}}
                                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar-{{ $pregunta->id }}">
-                                        <i class="bi bi-trash"></i> 
-                                        Eliminar
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -696,6 +698,44 @@ Swal.fire({
         </form>
     </div>
 </div>
+{{-- Modales Editar --}}
+@foreach($preguntas as $pregunta)
+<div class="modal fade" id="modalEditarPregunta-{{ $pregunta->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form method="POST" action="{{ route('pregunta.update', $pregunta->id) }}" class="modal-content">
+            @csrf
+            @method('PUT')
+            <div class="modal-header header-editar">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square"></i>
+                    Editar Pregunta
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>
+                        <i class="bi bi-question-circle"></i>
+                        Modificar Pregunta
+                    </label>
+                    <textarea name="pregunta" class="form-control" rows="3" required>{{ $pregunta->pregunta }}</textarea>
+                    <small class="form-text">Puedes editar el texto de esta pregunta.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i>
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 
 {{-- Modales Eliminar --}}
 @foreach($preguntas as $pregunta)

@@ -74,7 +74,7 @@ class asginacionController extends Controller
     }
 
     public function eliminar($id)
-    {
+    { 
         grupos_practica::destroy($id);
         return redirect()->back()->with('success', 'Grupo eliminado correctamente.');
     }

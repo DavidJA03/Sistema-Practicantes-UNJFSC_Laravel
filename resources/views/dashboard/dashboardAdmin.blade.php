@@ -313,10 +313,7 @@ form.addEventListener('submit', function(e) {
 
     const params = new URLSearchParams(new FormData(this)).toString();
 
-    fetch(`/api/fichas-por-escuela?${params}`)
-        .then(res => res.json())
-        .then(data => renderChart(data))
-        .catch(err => console.error("Error cargando gráfico:", err));
+    
 });
 </script>
 

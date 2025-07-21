@@ -249,7 +249,7 @@
 
             Array.from(escuelaSelect.options).forEach(option => {
                 if (option.value === "") {
-                    option.hidden = false;
+                    option.hidden = false; 
                     return;
                 }
 

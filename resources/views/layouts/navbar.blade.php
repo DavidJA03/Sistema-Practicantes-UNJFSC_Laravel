@@ -2,7 +2,7 @@
         <!-- Sidebar -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <img src="{{ asset('img/ins-UNJFSC.png') }}" alt="Logo" style="max-width: 50px;">
+                <img src="{{ asset('img/ins-UNJFSC.png') }}" alt="Logo" style="max-width: 50px;" class="me-1">
                 <a href="{{ route('panel') }}" class="sidebar-logo">
                     UNJFSC
                 </a>
@@ -208,11 +208,15 @@
                     <div class="user-dropdown">
                         <div class="user-info" data-bs-toggle="dropdown">
                             <div class="user-avatar">
-                                {{ substr(Auth::user()->persona->nombres ?? 'U', 0, 1) }}
+                                @if (Auth::user()->persona->ruta_foto)
+                                    <img src="{{ asset(Auth::user()->persona->ruta_foto) }}" alt="Foto de Perfil" class="rounded-circle" style="width: 40px; height: 40px;">
+                                @else
+                                    {{ substr(Auth::user()->persona->nombres ?? 'U', 0, 1) }}
+                                @endif
                             </div>
                             <div class="user-details">
                                 <div class="user-name">{{ Auth::user()->persona->nombres ?? 'Usuario' }}</div>
-                                <div class="user-role">{{ Auth::user()->persona->rol_id->name ?? 'Administrador' }}</div>
+                                <div class="user-role">{{ Auth::user()->persona->rol->name ?? 'Administrador' }}</div>
                             </div>
                             <i class="bi bi-chevron-down" style="color: var(--text-secondary);"></i>
                         </div>

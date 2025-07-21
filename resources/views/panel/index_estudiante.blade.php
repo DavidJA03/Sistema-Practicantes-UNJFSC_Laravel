@@ -156,7 +156,7 @@
                             @if(auth()->user()->persona->ruta_foto)
                                 <img class="img-profile rounded-circle" width="80" height="80" src="{{ asset(auth()->user()->persona->ruta_foto) }}">
                             @else
-                                <i class="bi bi-person-fill" style="font-size: 55px;"></i>
+                                <i class="bi bi-person-fill" style="font-size: 55px; color: var(--primary-blue);"></i>
                             @endif
                             <h6 class="mb-1 mt-4">{{ $nombreCompleto }}</h6>
                             <p class="text-muted small">Estudiante de {{ $escuelaNombre }}</p>
@@ -496,5 +496,16 @@
                 }
             }, 5000);
         }
+        // Funcionalidad para subir foto
+        document.getElementById('fotoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 @endpush

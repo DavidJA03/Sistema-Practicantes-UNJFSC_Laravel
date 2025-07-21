@@ -19,7 +19,7 @@ class panelPrincipal extends Controller
         case 3:
             return redirect()->action([supervisorDashboard::class, 'indexsupervisor']);
         case 4:
-            return redirect()->action([estudianteDashboardController::class, 'index']);
+            return redirect()->action([homeController::class, 'index_estudiante']);
         default:
             abort(403, 'Acceso no autorizado');
     }

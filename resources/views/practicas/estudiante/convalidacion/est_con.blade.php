@@ -1,3 +1,8 @@
+@php
+    $supervisor = $persona->gruposEstudiante->supervisor;
+    $docente = $persona->gruposEstudiante->grupo->docente;
+    $periodo = $persona->gruposEstudiante->grupo->semestre;
+@endphp
 <div class="container-fluid practice-development-view">
     <div class="container">
         <div class="section-card mb-4">
@@ -16,27 +21,32 @@
                 <div class="col-md-6">
                     <div class="info-item">
                         <div class="info-label">Docente Titular</div>
-                        <div class="info-value">Dr. Carlos Mendoza Pérez</div>
+                        <div class="info-value">{{ $docente->apellidos }} {{ $docente->nombres }}</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="info-item">
                         <div class="info-label">Supervisor Asignado</div>
-                        <div class="info-value">Ing. Ana García López</div>
+                        <div class="info-value">{{ $supervisor->apellidos }} {{ $supervisor->nombres }}</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="info-item">
                         <div class="info-label">Estado</div>
                         <div class="info-value">
+                            @if($practicas->estado == 5)
+                            <span class="status-badge status-completed">Completo</span>
+                            <span class="text-success">✓</span>
+                            @else
                             <span class="status-badge status-active">Activo</span>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="info-item">
                         <div class="info-label">Período</div>
-                        <div class="info-value">2024-1</div>
+                        <div class="info-value">{{ $periodo->codigo }}</div>
                     </div>
                 </div>
             </div>
@@ -49,6 +59,18 @@
             @include('practicas.estudiante.convalidacion.est_con_3')
         @elseif($practicas->estado == 4)
             @include('practicas.estudiante.convalidacion.est_con_4')
+        @elseif($practicas->estado == 5)
+            @if ($practicas->estado_proceso === 'completo')
+                <div class="alert alert-success mt-4" id="completionAlert">
+                    <div class="text-center">
+                        <i class="bi bi-check-circle" style="font-size: 3rem; color: #16a34a;"></i>
+                        <h4 class="mt-3 mb-3">¡Felicitaciones!</h4>
+                        <p class="mb-0">
+                            Has completado exitosamente el proceso de convalidación de tu experiencia laboral. Tu solicitud ha sido aprobada.
+                        </p>
+                    </div>
+                </div>
+            @endif
         @endif
     </div>
 </div>
@@ -93,8 +115,11 @@
     }
     
     .section-title {
-        color: #2c3e50;
-        font-weight: 700;
+        color: var(--primary-blue);
+        font-weight: 600;
         margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 </style>

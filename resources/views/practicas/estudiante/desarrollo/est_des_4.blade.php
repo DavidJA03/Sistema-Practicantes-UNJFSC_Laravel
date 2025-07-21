@@ -92,19 +92,6 @@
             </div>
         </div>
     @endif
-
-    <!-- Mensaje de Finalización -->
-    @if ($practicaData->estado_proceso === 'completo')
-        <div class="alert alert-success mt-4" id="completionAlert">
-            <div class="text-center">
-                <i class="bi bi-check-circle" style="font-size: 3rem; color: #16a34a;"></i>
-                <h4 class="mt-3 mb-3">¡Felicitaciones!</h4>
-                <p class="mb-0">
-                    Has completado exitosamente todas las etapas de tus prácticas pre-profesionales. Tu proceso ha sido aprobado.
-                </p>
-            </div>
-        </div>
-    @endif
 </div>
 
 <!-- Modal Constancia de Cumplimiento -->

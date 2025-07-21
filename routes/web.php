@@ -181,7 +181,6 @@ Route::get('/api/escuelas/{facultadId}', function ($facultadId) {
 });
 
 
-
 Route::get('/api/docentes/{escuelaId}', function ($escuelaId) {
     return DB::table('personas')
         ->join('grupos_practicas', 'personas.id', '=', 'grupos_practicas.id_docente')
@@ -190,7 +189,6 @@ Route::get('/api/docentes/{escuelaId}', function ($escuelaId) {
         ->distinct()
         ->get();
 });
-
 
 Route::get('/api/semestres/{docenteId}', function ($docenteId) {
     return DB::table('grupos_practicas')
@@ -210,9 +208,6 @@ Route::get('/supervisor/semestres/{escuela}', [supervisorDashboard::class, 'obte
 
 
 Route::get('/EstudianteDashborad', [estudianteDashboardController::class, 'index'])->name('dashboard.estudiante');
-
-
-
 
 Route::post('/practica/{id}/edit', [EmpresaController::class, 'update'])->name('empresa.edit');
 Route::post('/jefe_inmediato/{id}/edit', [JefeInmediatoController::class, 'update'])->name('jefe_inmediato.edit');

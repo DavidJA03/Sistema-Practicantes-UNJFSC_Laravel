@@ -119,6 +119,6 @@ class adminDashboardController extends Controller
             'totalMatriculados', 'totalSupervisores',
             'completos', 'pendientes', 'totalPorEscuelaEnSemestre',
             'totalEstudiantes', 'listaEstudiantes','fichasPorEscuela','fichasPorMes'
-        ));
+        )); 
     }
 }

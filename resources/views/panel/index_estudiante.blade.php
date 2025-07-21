@@ -46,6 +46,60 @@
         .btn-close-white {
             filter: invert(1) grayscale(100%) brightness(200%);
         }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-out {
+            animation: slideOut 0.3s ease-out forwards;
+        }
+
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-100%); }
+        }
+
+        .practice-stage-card {
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-gray);
+            transition: all 0.3s ease;
+        }
+
+        .practice-stage-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .stage-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+        }
+
+        .stage-icon.company {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .stage-icon.supervisor {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
 
         @media (max-width: 768px) {
             .main-content {
@@ -71,9 +125,10 @@
         $persona = $user->persona;
         $nombreCompleto = $persona->nombres . ' ' . $persona->apellidos;
         $escuelaNombre = $escuela ? $escuela->name : 'Desconocida';
+        $practicas = auth()->user()->persona->practica;
     @endphp
     <!-- Main Content -->
-    <div class="container-fluid main-content">
+    <div class="container-fluid main-content" id="mainContentView">
         <div class="container">
             <!-- Welcome Header -->
             <div class="welcome-header">
@@ -101,7 +156,7 @@
                             @if(auth()->user()->persona->ruta_foto)
                                 <img class="img-profile rounded-circle" width="80" height="80" src="{{ asset(auth()->user()->persona->ruta_foto) }}">
                             @else
-                                <i class="bi bi-person-fill" style="font-size: 55px;"></i>
+                                <i class="bi bi-person-fill" style="font-size: 55px; color: var(--primary-blue);"></i>
                             @endif
                             <h6 class="mb-1 mt-4">{{ $nombreCompleto }}</h6>
                             <p class="text-muted small">Estudiante de {{ $escuelaNombre }}</p>
@@ -223,6 +278,17 @@
     @include('matricula.view_estu_mat')
     <!-- Modal Prácticas -->
     @include('practicas.estudiante.practica')
+    
+    <!-- Vista de Práctica (se mostrará dinámicamente) -->
+    <div id="practiceViewContainer" style="display: none;">
+        @if($practicas && $practicas->tipo_practica)
+            @if($practicas->tipo_practica === 'desarrollo')
+                @include('practicas.estudiante.desarrollo.est_des')
+            @elseif($practicas->tipo_practica === 'convalidacion')
+                @include('practicas.estudiante.convalidacion.est_con')
+            @endif
+        @endif
+    </div>
 @endsection
 
 @push('js')
@@ -278,6 +344,7 @@
                 }
             });
         });
+
         // Funcionalidad para subir foto
         document.getElementById('fotoInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -291,89 +358,101 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-
-            // Verificar estado de matrícula al abrir el modal
-            const modalPracticas = document.getElementById('modalPracticas');
-            const modalInstance = bootstrap.Modal.getInstance(modalPracticas) || new bootstrap.Modal(modalPracticas);
+            checkPracticeView();
+            // Verificar si ya tiene práctica seleccionada
+            const hasPractice = @json($practicas && $practicas->tipo_practica !== null);
+            const practiceType = @json($practicas->tipo_practica ?? null);
             
-            modalPracticas.addEventListener('show.bs.modal', function(event) {
-                @if(!($persona->matriculas->contains('estado_ficha', 'Completo') && $persona->matriculas->contains('estado_record', 'Completo')))
-                    event.preventDefault(); // Evita que el modal se muestre
-                    modalInstance.hide(); // Asegura que el modal permanezca oculto
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Acceso denegado',
-                        text: "Primero debes completar tu matrícula para acceder a estas opciones.",
-                        confirmButtonText: 'Entendido'
-                    });
-                @endif
+            // Mostrar modal solo si no tiene práctica seleccionada
+            document.querySelector('[data-bs-target="#modalPracticas"]').addEventListener('click', function(e) {
+                if (@json($practicas && $practicas->tipo_practica !== null)) {
+                    e.preventDefault();
+                    showPracticeView(@json($practicas->tipo_practica));
+                }
             });
-            // Event listeners para las opciones de práctica
-            document.querySelectorAll('.practice-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const practiceType = this.getAttribute('data-practice-type');
-                    selectPracticeType(practiceType);
-                });
-
-                // Efectos hover
-                option.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-5px)';
-                    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                });
-
-                option.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
+            
+            // Configurar botones de selección
+            document.querySelectorAll('.practice-option button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.closest('.practice-option').dataset.practiceType;
+                    selectPracticeType(type);
                 });
             });
+        });
 
-            // Función para seleccionar el tipo de prácticas
-            function selectPracticeType(type) {
-                const typeText = type === 'desarrollo' ? 'Desarrollo' : 'Convalidación';
-                const routeParam = type === 'desarrollo' ? 1 : 2;
-                const redirectUrl = type === 'desarrollo' ? '/practicas/desarrollo' : '/practicas/convalidacion';
-
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    html: `¿Deseas continuar con el módulo de <strong>${typeText}</strong>?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: 'var(--primary-blue)',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Sí, continuar',
-                    cancelButtonText: 'Cancelar',
-                    customClass: {
-                        popup: 'rounded-3',
-                        confirmButton: 'btn-primary-custom',
-                        cancelButton: 'btn-outline-secondary'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'Procesando...',
-                            html: 'Configurando tu práctica, por favor espera...',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            didOpen: () => {
-                                Swal.showLoading();
+        function selectPracticeType(type) {
+            Swal.fire({
+                title: '¿Confirmar selección?',
+                text: `¿Deseas seleccionar la práctica de ${type === 'desarrollo' ? 'Desarrollo' : 'Convalidación'}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, seleccionar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const route = type === 'desarrollo' 
+                        ? '{{ route("desarrollo.store", ["ed" => 1]) }}' 
+                        : '{{ route("desarrollo.store", ["ed" => 2]) }}';
+                    
+                    axios.post(route)
+                        .then(response => {
+                            if (response.data.success) {
+                                // Ocultar modal y mostrar vista de práctica
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('modalPracticas'));
+                                if (modal) modal.hide();
+                                
+                                showPracticeView(type);
+                                showAlert('success', 'Tipo de práctica seleccionado correctamente');
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showAlert('danger', 'Error al guardar la selección');
                         });
+                }
+            });
+        }
 
-                        axios.post(`{{ route('desarrollo.store', ['ed' => '__ed__']) }}`.replace('__ed__', routeParam))
-                            .then(response => {
-                                window.location.href = redirectUrl;
-                            })
-                            .catch(error => {
-                                console.error('Error storing development type:', error);
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'No se pudo guardar el tipo de práctica. Por favor, inténtalo nuevamente.'
-                                });
-                            });
-                    }
-                });
+        function showPracticeView(type) {
+            // Ocultar contenido principal
+            document.getElementById('mainContentView').style.display = 'none';
+            
+            // Mostrar vista de práctica correspondiente
+            document.getElementById('practiceViewContainer').style.display = 'block';
+            
+            // Actualizar URL para mantener estado
+            history.pushState({ practiceView: true }, '', '?view=practice');
+        }
+        function checkPracticeView() {
+            const hasPractice = @json($practicas && $practicas->tipo_practica !== null);
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (hasPractice) {
+                if (urlParams.get('view') === 'practice') {
+                    showPracticeView(@json($practicas->tipo_practica));
+                } else {
+                    // Ocultar vista de práctica si no está en la URL
+                    document.getElementById('practiceViewContainer').style.display = 'none';
+                    document.getElementById('mainContentView').style.display = 'block';
+                }
+            } else {
+                // Mostrar modal si no tiene práctica seleccionada
+                const modalPracticas = new bootstrap.Modal(document.getElementById('modalPracticas'));
+                modalPracticas.show();
             }
+        }
 
+        function goHome() {
+        // Ocultar vista de práctica y mostrar contenido principal
+            document.getElementById('practiceViewContainer').style.display = 'none';
+            document.getElementById('mainContentView').style.display = 'block';
+            
+            // Actualizar URL
+            history.pushState({}, '', window.location.pathname);
+        }
+
+        window.addEventListener('popstate', function(event) {
+            checkPracticeView();
         });
 
         // Agregar SweetAlert2 CDN si no está incluido
@@ -384,4 +463,49 @@
         }
     </script>
     <script src="{{ asset('js/perfil_edit.js') }}"></script>
+    
+    <script>
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            let alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) {
+                alertContainer = document.createElement('div');
+                alertContainer.id = 'alertContainer';
+                alertContainer.style.position = 'fixed';
+                alertContainer.style.top = '20px';
+                alertContainer.style.right = '20px';
+                alertContainer.style.zIndex = '9999';
+                alertContainer.style.maxWidth = '400px';
+                document.body.appendChild(alertContainer);
+            }
+            
+            alertContainer.innerHTML = alertHtml;
+            
+            // Desaparecer después de 5 segundos
+            setTimeout(() => {
+                const alert = alertContainer.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    alert.addEventListener('transitionend', () => alert.remove());
+                }
+            }, 5000);
+        }
+        // Funcionalidad para subir foto
+        document.getElementById('fotoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 @endpush

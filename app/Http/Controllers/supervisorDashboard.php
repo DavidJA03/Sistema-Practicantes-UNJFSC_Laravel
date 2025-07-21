@@ -85,4 +85,17 @@ class supervisorDashboard extends Controller
 
 
 
+public function obtenerSemestresPorEscuela($escuelaId)
+{
+    $semestres = DB::table('grupos_practicas')
+        ->where('id_escuela', $escuelaId)
+        ->join('semestres', 'grupos_practicas.id_semestre', '=', 'semestres.id')
+        ->select('semestres.id', 'semestres.codigo')
+        ->distinct()
+        ->get();
+
+    return response()->json($semestres);
+}
+
+
 }

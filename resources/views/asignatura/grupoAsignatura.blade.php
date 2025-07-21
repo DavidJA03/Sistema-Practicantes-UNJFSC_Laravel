@@ -136,7 +136,7 @@
         display: inline-block;
         box-shadow: var(--shadow-sm);
     }
-
+ 
     .docente-name {
         font-weight: 600;
         color: var(--text-primary);

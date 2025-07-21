@@ -629,6 +629,34 @@
             </h5>
         </div>
 
+
+    <div class="card-body">
+
+        {{-- Filtros --}}
+        <div class="p-3 mb-4 rounded-3 border bg-light">
+            <h6 class="mb-3 text-dark fw-bold">🎯 Filtros de búsqueda</h6>
+            <form id="filtrosDocente" method="GET">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Facultad</label>
+                        <select id="facultad" name="facultad" class="form-select">
+                            <option value="">-- Todas --</option>
+                            @foreach ($facultades as $facultad)
+                                <option value="{{ $facultad->id }}" {{ request('facultad') == $facultad->id ? 'selected' : '' }}>
+                                    {{ $facultad->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Semestre</label>
+                        <select id="semestre" name="semestre" class="form-select">
+                            <option value="">-- Todos --</option>
+                        </select>
+                    </div>
+
         <div class="dashboard-card-body">
 
             {{-- Filtros --}}
@@ -656,6 +684,12 @@
                             </select>
                         </div>
 
+
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="fas fa-filter me-1"></i> Filtrar
+                        </button> 
+
                         <div class="col-md-4">
                             <label class="form-label">Supervisor</label>
                             <select id="supervisor" name="supervisor" class="form-select">
@@ -669,6 +703,7 @@
                                 Filtrar Datos
                             </button>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -694,11 +729,20 @@
                             <div class="metric-value">{{ $totalFichasValidadas }}</div>
                         </div>
                     </div>
+
+                </div>
+                <div class="col">
+                    <div class="card bg-warning text-dark shadow-sm rounded-3">
+                        <div class="card-body"> 
+                            <i class="bi bi-person-badge-fill fs-4"></i><br>
+                            Supervisores<br><strong>{{ $totalSupervisores }}</strong>
+
                     <div class="col-lg-4 col-md-6 mb-3">
                         <div class="metric-card warning">
                             <i class="bi bi-person-badge-fill metric-icon"></i>
                             <div class="metric-label">Supervisores</div>
                             <div class="metric-value">{{ $totalSupervisores }}</div>
+
                         </div>
                     </div>
                 </div>

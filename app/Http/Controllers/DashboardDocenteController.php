@@ -16,7 +16,7 @@ class DashboardDocenteController extends Controller
     $escuelaId = $request->get('escuela');
     $semestreCodigo = $request->get('semestre');
     $supervisorId = $request->get('supervisor');
-
+ 
     // Escuelas a cargo del docente
     $escuelas = DB::table('grupos_practicas as gp')
         ->join('escuelas as e', 'gp.id_escuela', '=', 'e.id')

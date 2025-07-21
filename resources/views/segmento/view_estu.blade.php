@@ -99,7 +99,7 @@
                                     <img src="{{ asset($persona->ruta_foto) }}" alt="Foto" class="img-fluid rounded-circle mb-3"
                                         style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #c3dafe;">
                                 @else
-                                         <i class="img-fluid bi bi-person-fill mb-3" style="font-size: 200px;"></i>
+                                         <i class="img-fluid bi bi-person-fill mb-3" style="font-size: 200px; color: var(--primary-blue);"></i>
                                 @endif
                                 <hr>
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalFoto">
@@ -141,7 +141,7 @@
                             style="width: 150px; height: 150px; object-fit: cover;" 
                             id="previewImage">
                     @else
-                        <i class="img-fluid bi bi-person-fill mb-3" style="font-size: 200px;"></i>
+                        <i class="img-fluid bi bi-person-fill mb-3" style="font-size: 150px; color: var(--primary-blue);"></i>
                     @endif
                 </div>
                 <form action="{{ route('store.foto') }}" method="POST" enctype="multipart/form-data">

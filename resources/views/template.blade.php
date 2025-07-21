@@ -154,6 +154,17 @@
         box-shadow: var(--shadow-sm);
     }
 
+    .nav-link span,
+    .nav-sublink span {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .nav-link:hover span,
+    .nav-sublink:hover span {
+        font-size: 1.5rem; /* Puedes ajustar a 1.15rem si deseas más grande */
+        color: #f1f1f1;     /* O el color que prefieras para resaltar */
+    }
+
     .nav-link i {
         width: 1.25rem;
         height: 1.25rem;
@@ -162,6 +173,16 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .nav-sublink i {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .nav-link:hover i,
+    .nav-sublink:hover i {
+        transform: scale(1.2);
     }
 
     /* Dropdown Navigation */

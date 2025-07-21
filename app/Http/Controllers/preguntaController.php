@@ -88,13 +88,20 @@ class preguntaController extends Controller
      * Eliminar una pregunta.
      * El admin puede eliminar todas, los usuarios solo las suyas.
      */
-    public function destroy(Pregunta $pregunta)
-    {
-        $user = auth()->user();
+    public function destroy($id)
+{
+    $user = auth()->user();
+    $pregunta = Pregunta::findOrFail($id);
 
-        $pregunta->delete();
-
-        return redirect()->route('pregunta.index')
-                         ->with('success', 'Pregunta eliminada.');
+    // Control de permisos
+    if ($pregunta->user_create !== $user->id && $user->persona?->rol_id !== 1) {
+        abort(403, 'No autorizado para eliminar esta pregunta.');
     }
+
+    $pregunta->delete();
+
+    return redirect()->route('pregunta.index')->with('success', 'Pregunta eliminada.');
+}
+
+
 }

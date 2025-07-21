@@ -16,7 +16,7 @@ class TypeUserSeeder extends Seeder
     public function run()
     {
         $types = [
-            ['name' => 'Admin', 'estado' => 1],
+            ['name' => 'Administrador', 'estado' => 1],
             ['name' => 'Docente Titular', 'estado' => 1],
             ['name' => 'Docente Supervisor', 'estado' => 1],
             ['name' => 'Estudiante', 'estado' => 1],

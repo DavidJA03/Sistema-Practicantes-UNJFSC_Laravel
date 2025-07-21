@@ -309,7 +309,7 @@ renderChart(@json($fichasPorEscuela));
 // Manejar cambios de filtros
 const form = document.querySelector('form');
 form.addEventListener('submit', function(e) {
-    e.preventDefault(); // evita recargar la página
+    
 
     const params = new URLSearchParams(new FormData(this)).toString();
 

@@ -17,64 +17,48 @@
         <div class="p-3 mb-4 rounded-3 border bg-light">
             <h6 class="mb-3 text-dark fw-bold">🎯 Filtros de búsqueda</h6>
             <form method="GET" class="row g-3">
-    {{-- FACULTAD --}}
-        @if($facultadId)
-            <input type="hidden" name="facultad_id" value="{{ $facultadId }}">
-            <div class="col-md-4">
-                <label class="form-label fw-semibold">Facultad:</label>
-                <input type="text" class="form-control" value="{{ $facultades->firstWhere('id', $facultadId)->name ?? 'No definida' }}" readonly>
-            </div>
-        @else
-            <div class="col-md-4">
-                <label class="form-label fw-semibold">Facultad:</label>
-                <select name="facultad_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">-- Seleccione --</option>
-                    @foreach($facultades as $facultad)
-                        <option value="{{ $facultad->id }}" {{ $facultadId == $facultad->id ? 'selected' : '' }}>
-                            {{ $facultad->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        @endif
 
-    {{-- ESCUELA --}}
-    @if($escuelaId)
-        <input type="hidden" name="escuela_id" value="{{ $escuelaId }}">
-        <div class="col-md-4">
-            <label class="form-label fw-semibold">Escuela:</label>
-            <input type="text" class="form-control" value="{{ $escuelas->firstWhere('id', $escuelaId)->name ?? 'No definida' }}" readonly>
-        </div>
-    @else
-        <div class="col-md-4">
-            <label class="form-label fw-semibold">Escuela:</label>
-            <select name="escuela_id" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Seleccione --</option>
-                @foreach($escuelas as $escuela)
-                    <option value="{{ $escuela->id }}" {{ $escuelaId == $escuela->id ? 'selected' : '' }}>
-                        {{ $escuela->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    @endif
+{{-- FACULTAD --}}
+<div class="col-md-4">
+    <label class="form-label fw-semibold">Facultad:</label>
+    <select name="facultad_id" id="facultad_id" class="form-select">
+        <option value="">-- Seleccione --</option>
+        @foreach($facultades as $facultad)
+            <option value="{{ $facultad->id }}" {{ $facultadId == $facultad->id ? 'selected' : '' }}>
+                {{ $facultad->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
-    {{-- SEMESTRE --}}
-    @if($semestreCodigo)
-        <input type="hidden" name="semestre_codigo" value="{{ $semestreCodigo }}">
-    @else
-        <div class="col-md-4">
-            <label class="form-label fw-semibold">Semestre:</label>
-            <select name="semestre_codigo" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Seleccione --</option>
-                @foreach($semestres as $semestre)
-                    <option value="{{ $semestre->codigo }}" {{ $semestreCodigo == $semestre->codigo ? 'selected' : '' }}>
-                        {{ $semestre->codigo }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    @endif
+{{-- ESCUELA --}}
+<div class="col-md-4">
+    <label class="form-label fw-semibold">Escuela:</label>
+    <select name="escuela_id" id="escuela_id" class="form-select">
+        <option value="">-- Seleccione --</option>
+        @foreach($escuelas as $escuela)
+            <option value="{{ $escuela->id }}" {{ $escuelaId == $escuela->id ? 'selected' : '' }}>
+                {{ $escuela->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+
+{{-- SEMESTRE --}}
+<div class="col-md-4">
+    <label class="form-label fw-semibold">Semestre:</label>
+    <select name="semestre_codigo" id="semestre_codigo" class="form-select">
+        <option value="">-- Seleccione --</option>
+        {{-- Opciones se llenarán vía JS --}}
+    </select>
+</div>
+<div class="col-12 text-end">
+    <button type="submit" class="btn btn-primary mt-3">
+        <i class="fas fa-filter me-1"></i> Filtrar
+    </button>
+</div>
+
 </form>
 
         </div>
@@ -173,93 +157,82 @@
     });
 </script>
 
-<script>
+<<script>
 document.addEventListener("DOMContentLoaded", function () {
-    const facultadSelect = document.getElementById('facultad');
-    const escuelaSelect = document.getElementById('escuela');
-    const docenteSelect = document.getElementById('docente');
+    const facultadSelect = document.getElementById('facultad_id');
+    const escuelaSelect = document.getElementById('escuela_id');
+    const semestreSelect = document.getElementById('semestre_codigo');
 
-    facultadSelect.addEventListener('change', function () {
-        const facultadId = this.value;
-        escuelaSelect.innerHTML = '<option value="">Cargando...</option>';
-        docenteSelect.innerHTML = '<option value="">-- Todos --</option>';
+    const selectedEscuela = "{{ request('escuela_id') }}";
+    const selectedSemestre = "{{ request('semestre_codigo') }}";
 
-        if (!facultadId) {
-            escuelaSelect.innerHTML = '<option value="">-- Todas --</option>';
-            return;
-        }
-
+    function cargarEscuelas(facultadId, callback) {
         fetch(`/api/escuelas/${facultadId}`)
             .then(res => res.json())
             .then(data => {
-                let options = '<option value="">-- Todas --</option>';
+                let options = '<option value="">-- Seleccione --</option>';
                 data.forEach(e => {
-                    options += `<option value="${e.id}">${e.name}</option>`; // Asegúrate que sea "nombre"
+                    const selected = e.id == selectedEscuela ? 'selected' : '';
+                    options += `<option value="${e.id}" ${selected}>${e.name}</option>`;
                 });
                 escuelaSelect.innerHTML = options;
+
+                if (selectedEscuela && callback) callback(selectedEscuela);
             })
             .catch(() => {
                 escuelaSelect.innerHTML = '<option value="">Error al cargar</option>';
             });
-    });
+    }
 
-    escuelaSelect.addEventListener('change', function () {
-        const escuelaId = this.value;
-        docenteSelect.innerHTML = '<option value="">Cargando...</option>';
-
+    function cargarSemestres(escuelaId) {
         if (!escuelaId) {
-            docenteSelect.innerHTML = '<option value="">-- Todos --</option>';
+            semestreSelect.innerHTML = '<option value="">-- Seleccione --</option>';
             return;
         }
 
-        fetch(`/api/docentes/${escuelaId}`)
+        fetch(`/supervisor/semestres/${escuelaId}`)
             .then(res => res.json())
             .then(data => {
-                let options = '<option value="">-- Todos --</option>';
-                data.forEach(d => {
-                    options += `<option value="${d.id}">${d.name}</option>`;
-                });
-                docenteSelect.innerHTML = options;
-            })
-            .catch(() => {
-                docenteSelect.innerHTML = '<option value="">Error al cargar</option>';
-            });
-    });
-
-    const semestreSelect = document.getElementById('semestre');
-
-    docenteSelect.addEventListener('change', function () {
-        const docenteId = this.value;
-        semestreSelect.innerHTML = '<option value="">Cargando...</option>';
-
-        if (!docenteId) {
-            semestreSelect.innerHTML = '<option value="">-- Todos --</option>';
-            return;
-        }
-
-        fetch(`/api/semestres/${docenteId}`)
-            .then(res => res.json())
-            .then(data => {
-                let options = '<option value="">-- Todos --</option>';
+                let options = '<option value="">-- Seleccione --</option>';
                 data.forEach(s => {
-                    options += `<option value="${s.id}">${s.codigo}</option>`;
+                    const selected = s.codigo == selectedSemestre ? 'selected' : '';
+                    options += `<option value="${s.codigo}" ${selected}>${s.codigo}</option>`;
                 });
-
                 semestreSelect.innerHTML = options;
             })
             .catch(() => {
                 semestreSelect.innerHTML = '<option value="">Error al cargar</option>';
             });
+    }
+
+    // Eventos
+    facultadSelect.addEventListener('change', function () {
+        const facultadId = this.value;
+        escuelaSelect.innerHTML = '<option value="">Cargando...</option>';
+        semestreSelect.innerHTML = '<option value="">-- Seleccione --</option>';
+
+        if (facultadId) {
+            cargarEscuelas(facultadId, function (escuelaId) {
+                cargarSemestres(escuelaId);
+            });
+        } else {
+            escuelaSelect.innerHTML = '<option value="">-- Seleccione --</option>';
+        }
     });
 
-
+    escuelaSelect.addEventListener('change', function () {
+        cargarSemestres(this.value);
     });
+
+    // Carga inicial si viene con datos filtrados
+    if (facultadSelect.value && selectedEscuela) {
+        cargarEscuelas(facultadSelect.value, function () {
+            cargarSemestres(selectedEscuela);
+        });
+    }
+});
 </script>
 
-
-
-
 @endsection
-
 @push('js')
 @endpush

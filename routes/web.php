@@ -181,6 +181,7 @@ Route::get('/api/escuelas/{facultadId}', function ($facultadId) {
 });
 
 
+
 Route::get('/api/docentes/{escuelaId}', function ($escuelaId) {
     return DB::table('personas')
         ->join('grupos_practicas', 'personas.id', '=', 'grupos_practicas.id_docente')
@@ -200,8 +201,12 @@ Route::get('/api/semestres/{docenteId}', function ($docenteId) {
         ->get();
 });
 
+
+
 Route::get('/docente/semestres/{escuela}', [DashboardDocenteController::class, 'getSemestres']);
 Route::get('/docente/supervisores/{escuela}', [DashboardDocenteController::class, 'getSupervisores']);
+
+Route::get('/supervisor/semestres/{escuela}', [supervisorDashboard::class, 'obtenerSemestresPorEscuela']);
 
 
 Route::get('/EstudianteDashborad', [estudianteDashboardController::class, 'index'])->name('dashboard.estudiante');

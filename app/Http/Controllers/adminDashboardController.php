@@ -59,7 +59,11 @@ class adminDashboardController extends Controller
             ->distinct()
             ->count('ge.id_estudiante');
 
-        $totalSupervisores = DB::table('grupo_estudiante')->distinct()->count('id_supervisor');
+       $totalSupervisores = (clone $baseQuery)
+        ->whereNotNull('ge.id_supervisor')
+        ->distinct('ge.id_supervisor')
+        ->count('ge.id_supervisor');
+
 
         $completos = (clone $baseQuery)
             ->where('m.estado_ficha', 'Completo')
@@ -70,16 +74,21 @@ class adminDashboardController extends Controller
         $pendientes = $totalMatriculados - $completos;
 
         $totalPorEscuelaEnSemestre = DB::table('grupo_estudiante as ge')
-            ->join('grupos_practicas as gp', 'ge.id_grupo_practica', '=', 'gp.id')
-            ->join('escuelas as e', 'gp.id_escuela', '=', 'e.id')
-            ->join('semestres as s', 'gp.id_semestre', '=', 's.id')
-            ->when($request->filled('semestre'), function ($query) use ($request) {
-                return $query->where('s.id', $request->semestre);
-            })
-            ->when($request->filled('escuela'), function ($query) use ($request) {
-                return $query->where('e.id', $request->escuela);
-            })
-            ->count('ge.id_estudiante'); 
+    ->join('grupos_practicas as gp', 'ge.id_grupo_practica', '=', 'gp.id')
+    ->join('escuelas as e', 'gp.id_escuela', '=', 'e.id')
+    ->join('facultades as f', 'e.facultad_id', '=', 'f.id')
+    ->join('semestres as s', 'gp.id_semestre', '=', 's.id')
+    ->when($request->filled('facultad'), function ($query) use ($request) {
+        return $query->where('f.id', $request->facultad);
+    })
+    ->when($request->filled('semestre'), function ($query) use ($request) {
+        return $query->where('s.id', $request->semestre);
+    })
+    ->when($request->filled('escuela'), function ($query) use ($request) {
+        return $query->where('e.id', $request->escuela);
+    })
+    ->count('ge.id_estudiante');
+
         $fichasPorEscuela = (clone $baseQuery)
             ->select(
                 'e.name as escuela',
@@ -101,6 +110,7 @@ class adminDashboardController extends Controller
         ->groupBy(DB::raw('MONTH(m2.created_at)'), DB::raw('MONTHNAME(m2.created_at)'))
         ->orderBy(DB::raw('MONTH(m2.created_at)'))
         ->get();
+            
 
 
 

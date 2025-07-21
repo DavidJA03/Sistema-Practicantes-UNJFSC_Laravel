@@ -21,14 +21,17 @@
             <form id="filtrosDocente" method="GET">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-semibold">Escuela</label>
-                        <select id="escuela" name="escuela" class="form-select">
+                        <label class="form-label fw-semibold">Facultad</label>
+                        <select id="facultad" name="facultad" class="form-select">
                             <option value="">-- Todas --</option>
-                            @foreach ($escuelas as $escuela)
-                                <option value="{{ $escuela->id }}">{{ $escuela->name }}</option>
+                            @foreach ($facultades as $facultad)
+                                <option value="{{ $facultad->id }}" {{ request('facultad') == $facultad->id ? 'selected' : '' }}>
+                                    {{ $facultad->nombre }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
+
 
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Semestre</label>
@@ -47,7 +50,7 @@
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-primary mt-3">
                             <i class="fas fa-filter me-1"></i> Filtrar
-                        </button>
+                        </button> 
                     </div>
                 </div>
             </form>
@@ -75,7 +78,7 @@
                 </div>
                 <div class="col">
                     <div class="card bg-warning text-dark shadow-sm rounded-3">
-                        <div class="card-body">
+                        <div class="card-body"> 
                             <i class="bi bi-person-badge-fill fs-4"></i><br>
                             Supervisores<br><strong>{{ $totalSupervisores }}</strong>
                         </div>

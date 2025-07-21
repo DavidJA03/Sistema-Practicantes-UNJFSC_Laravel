@@ -92,10 +92,6 @@ class preguntaController extends Controller
     {
         $user = auth()->user();
 
-        if ($pregunta->user_create !== $user->id && $user->persona?->rol_id !== 1) {
-            abort(403, 'No autorizado para eliminar esta pregunta.');
-        }
-
         $pregunta->delete();
 
         return redirect()->route('pregunta.index')

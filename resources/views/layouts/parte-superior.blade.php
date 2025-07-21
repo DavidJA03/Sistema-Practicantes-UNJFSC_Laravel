@@ -1,4 +1,4 @@
-<link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
@@ -10,7 +10,7 @@
 
         
     
-        <div id="wrapper">
+    <div id="wrapper">
 
         @php
             $rol = auth()->user()->persona?->rol_id;
@@ -18,44 +18,58 @@
 
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
+            <!-- Branding -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-text mx-3">UNJFSC</div>
             </a>
 
             <hr class="sidebar-divider my-0">
 
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ route('panel') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span>
-                </a>
-            </li>
+            <!-- Dashboard -->
+            @if($rol == 1 || $rol == 2)
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ route('panel') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            @endif
+
+            <!-- Perfil -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('perfil') }}">
-                    <i class="fas fa-fw fa-user"></i><span>Perfil</span>
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Perfil</span>
                 </a>
             </li>
 
-            @if ($rol == 1 || $rol == 2)
+            <!-- Usuarios -->
+            @if($rol == 1 || $rol == 2)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo">
-                        <i class="fas fa-fw fa-users"></i><span>Usuarios</span>
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Usuarios</span>
                     </a>
                     <div id="collapseTwo" class="collapse">
                         <div class="bg-white py-2 collapse-inner rounded">
                             @if ($rol == 1)
-                            <a class="collapse-item" href="{{ route('registrar') }}">Añadir Usuario</a>
-                            <h6 class="collapse-header">Tipos de Usuarios</h6>
-                            <a class="collapse-item" href="{{ route('docente') }}">Docentes</a>
+                                <a class="collapse-item" href="{{ route('registrar') }}">Añadir Usuario</a>
+                                <h6 class="collapse-header">Tipos de Usuarios</h6>
+                                <a class="collapse-item" href="{{ route('docente') }}">Docentes</a>
                             @endif
                             <a class="collapse-item" href="{{ route('supervisor') }}">Supervisores</a>
                             <a class="collapse-item" href="{{ route('estudiante') }}">Estudiantes</a>
                         </div>
                     </div>
                 </li>
+            @endif
+
+            <!-- Asignatura -->
+            @if($rol == 1)
                 <li class="nav-item">
-                    @if($rol == 1)
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3">
-                        <i class="fas fa-fw fa-users"></i><span>Asignatura</span>
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Asignatura</span>
                     </a>
                     <div id="collapse3" class="collapse">
                         <div class="bg-white py-2 collapse-inner rounded">
@@ -63,19 +77,22 @@
                             <a class="collapse-item" href="{{ route('estudiante_index') }}">Grupo - Estudiante</a>
                         </div>
                     </div>
-                    @else
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('estudiante_index') }}">
-                            <i class="fas fa-fw fa-user"></i><span>Grupo - Estudiante</span>
-                        </a>
-                    </li>
-                    @endif
-
                 </li>
-                @if($rol ==1)
+            @elseif($rol == 2)
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('estudiante_index') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Grupo - Estudiante</span>
+                    </a>
+                </li>
+            @endif
+
+            <!-- Bloque Académico -->
+            @if($rol == 1)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#bloqueacademico">
-                        <i class="bi bi-book-fill"></i><span>Bloque Académico</span>
+                        <i class="bi bi-book-fill"></i>
+                        <span>Bloque Académico</span>
                     </a>
                     <div id="bloqueacademico" class="collapse">
                         <div class="bg-white py-2 collapse-inner rounded">
@@ -86,50 +103,116 @@
                         </div>
                     </div>
                 </li>
+
                 @endif
                 <li class="nav-item"><a class="nav-link" href="{{ route('supervision') }}"><i class="fas fa-fw fa-folder"></i><span>Supervisión - Prácticas</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('Validacion.Matricula') }}"><i class="fas fa-fw fa-user"></i><span>Supervisión - Matrícula</span></a></li>
                @endif  
 
+            @endif
 
-            @if ($rol == 1 || $rol == 3 )
 
-                <li class="nav-item"><a class="nav-link" href="{{ route('estudiante') }}"><i class="fas fa-fw fa-users"></i><span>Lista de Estudiantes</span></a></li>
+            <!-- Supervisión -->
+            @if($rol == 1 || $rol == 2)
                 <li class="nav-item">
-                <a class="nav-link" href="{{ route('evaluacion.index') }}">
-                    <i class="bi bi-clipboard-check-fill"></i>
-                    <span>Supervisión - Evaluación</span></a>
+                    <a class="nav-link" href="{{ route('supervision') }}">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>Supervisión - Prácticas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('Validacion.Matricula') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Supervisión - Matrícula</span>
+                    </a>
                 </li>
             @endif
-            @if ($rol == 1 || $rol == 3)
+
+            <!-- Lista de Estudiantes -->
+            @if($rol == 1 || $rol == 2 || $rol == 3)
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('estudiante') }}">
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Lista de Estudiantes</span>
+                    </a>
+                </li>
+            @endif
+
+            <!-- Evaluación -->
+            @if($rol == 1 || $rol == 2 || $rol == 3)
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('evaluacion.index') }}">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Supervisión - Evaluación</span>
+                    </a>
+                </li>
+            @endif
+
+            <!-- Preguntas -->
+            @if($rol == 1 || $rol == 3)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('pregunta.index') }}">
                         <i class="bi bi-hdd-stack"></i>
-                        <span>Preguntas</span></a>
+                        <span>Preguntas</span>
+                    </a>
                 </li>
             @endif
-                @if ($rol == 1 || $rol == 2 || $rol == 3 )
-            
+
+            <!-- Empresa y Jefes -->
+            @if($rol == 1 || $rol == 2 || $rol == 3)
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Datos extra</div>
-                <li class="nav-item"><a class="nav-link" href="{{ route('empresa') }}"><i class="fas fa-fw fa-chart-area"></i><span>Empresa</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('jefes') }}"><i class="fas fa-fw fa-table"></i><span>Jefes</span></a></li>
-                @endif
-             
-            @if ( $rol == 4)
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('empresa') }}">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>Empresa</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('jefes') }}">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Jefes</span>
+                    </a>
+                </li>
+            @endif
+
+            <!-- Validación para rol 4 -->
+            @if($rol == 4)
                 <hr class="sidebar-divider">
                 <div class="sidebar-heading">Validación de datos</div>
-                <li class="nav-item"><a class="nav-link" href="{{ route('matricula_index') }}"><i class="fas fa-address-card"></i><span>Matrícula</span></a></li>
-                @if ($practica == 'desarrollo')
-                    <li class="nav-item"><a class="nav-link" href="{{ route('desarrollo') }}"><i class="fas fa-fw fa-folder"></i><span>Desarrollo</span></a></li>
-                @elseif ($practica == 'convalidacion')
-                    <li class="nav-item"><a class="nav-link" href="{{ route('convalidacion') }}"><i class="fas fa-fw fa-folder"></i><span>Convalidación</span></a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('matricula_index') }}">
+                        <i class="fas fa-address-card"></i>
+                        <span>Matrícula</span>
+                    </a>
+                </li>
+                @if($practica == 'desarrollo')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('desarrollo') }}">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>Desarrollo</span>
+                        </a>
+                    </li>
+                @elseif($practica == 'convalidacion')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('convalidacion') }}">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>Convalidación</span>
+                        </a>
+                    </li>
                 @else
-                    <li class="nav-item"><a class="nav-link" href="{{ route('practica') }}"><i class="fas fa-fw fa-folder"></i><span>Prácticas</span></a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('practica') }}">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>Prácticas</span>
+                        </a>
+                    </li>
                 @endif
             @endif
 
             <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Toggle -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>

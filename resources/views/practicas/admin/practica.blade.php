@@ -27,7 +27,6 @@
     }
 </style>
 
-@if($matriculas->contains('estado_ficha', 'Completo') && $matriculas->contains('estado_record', 'Completo') )
 <div class="container-fluid centrar-vertical">
 <meta name="csrf-token" content="{{ csrf_token() }}">
     @csrf
@@ -35,7 +34,7 @@
     <div class="row w-100">
         <div class="col-xl-6 col-lg-6">
             <div class="card card-desarrollo shadow mb-4 d-flex flex-column justify-content-center align-items-center"
-                 style="height: 400px; cursor: pointer;">
+                style="height: 400px; cursor: pointer;">
                 <div class="py-3 text-center mt-3">
                     <div class="d-flex flex-column align-items-center justify-content-center">
                         <i class="fas fa-laptop-code" style="font-size: 200px; color: rgb(123, 145, 229);"></i>
@@ -57,20 +56,6 @@
         </div>
     </div>
 </div>
-
-@else
-<div class="d-flex justify-content-center align-items-center my-5">
-    <div class="alert alert-danger shadow-lg p-5 rounded-lg text-center" style="max-width: 600px; width: 100%;">
-        <div class="mb-4">
-            <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
-        </div>
-        <h2 class="font-weight-bold mb-3">¡Atención!</h2>
-        <p class="mb-0" style="font-size: 20px;">
-            Primero debes completar tu matrícula para acceder a estas opciones.
-        </p>
-    </div>
-</div>
-@endif
 
 
 @endsection

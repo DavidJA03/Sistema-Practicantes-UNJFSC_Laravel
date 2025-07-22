@@ -49,7 +49,8 @@ class DashboardDocenteController extends Controller
     //$totalGrupos = (clone $baseQuery)->distinct('gp.id')->count('gp.id');
     $totalFichasValidadas = (clone $baseQuery)
         ->join('matriculas as m', 'ge.id_estudiante', '=', 'm.persona_id')
-        ->where('m.estado_ficha', 'validada')
+        ->where('m.estado_ficha', 'Completo')
+            ->where('m.estado_record', 'Completo')
         ->count();
     $totalSupervisores = (clone $baseQuery)->distinct('ge.id_supervisor')->count('ge.id_supervisor');
 

@@ -212,3 +212,4 @@ Route::get('/EstudianteDashborad', [estudianteDashboardController::class, 'index
 Route::post('/practica/{id}/edit', [EmpresaController::class, 'update'])->name('empresa.edit');
 Route::post('/jefe_inmediato/{id}/edit', [JefeInmediatoController::class, 'update'])->name('jefe_inmediato.edit');
 
+

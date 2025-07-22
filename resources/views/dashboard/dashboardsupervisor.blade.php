@@ -1,6 +1,5 @@
 @extends('template')
-@section('title', 'Dashboard Supervisor')
-@section('subtitle', 'Panel de supervisión y seguimiento de estudiantes')
+@section('title', 'Listado de Supervisores')
 
 @push('css')
 <style>
@@ -501,15 +500,10 @@
 
 @section('content')
 
-<div class="dashboard-container fade-in">
-    <div class="dashboard-card">
-        <div class="dashboard-card-header">
-            <h5 class="dashboard-card-title">
-                <i class="bi bi-eye"></i>
-                Dashboard Supervisor - Panel de Seguimiento
-            </h5>
-        </div>
-
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">🧑‍🏫 Dashboard del Supervisor</h5>
+    </div>
 
     <div class="card-body">
 
@@ -560,195 +554,100 @@
 </div>
 
 </form>
-        <div class="dashboard-card-body">
-
-            {{-- Filtros --}}
-            <div class="filters-section">
-                <h6 class="filters-title">
-                    <i class="bi bi-funnel"></i>
-                    Filtros de Búsqueda
-                </h6>
-                <form method="GET" class="row g-3">
-                    {{-- FACULTAD --}}
-                    @if($facultadId)
-                        <input type="hidden" name="facultad_id" value="{{ $facultadId }}">
-                        <div class="col-md-4">
-                            <label class="form-label">Facultad:</label>
-                            <input type="text" class="form-control" value="{{ $facultades->firstWhere('id', $facultadId)->name ?? 'No definida' }}" readonly>
-                        </div>
-                    @else
-                        <div class="col-md-4">
-                            <label class="form-label">Facultad:</label>
-                            <select name="facultad_id" class="form-select" onchange="this.form.submit()">
-                                <option value="">-- Seleccione --</option>
-                                @foreach($facultades as $facultad)
-                                    <option value="{{ $facultad->id }}" {{ $facultadId == $facultad->id ? 'selected' : '' }}>
-                                        {{ $facultad->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endif
-
-                    {{-- ESCUELA --}}
-                    @if($escuelaId)
-                        <input type="hidden" name="escuela_id" value="{{ $escuelaId }}">
-                        <div class="col-md-4">
-                            <label class="form-label">Escuela:</label>
-                            <input type="text" class="form-control" value="{{ $escuelas->firstWhere('id', $escuelaId)->name ?? 'No definida' }}" readonly>
-                        </div>
-                    @else
-                        <div class="col-md-4">
-                            <label class="form-label">Escuela:</label>
-                            <select name="escuela_id" class="form-select" onchange="this.form.submit()">
-                                <option value="">-- Seleccione --</option>
-                                @foreach($escuelas as $escuela)
-                                    <option value="{{ $escuela->id }}" {{ $escuelaId == $escuela->id ? 'selected' : '' }}>
-                                        {{ $escuela->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endif
-
-                    {{-- SEMESTRE --}}
-                    @if($semestreCodigo)
-                        <input type="hidden" name="semestre_codigo" value="{{ $semestreCodigo }}">
-                    @else
-                        <div class="col-md-4">
-                            <label class="form-label">Semestre:</label>
-                            <select name="semestre_codigo" class="form-select" onchange="this.form.submit()">
-                                <option value="">-- Seleccione --</option>
-                                @foreach($semestres as $semestre)
-                                    <option value="{{ $semestre->codigo }}" {{ $semestreCodigo == $semestre->codigo ? 'selected' : '' }}>
-                                        {{ $semestre->codigo }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endif
-                </form>
-            </div>
-
-            {{-- Métricas --}}
-            <div class="metrics-section">
-                <h6 class="metrics-title">
-                    <i class="bi bi-graph-up"></i>
-                    Indicadores de Supervisión
-                </h6>
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 mb-3">
-                        <div class="metric-card primary">
-                            <i class="bi bi-people-fill metric-icon"></i>
-                            <div class="metric-label">Total Estudiantes</div>
-                            <div class="metric-value">{{ $totalFiltrados }}</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 mb-3">
-                        <div class="metric-card info">
-                            <i class="bi bi-file-earmark-check-fill metric-icon"></i>
-                            <div class="metric-label">Anexos Completos</div>
-                            <div class="metric-value">{{ $totalCompletos }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Lista de alumnos supervisados --}}
-            <div class="students-section">
-                <div class="students-header">
-                    <h6 class="students-title">
-                        <i class="bi bi-clipboard-check"></i>
-                        Alumnos Supervisados con Anexos
-                    </h6>
-                    <input type="text" id="buscarAlumnos" class="form-control search-input" 
-                           placeholder="🔍 Buscar estudiantes...">
-                </div>
-
-                <div class="table-container">
-                    <table class="table" id="tablaAlumnos">
-                        <thead>
-                            <tr>
-                                <th>Nombres</th>
-                                <th>Apellidos</th>
-                                <th>Escuela</th>
-                                <th>Anexo 7</th>
-                                <th>Anexo 8</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($alumnos as $alumno)
-                                <tr>
-                                    <td>{{ $alumno->nombres }}</td>
-                                    <td>{{ $alumno->apellidos }}</td>
-                                    <td>{{ $alumno->escuela }}</td>
-                                    <td>
-                                        @if($alumno->anexo_7)
-                                            <a href="{{ asset('storage/' . $alumno->anexo_7) }}" target="_blank" class="btn-view-pdf">
-                                                <i class="bi bi-file-pdf"></i>
-                                                Ver PDF
-                                            </a>
-                                        @else
-                                            <span class="status-badge not-uploaded">No subido</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($alumno->anexo_8)
-                                            <a href="{{ asset('storage/' . $alumno->anexo_8) }}" target="_blank" class="btn-view-pdf">
-                                                <i class="bi bi-file-pdf"></i>
-                                                Ver PDF
-                                            </a>
-                                        @else
-                                            <span class="status-badge not-uploaded">No subido</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="empty-state">
-                                        <i class="bi bi-people"></i>
-                                        <p class="mb-0">No hay estudiantes supervisados registrados.</p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
         </div>
+        <div class="p-3 mb-4 bg-white border rounded-3">
+            <h6 class="mb-3 text-dark fw-bold">📊 Indicadores generales</h6>
+            <div class="row text-center">
+                <div class="col">
+                    <div class="card bg-primary text-white shadow-sm rounded-3">
+                        <div class="card-body">
+                            <i class="bi bi-people-fill fs-4"></i><br>
+                            Estudiantes<br><strong>{{ $totalFiltrados }}</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-info text-white shadow-sm rounded-3">
+                        <div class="card-body">
+                            <i class="bi bi-file-earmark-check-fill fs-4"></i><br>
+                            Anexos Completos<br><strong>{{ $totalCompletos }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Lista de alumnos supervisados --}}
+        <div class="p-3 border rounded-3 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="text-dark fw-bold mb-0">📌 Alumnos Supervisados con Anexos</h6>
+                <input type="text" id="buscarAlumnos" class="form-control" placeholder="🔍 Buscar Estudiantes..." style="max-width: 400px;">
+            </div>
+
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-bordered table-hover table-striped align-middle" id="tablaAlumnos">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Escuela</th>
+                            <th>Anexo 7</th>
+                            <th>Anexo 8</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($alumnos as $alumno)
+                            <tr>
+                                <td>{{ $alumno->nombres }}</td>
+                                <td>{{ $alumno->apellidos }}</td>
+                                <td>{{ $alumno->escuela }}</td>
+                                <td>
+                                    @if($alumno->anexo_7)
+                                        <a href="{{ asset('storage/' . $alumno->anexo_7) }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                            Ver PDF
+                                        </a>
+                                    @else
+                                        <span class="badge bg-secondary">No subido</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($alumno->anexo_8)
+                                        <a href="{{ asset('storage/' . $alumno->anexo_8) }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                            Ver PDF
+                                        </a>
+                                    @else
+                                        <span class="badge bg-secondary">No subido</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">No hay resultados</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>
-</script>
 
 
 
 
-@endsection
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-@push('js')
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
-$(document).ready(function() {
-    console.log("JS del dashboard supervisor cargado");
+    document.getElementById('filtroTabla').addEventListener('keyup', function () {
+        const valor = this.value.toLowerCase();
+        const filas = document.querySelectorAll('#tablaEstudiantes tbody tr');
 
-    // Animaciones progresivas para las métricas
-    function animateMetrics() {
-        $('.metric-card').each(function(index) {
-            $(this).css({
-                'opacity': '0',
-                'transform': 'translateY(20px)'
-            });
-            
-            setTimeout(() => {
-                $(this).css({
-                    'transition': 'all 0.5s ease',
-                    'opacity': '1',
-                    'transform': 'translateY(0)'
-                });
-            }, index * 150);
+        filas.forEach(fila => {
+            const texto = fila.textContent.toLowerCase();
+            fila.style.display = texto.includes(valor) ? '' : 'none';
         });
-
     });
 </script>
 
@@ -828,11 +727,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-@endsection
-@push('js')
-    }
-
-    // Efectos hover mejorados para metric cards
+<script>
+// Efectos hover mejorados para metric cards
     $('.metric-card').hover(
         function() {
             $(this).find('.metric-icon').css({
@@ -1074,7 +970,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         </style>
     `);
-});
 </script>
 
+@endsection
+@push('js')
 @endpush

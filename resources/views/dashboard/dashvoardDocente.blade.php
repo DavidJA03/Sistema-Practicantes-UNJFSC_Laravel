@@ -632,31 +632,6 @@
 
     <div class="card-body">
 
-        {{-- Filtros --}}
-        <div class="p-3 mb-4 rounded-3 border bg-light">
-            <h6 class="mb-3 text-dark fw-bold">🎯 Filtros de búsqueda</h6>
-            <form id="filtrosDocente" method="GET">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Facultad</label>
-                        <select id="facultad" name="facultad" class="form-select">
-                            <option value="">-- Todas --</option>
-                            @foreach ($facultades as $facultad)
-                                <option value="{{ $facultad->id }}" {{ request('facultad') == $facultad->id ? 'selected' : '' }}>
-                                    {{ $facultad->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Semestre</label>
-                        <select id="semestre" name="semestre" class="form-select">
-                            <option value="">-- Todos --</option>
-                        </select>
-                    </div>
-
         <div class="dashboard-card-body">
 
             {{-- Filtros --}}
@@ -684,12 +659,6 @@
                             </select>
                         </div>
 
-
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-primary mt-3">
-                            <i class="fas fa-filter me-1"></i> Filtrar
-                        </button> 
-
                         <div class="col-md-4">
                             <label class="form-label">Supervisor</label>
                             <select id="supervisor" name="supervisor" class="form-select">
@@ -710,43 +679,40 @@
 
             {{-- Métricas --}}
             <div class="metrics-section">
-                <h6 class="metrics-title">
-                    <i class="bi bi-graph-up"></i>
-                    Indicadores de Supervisión
-                </h6>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="metric-card primary">
-                            <i class="bi bi-people-fill metric-icon"></i>
-                            <div class="metric-label">Total Estudiantes</div>
-                            <div class="metric-value">{{ $totalEstudiantes }}</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="metric-card info">
-                            <i class="bi bi-file-earmark-check-fill metric-icon"></i>
-                            <div class="metric-label">Fichas Validadas</div>
-                            <div class="metric-value">{{ $totalFichasValidadas }}</div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col">
-                    <div class="card bg-warning text-dark shadow-sm rounded-3">
-                        <div class="card-body"> 
-                            <i class="bi bi-person-badge-fill fs-4"></i><br>
-                            Supervisores<br><strong>{{ $totalSupervisores }}</strong>
-
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="metric-card warning">
-                            <i class="bi bi-person-badge-fill metric-icon"></i>
-                            <div class="metric-label">Supervisores</div>
-                            <div class="metric-value">{{ $totalSupervisores }}</div>
-
-                        </div>
-                    </div>
-                </div>
+    <h6 class="metrics-title">
+        <i class="bi bi-graph-up"></i>
+        Indicadores de Supervisión
+    </h6>
+    <div class="row">
+        {{-- Total Estudiantes --}}
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="metric-card primary">
+                <i class="bi bi-people-fill metric-icon"></i>
+                <div class="metric-label">Total Estudiantes</div>
+                <div class="metric-value">{{ $totalEstudiantes }}</div>
             </div>
+        </div>
+
+        {{-- Fichas Validadas --}}
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="metric-card info">
+                <i class="bi bi-file-earmark-check-fill metric-icon"></i>
+                <div class="metric-label">Fichas Validadas</div>
+                <div class="metric-value">{{ $totalFichasValidadas }}</div>
+            </div>
+        </div>
+
+        {{-- Total Supervisores --}}
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="metric-card warning">
+                <i class="bi bi-person-badge-fill metric-icon"></i>
+                <div class="metric-label">Supervisores</div>
+                <div class="metric-value">{{ $totalSupervisores }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             {{-- Gráficos --}}
             <div class="row">
@@ -904,6 +870,7 @@
 
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

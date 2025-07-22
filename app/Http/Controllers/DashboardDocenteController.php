@@ -14,11 +14,13 @@ class DashboardDocenteController extends Controller
         
         $docenteId = Auth::id(); // ID del docente autenticado
     $escuelaId = $request->get('escuela');
+    $facultades = DB::table('facultades')->get();
+
     $semestreCodigo = $request->get('semestre');
     $supervisorId = $request->get('supervisor');
  
     // Escuelas a cargo del docente
-    $escuelas = DB::table('grupos_practicas as gp')
+    $escuelas = DB::table('grupos_practicas as gp') 
         ->join('escuelas as e', 'gp.id_escuela', '=', 'e.id')
         ->where('gp.id_docente', $docenteId)
         ->select('e.id', 'e.name')
@@ -131,7 +133,7 @@ class DashboardDocenteController extends Controller
     return view('dashboard.dashvoardDocente', compact(
         'totalEstudiantes', 'totalFichasValidadas', 'totalSupervisores',
         'estudiantesPorEscuela', 'estadoFichas', 'groupsData', 'fichasPorMes',
-        'supervisoresRanking', 'escuelas','chartData','listaEstudiantes'
+        'supervisoresRanking', 'escuelas','chartData','listaEstudiantes', 'facultades'
     ));
 
     }

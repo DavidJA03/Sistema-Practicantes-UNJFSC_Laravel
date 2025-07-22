@@ -40,7 +40,7 @@ class supervisorDashboard extends Controller
         ->join('grupos_practicas as gp', 'ge.id_grupo_practica', '=', 'gp.id')
         ->join('personas as p', 'ge.id_estudiante', '=', 'p.id')
         ->join('escuelas as e', 'gp.id_escuela', '=', 'e.id')
-        ->leftJoin('evaluaciones as ev', 'ge.id', '=', 'ev.alumno_id')
+        ->leftJoin('evaluaciones as ev', 'ge.id_estudiante', '=', 'ev.alumno_id')
         ->join('facultades as f', 'e.facultad_id', '=', 'f.id')
         ->join('semestres as s', 'gp.id_semestre', '=', 's.id')
         ->where('ge.id_supervisor', $supervisorId);
@@ -62,6 +62,7 @@ class supervisorDashboard extends Controller
         'p.nombres',
         'p.apellidos',
         'e.name as escuela',
+        'ev.anexo_6',
         'ev.anexo_7',
         'ev.anexo_8',
         DB::raw("CASE WHEN ev.anexo_7 IS NOT NULL AND ev.anexo_7 != '' THEN 'Registrado' ELSE 'Sin registrar' END as estado_anexo_7"),

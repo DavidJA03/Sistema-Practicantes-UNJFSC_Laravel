@@ -637,6 +637,16 @@
                                     <td>{{ $alumno->apellidos }}</td>
                                     <td>{{ $alumno->escuela }}</td>
                                     <td>
+                                        @if($alumno->anexo_6)
+                                            <a href="{{ asset('storage/' . $alumno->anexo_6) }}" target="_blank" class="btn-view-pdf">
+                                                <i class="bi bi-file-pdf"></i>
+                                                Ver PDF
+                                            </a>
+                                        @else
+                                            <span class="status-badge not-uploaded">No subido</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         @if($alumno->anexo_7)
                                             <a href="{{ asset('storage/' . $alumno->anexo_7) }}" target="_blank" class="btn-view-pdf">
                                                 <i class="bi bi-file-pdf"></i>

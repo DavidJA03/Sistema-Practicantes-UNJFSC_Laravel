@@ -126,6 +126,8 @@
         $nombreCompleto = $persona->nombres . ' ' . $persona->apellidos;
         $escuelaNombre = $escuela ? $escuela->name : 'Desconocida';
         $practicas = auth()->user()->persona->practica;
+        $hasPractice = $practicas && $practicas->tipo_practica !== null;
+        $practiceType = $practicas->tipo_practica ?? null;
     @endphp
     <!-- Main Content -->
     <div class="container-fluid main-content" id="mainContentView">
@@ -236,8 +238,8 @@
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="fw-semibold">Estado Actual</span>
-                                @if(isset($persona?->practica) && ($persona->practica->estado_proceso = 'completo'))
-                                    @if ($persona?->practica->estado_proceso == 'completo')
+                                @if(isset($persona?->practica))
+                                    @if ($persona?->practica->estado == 5)
                                         <span class="status-badge status-completed">Completo</span>
                                         <span class="text-success">✓</span>
                                     @elseif ($persona?->practica->estado_proceso == 'en proceso' || $persona?->practica->estado_proceso == 'rechazado')
@@ -277,7 +279,21 @@
     <!-- Modal Matricula -->
     @include('matricula.view_estu_mat')
     <!-- Modal Prácticas -->
-    @include('practicas.estudiante.practica')
+    @if(isset($persona->matricula) && ($persona->matricula->estado_ficha == 'Completo' && $persona->matricula->estado_record == 'Completo'))
+        @include('practicas.estudiante.practica')
+    @else
+        <div class="d-flex justify-content-center align-items-center my-5">
+            <div class="alert alert-danger shadow-lg p-5 rounded-lg text-center" style="max-width: 600px; width: 100%;">
+                <div class="mb-4">
+                    <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
+                </div>
+                <h2 class="font-weight-bold mb-3">¡Atención!</h2>
+                <p class="mb-0" style="font-size: 20px;">
+                    Primero debes completar tu matrícula para acceder.
+                </p>
+            </div>
+        </div>
+    @endif
     
     <!-- Vista de Práctica (se mostrará dinámicamente) -->
     <div id="practiceViewContainer" style="display: none;">
@@ -360,14 +376,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             checkPracticeView();
             // Verificar si ya tiene práctica seleccionada
-            const hasPractice = @json($practicas && $practicas->tipo_practica !== null);
-            const practiceType = @json($practicas->tipo_practica ?? null);
+            const hasPractice = @json($hasPractice);
+            const practiceType = @json($practiceType);
             
             // Mostrar modal solo si no tiene práctica seleccionada
             document.querySelector('[data-bs-target="#modalPracticas"]').addEventListener('click', function(e) {
-                if (@json($practicas && $practicas->tipo_practica !== null)) {
+                if (hasPractice) {
                     e.preventDefault();
-                    showPracticeView(@json($practicas->tipo_practica));
+                    showPracticeView(practiceType);
                 }
             });
             
@@ -403,6 +419,7 @@
                                 
                                 showPracticeView(type);
                                 showAlert('success', 'Tipo de práctica seleccionado correctamente');
+                                location.reload();
                             }
                         })
                         .catch(error => {
@@ -424,21 +441,18 @@
             history.pushState({ practiceView: true }, '', '?view=practice');
         }
         function checkPracticeView() {
-            const hasPractice = @json($practicas && $practicas->tipo_practica !== null);
+            const hasPractice = @json($hasPractice);
+            const practiceType = @json($practiceType);
             const urlParams = new URLSearchParams(window.location.search);
             
             if (hasPractice) {
                 if (urlParams.get('view') === 'practice') {
-                    showPracticeView(@json($practicas->tipo_practica));
+                    showPracticeView(practiceType);
                 } else {
                     // Ocultar vista de práctica si no está en la URL
                     document.getElementById('practiceViewContainer').style.display = 'none';
                     document.getElementById('mainContentView').style.display = 'block';
                 }
-            } else {
-                // Mostrar modal si no tiene práctica seleccionada
-                const modalPracticas = new bootstrap.Modal(document.getElementById('modalPracticas'));
-                modalPracticas.show();
             }
         }
 
